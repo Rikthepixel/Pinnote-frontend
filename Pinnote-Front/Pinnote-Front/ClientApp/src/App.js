@@ -10,6 +10,7 @@ import {
 import "./App.css";
 
 //Pages
+import Error from "./pages/Error";
 import Boards from "./pages/Boards";
 
 //Components
@@ -29,6 +30,9 @@ export default class App extends Component {
                     </Route>
                     <Route exact path="/">
                         <Boards/>
+                    </Route>
+                    <Route path="">
+                        <Error/>
                     </Route>
                 </Switch>
             </Router>
