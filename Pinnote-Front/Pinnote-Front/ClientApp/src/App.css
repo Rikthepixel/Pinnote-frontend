@@ -1,0 +1,25 @@
+﻿:root {
+    --Primairy-color: #2898FF;
+    --Primairy-background-color: #FAFBFC;
+    --Link-color: #0047FF;
+    --Link-hover-color: #002994;
+}
+
+* {
+    font-family: 'Trebuchet MS', 'Franklin Gothic Medium', Dubai, 'Century Gothic', Consolas;
+}
+
+body, html {
+    height: 100%;
+}
+
+body {
+    background-color: var(--Primairy-background-color);
+}
+
+#root {
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
