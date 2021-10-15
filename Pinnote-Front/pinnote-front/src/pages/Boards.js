@@ -1,7 +1,7 @@
 ﻿import React, { } from 'react';
-import BoardItem from "../components/BoardItem";
+import { BoardItem } from "../components/Boards";
 
-import "./Boards.css"
+import "./Boards.scss"
 
 export default function Boards(props) {
     document.title = "Pinnote - Boards";
