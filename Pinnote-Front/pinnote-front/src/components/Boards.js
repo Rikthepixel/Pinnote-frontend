@@ -1,10 +1,11 @@
 ﻿import React, { useState } from 'react';
+import {NavLink} from "react-router-dom";
 
 //CSS
 import "./BoardNote.scss";
 import "./BoardItem.scss";
 
-export function BoardItem(props) {
+export function PinBoardItem(props) {
     console.log(props)
     const [state, setState] = useState({
         background_image: props.backgroundImage || "",
@@ -26,7 +27,15 @@ export function BoardItem(props) {
     );
 }
 
-export default function BoardNote(props) {
+export function PinBoard(props) {
+    return (
+        <div>
+            {props.children}
+        </div>
+    )
+}
+
+export function PinNote(props) {
     const [state, setState] = useState({
         background_color: props.backgroundColor || [
             122,

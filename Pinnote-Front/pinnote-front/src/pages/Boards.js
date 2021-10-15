@@ -1,5 +1,5 @@
 ﻿import React, { } from 'react';
-import { BoardItem } from "../components/Boards";
+import { PinBoardItem } from "../components/Boards";
 
 import "./Boards.scss"
 
@@ -9,10 +9,10 @@ export default function Boards(props) {
     return (
         <div>
             <div className="BoardGrid">
-                <BoardItem title="0" />
-                <BoardItem />
-                <BoardItem />
-                <BoardItem />
+                <PinBoardItem title="0" />
+                <PinBoardItem />
+                <PinBoardItem />
+                <PinBoardItem />
             </div>
         </div>
     );
