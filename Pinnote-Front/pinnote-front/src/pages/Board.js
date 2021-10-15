@@ -1,5 +1,5 @@
 ﻿import React, { } from 'react';
-import { PinNote, PinBoard } from "../components/Boards";
+import { PinNote, PinBoard } from "../components/BoardElements";
 
 import "./Board.scss"
 
@@ -8,7 +8,11 @@ export default function Board(props) {
 
     let BoardNoteInfos = [
         {
-            text: "Some text"
+            text: "Some text",
+            position: {
+                x: 200,
+                y: 300
+            }
         },
         {
             text: "MORE TEXT"
@@ -17,7 +21,7 @@ export default function Board(props) {
     const BoardNotes = [];
     for (var i = 0; i < BoardNoteInfos.length; i++) {
         let NoteProps = BoardNoteInfos[i];
-        BoardNotes.push(<PinNote text={NoteProps.text} />);
+        BoardNotes.push(<PinNote key={i} data={NoteProps} />);
     }
 
     return (

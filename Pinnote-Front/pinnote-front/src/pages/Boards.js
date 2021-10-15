@@ -1,5 +1,5 @@
 ﻿import React, { } from 'react';
-import { PinBoardItem } from "../components/Boards";
+import { PinBoardItem } from "../components/BoardElements";
 
 import "./Boards.scss"
 
