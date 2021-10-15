@@ -2,8 +2,7 @@
 import {NavLink} from "react-router-dom";
 
 //CSS
-import "./BoardNote.scss";
-import "./BoardItem.scss";
+import "./BoardElements.scss";
 
 export function PinBoardItem(props) {
     console.log(props)
@@ -42,20 +41,33 @@ export function PinNote(props) {
             122,
             122
         ],
-        positon: {
-            x: 0,
-            y: 0
-        },
-        size: {
-            width: 100,
-            height: 100
-        },
-        title: props.title || "",
-        text: props.text || ""
     });
 
+    const [position, setPosition] = useState({
+        x: props.position.x || 0,
+        y: props.position.y || 0
+    })
+
+    const [size, setSize] = useState({
+        width: props.size.width || 100,
+        height: props.size.height || 100
+    })
+
+    const [] = useState({
+        title: props.title || "",
+        text: props.text || ""
+    })
+
     return (
-        <div style={{ backgroundColor: "rgb(" + state.background_color.join() + ")", width: state.size.width, height: state.size.height }}>
+        <div 
+        className=""
+        onMouseDown={}
+        style={{
+            backgroundColor: "rgb(" + state.background_color.join() + ")", 
+            width: size.width, 
+            height: size.height,
+            position: 
+            }}>
             demo text
         </div>
     );

@@ -1,4 +1,8 @@
-﻿.BoardItem {
+﻿.BoardNote {
+    position: absolute;
+}
+
+.BoardItem {
     overflow: hidden;
     aspect-ratio: 2/1;
     height: 100px;
