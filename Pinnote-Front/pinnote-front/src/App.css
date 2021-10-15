@@ -6,10 +6,17 @@
 }
 
 * {
+    box-sizing: border-box;
+    text-decoration: none;
     font-family: Bahnschrift, 'Trebuchet MS', 'Franklin Gothic Medium', Dubai, 'Century Gothic', Consolas;
 }
 
+*::after, *::before {
+    box-sizing: border-box;
+}
+
 body, html {
+    margin: 0;
     height: 100%;
 }
 
@@ -19,7 +26,20 @@ body {
 
 #root {
     height: 100%;
-
     display: flex;
     flex-direction: column;
+}
+
+a:hover {
+    text-decoration-color: var(--Link-hover-color);
+    text-decoration-thickness: 4px;
+}
+
+
+#content-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: auto;
+    overflow-y: auto;
 }
