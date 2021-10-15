@@ -1,0 +1,53 @@
+﻿:root {
+    --Primairy-color: #2898FF;
+    --Primairy-background-color: #FAFBFC;
+    --Link-color: #0047FF;
+    --Link-hover-color: #002994;
+}
+
+body, html {
+    margin: 0;
+    height: 100%;
+}
+
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--Primairy-background-color);
+}
+
+* {
+    box-sizing: border-box;
+    font-family: Bahnschrift, 'Trebuchet MS', 'Franklin Gothic Medium', Dubai, 'Century Gothic', Consolas;
+
+    &::after, &::before {
+        box-sizing: border-box;
+    }
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+a {
+    text-decoration: none;
+
+    &:hover {
+        text-decoration: solid 4px var(--Link-hover-color);
+    }
+}
+
+#content-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    height: auto;
+    overflow-y: auto;
+}
+
+#root {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
