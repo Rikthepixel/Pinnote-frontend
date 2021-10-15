@@ -11,7 +11,7 @@ export default function Navbar() {
     
     return (
         <nav className="Navbar">
-            <div className="NavMenu LeftNavGrid">
+            <div className="NavMenu LeftNav">
                 <NavLink className="NavLink" to="/Boards">
                     Boards
                     </NavLink>
@@ -21,7 +21,7 @@ export default function Navbar() {
                 <img className="NavImage" src={logo} alt="Pinnote" />
             </NavLink>
 
-            <div className="NavMenu RightNavGrid">
+            <div className="NavMenu RightNav">
                 <NavLink className="NavLink" to="/Login">
                     Login
                     </NavLink>
