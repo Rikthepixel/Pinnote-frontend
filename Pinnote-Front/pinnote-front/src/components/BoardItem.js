@@ -2,7 +2,7 @@
 import { NavLink } from 'react-router-dom';
 
 //CSS
-import "./BoardItem.css";
+import "./BoardItem.scss";
 
 export default function BoardItem(props) {
     console.log(props)

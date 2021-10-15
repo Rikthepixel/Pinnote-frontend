@@ -2,12 +2,13 @@ import React, { Component } from 'react';
 import {
     BrowserRouter as Router,
     Switch,
-    Route,    useParams,
+    Route,
+    useParams,
     Redirect
 } from "react-router-dom";
 
 //Style
-import "./App.css";
+import "./App.scss";
 
 //Pages
 //import Error from "./pages/Error";

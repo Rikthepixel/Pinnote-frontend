@@ -1,7 +1,7 @@
 ﻿import React, { useState } from 'react';
 
 //CSS
-import "./BoardNote.css";
+import "./BoardNote.scss";
 
 export default function BoardNote(props) {
     const [state, setState] = useState({
