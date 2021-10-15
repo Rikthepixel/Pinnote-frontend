@@ -1,4 +1,4 @@
-﻿.BoardItem {
+﻿.BoardNote {
     overflow: hidden;
     aspect-ratio: 2/1;
     width: 200px;
@@ -6,6 +6,5 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 0 inset;
     transition: box-shadow 0.3s ease-in-out;
 }
