@@ -6,8 +6,9 @@ import "./Board.scss"
 export default function Board(props) {
     document.title = "Pinnote - Board";
 
-    let BoardNoteInfos = [
+    const BoardNotes = [
         {
+            title: "aa",
             text: "Some text",
             position: {
                 x: 200,
@@ -15,13 +16,12 @@ export default function Board(props) {
             }
         },
         {
+            title: "bb",
             text: "MORE TEXT"
         }
     ];
-    const BoardNotes = [];
-    for (var i = 0; i < BoardNoteInfos.length; i++) {
-        let NoteProps = BoardNoteInfos[i];
-        BoardNotes.push(<PinNote key={i} data={NoteProps} />);
+    for (var i = 0; i < BoardNotes.length; i++) {
+        BoardNotes[i] = (<PinNote key={i} data={BoardNotes[i]} />);
     }
 
     return (
