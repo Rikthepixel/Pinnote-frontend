@@ -21,6 +21,7 @@ body {
 * {
     box-sizing: border-box;
     font-family: Bahnschrift, 'Trebuchet MS', 'Franklin Gothic Medium', Dubai, 'Century Gothic', Consolas;
+    font-weight: 350;
 
     &::after, &::before {
         box-sizing: border-box;
