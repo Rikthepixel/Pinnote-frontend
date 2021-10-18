@@ -20,7 +20,7 @@ function onDoubleClick(e, divRef, editStyle, editClassNames, onWriteable, onUnWr
     }
     
     let Exit = () => {
-        div.removeEventListener("keyup", onKeyUp);
+        div.removeEventListener("keydown", onKeyDown);
         div.removeEventListener("blur", Exit);
 
         div.contentEditable = "false";
@@ -35,16 +35,16 @@ function onDoubleClick(e, divRef, editStyle, editClassNames, onWriteable, onUnWr
         }
     }
 
-    let onKeyUp = e => {
+    let onKeyDown = e => {
         if (e.keyCode === 13) {
-            e.preventDefault();
             div.blur();
+            e.preventDefault();
             Exit();
         }
     }
 
     div.addEventListener("blur", Exit);
-    div.addEventListener("keyup", onKeyUp);
+    div.addEventListener("keydown", onKeyDown);
 }
 
 export default function MakeWriteable(props) {
