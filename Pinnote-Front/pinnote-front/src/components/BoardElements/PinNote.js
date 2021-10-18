@@ -90,7 +90,8 @@ export class PinNote extends Component {
         className="pinNote"
         ref={this.NoteDiv}
         style={{
-          backgroundColor: "rgb(" + [state.colorR, state.colorG, state.colorB].join() + ")",
+          backgroundColor:
+            "rgb(" + [state.colorR, state.colorG, state.colorB].join() + ")",
           width: state.width,
           height: state.height,
           left: state.positionX,
@@ -100,14 +101,18 @@ export class PinNote extends Component {
         <div className="pinNote-Header" ref={this.HeaderRef}>
           <MakeWriteable
             parentRef={this.HeaderRef}
-            editStyle={{ backgroundColor: "#FFF" }}
+            editStyle={{
+              backgroundColor: "#FFF",
+            }}
             onWriteable={this.disableDrag}
             onUnWriteable={this.enableDrag}
           />
           {state.title}
         </div>
         <div className="pinNote-Content">
-          <div className="pinNote-TextContent">{state.text}</div>
+          <div className="pinNote-TextContent" contenteditable="true">
+            {state.text}
+          </div>
         </div>
       </div>
     );
