@@ -6,7 +6,6 @@ function disableSelect(e) {
 }
 
 function notePressed(e, target) {
-console.log(this)
   let DomRect = target.current.getBoundingClientRect();
   let offset = {
     x: DomRect.x - this.state.positionX,
@@ -52,43 +51,43 @@ export class PinNote extends Component {
     props.data.size = props.data.size || {};
 
     this.state = {
-        colorR: props.data.color.R || defaultState.colorR,
-        colorG: props.data.color.G || defaultState.colorG,
-        colorB: props.data.color.B || defaultState.colorB,
-        positionX: props.data.position.x || defaultState.positionX,
-        positionY: props.data.position.y || defaultState.positionY,
-        width: props.data.size.width || defaultState.width,
-        height: props.data.size.height || defaultState.height,
-        title: props.data.title || defaultState.title,
-        text: props.data.text || defaultState.text,
+      colorR: props.data.color.R || defaultState.colorR,
+      colorG: props.data.color.G || defaultState.colorG,
+      colorB: props.data.color.B || defaultState.colorB,
+      positionX: props.data.position.x || defaultState.positionX,
+      positionY: props.data.position.y || defaultState.positionY,
+      width: props.data.size.width || defaultState.width,
+      height: props.data.size.height || defaultState.height,
+      title: props.data.title || defaultState.title,
+      text: props.data.text || defaultState.text,
     };
 
     this.HeaderRef = createRef();
     this.NoteDiv = createRef();
-
   }
 
-  disableDrag() {
+  disableDrag = function () {
     this.HeaderRef.current.onmousedown = null;
-  };
-  enableDrag() {
+  }.bind(this);
+
+  enableDrag = function () {
     this.HeaderRef.current.onmousedown = function (e) {
       notePressed.call(this, e, this.NoteDiv, this.state, this.setState);
     }.bind(this);
-  };
+  }.bind(this);
 
   componentDidMount() {
-    this.HeaderRef.current.onmousedown = function(e) {
-        notePressed.call(this, e, this.NoteDiv, this.state, this.setState);
+    this.HeaderRef.current.onmousedown = function (e) {
+      notePressed.call(this, e, this.NoteDiv, this.state, this.setState);
     }.bind(this);
   }
-    
+
   render() {
-    let state = this.state
+    let state = this.state;
 
     return (
       <div
-        className="PinNote"
+        className="pinNote"
         ref={this.NoteDiv}
         style={{
           backgroundColor: "rgb(" + [state.colorR, state.colorG, state.colorB].join() + ")",
@@ -98,12 +97,17 @@ export class PinNote extends Component {
           top: state.positionY,
         }}
       >
-        <div className="PinNoteHeader" ref={this.HeaderRef}>
-          <MakeWriteable parentRef={this.HeaderRef} editStyle={{ backgroundColor: "#FFF" }} onWriteable={this.disableDrag} onUnWriteable={this.enableDrag}/>
+        <div className="pinNote-Header" ref={this.HeaderRef}>
+          <MakeWriteable
+            parentRef={this.HeaderRef}
+            editStyle={{ backgroundColor: "#FFF" }}
+            onWriteable={this.disableDrag}
+            onUnWriteable={this.enableDrag}
+          />
           {state.title}
         </div>
-        <div className="PinNoteContent">
-          <div className="PinNoteTextContent">{state.text}</div>
+        <div className="pinNote-Content">
+          <div className="pinNote-TextContent">{state.text}</div>
         </div>
       </div>
     );

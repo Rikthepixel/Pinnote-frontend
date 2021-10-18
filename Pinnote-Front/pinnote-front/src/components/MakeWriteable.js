@@ -56,5 +56,5 @@ export default function MakeWriteable(props) {
         div.current.addEventListener('dblclick', e => { onDoubleClick(e, div, editStyle, editClassNames, props.onWriteable, props.onUnWriteable)  })
     }, []);
 
-    return null;
+    return ("");
 }
