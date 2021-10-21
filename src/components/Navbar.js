@@ -2,7 +2,7 @@
 import { NavLink } from 'react-router-dom';
 
 //Images
-import logo from "../images/PinnoteLogo.png";
+import logo from "../img/PinnoteLogo.png";
 
 //CSS
 import "./Navbar.scss";
