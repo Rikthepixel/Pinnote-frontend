@@ -43,23 +43,24 @@ const defaultState = {
   text: "",
 };
 
-export class PinNote extends Component {
+export default class PinNote extends Component {
   constructor(props) {
     super(props);
-    props.data.color = props.data.color || {};
-    props.data.position = props.data.position || {};
-    props.data.size = props.data.size || {};
+    let data = props.data || {}
+    data.color = data.color || {};
+    data.position = data.position || {};
+    data.size = data.size || {};
 
     this.state = {
-      colorR: props.data.color.R || defaultState.colorR,
-      colorG: props.data.color.G || defaultState.colorG,
-      colorB: props.data.color.B || defaultState.colorB,
-      positionX: props.data.position.x || defaultState.positionX,
-      positionY: props.data.position.y || defaultState.positionY,
-      width: props.data.size.width || defaultState.width,
-      height: props.data.size.height || defaultState.height,
-      title: props.data.title || defaultState.title,
-      text: props.data.text || defaultState.text,
+      colorR: data.color.R || defaultState.colorR,
+      colorG: data.color.G || defaultState.colorG,
+      colorB: data.color.B || defaultState.colorB,
+      positionX: data.position.x || defaultState.positionX,
+      positionY: data.position.y || defaultState.positionY,
+      width: data.size.width || defaultState.width,
+      height: data.size.height || defaultState.height,
+      title: data.title || defaultState.title,
+      text: data.text || defaultState.text,
     };
 
     this.HeaderRef = createRef();

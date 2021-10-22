@@ -1,5 +1,5 @@
 ﻿import React from "react";
-import { PinNote, PinBoard } from "../components/BoardElements";
+import PinNote, { PinBoard } from "../components/BoardElements";
 import Popup from "reactjs-popup";
 
 import "reactjs-popup/dist/index.css";
@@ -22,9 +22,7 @@ export default function Board(props) {
       text: "MORE TEXT",
     },
   ];
-  for (var i = 0; i < BoardNotes.length; i++) {
-    BoardNotes[i] = <PinNote key={i} data={BoardNotes[i]} />;
-  }
+
 
   return (
     <div>
@@ -33,7 +31,7 @@ export default function Board(props) {
             aaa
         </button>
       </div>
-      <PinBoard>{BoardNotes}</PinBoard>
+      <PinBoard Notes={BoardNotes} />
     </div>
   );
 }
