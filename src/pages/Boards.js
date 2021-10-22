@@ -1,6 +1,9 @@
 ﻿import React, { } from 'react';
 import { PinBoardItem } from "../components/BoardElements";
 
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+
 import "./Boards.scss"
 
 export default function Boards(props) {
