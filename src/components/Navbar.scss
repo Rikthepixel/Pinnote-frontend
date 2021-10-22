@@ -47,7 +47,7 @@
     background-size: 0% 3px;
     background-repeat: no-repeat;
     background-position: center bottom;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: var(--Primairy-button-background);
     color: var(--Link-color);
     border-radius: 12.5% / 50%;
     padding: 2% 10%;
@@ -55,7 +55,7 @@
     transition: background-size 0.25s ease-out;
 
     &.active {
-        background-color: rgba(190, 190, 190, 0.801);
+        background-color: var(--Primairy-button-background-active);
         color: var(--Link-color-bright);
     }
 
@@ -63,7 +63,6 @@
         text-decoration: none;
     
         background-size: 100% 3px;
-    
         color: var(--Link-hover-color);
     }
 }
