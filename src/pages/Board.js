@@ -1,4 +1,4 @@
-﻿import React from "react";
+﻿import React, {useRef} from "react";
 import PinNote, { PinBoard } from "../components/BoardElements";
 import { PinNoteToolbar } from '../components/PinNoteToolbar';
 import Popup from "reactjs-popup";
@@ -23,14 +23,16 @@ export default function Board(props) {
     },
   ];
   
+  const newNoteButton = useRef()
+
   return (
-    <div>
+    <div className="container">
         <PinNoteToolbar>
-            <button>
-                aaa
+            <button ref={newNoteButton}>
+                + Note
             </button>
         </PinNoteToolbar>
-        <PinBoard Notes={BoardNotes} />
+        <PinBoard Notes={BoardNotes} newNoteButton={newNoteButton} />
     </div>
   );
 }

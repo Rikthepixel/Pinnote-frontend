@@ -20,8 +20,8 @@ function notePressed(e, target) {
   document.onmousemove = function (e) {
     this.setState({
       ...this.state,
-      positionX: e.pageX - offset.x - (e.pageX - e.clientX) - handle.x,
-      positionY: e.pageY - offset.y - (e.pageY - e.clientY) - handle.y,
+      positionX: e.pageX - offset.x - handle.x - (e.pageX - e.clientX),
+      positionY: e.pageY - offset.y - handle.y - (e.pageY - e.clientY),
     });
   }.bind(this);
   document.onmouseup = function (e) {
@@ -46,7 +46,7 @@ const defaultState = {
 export default class PinNote extends Component {
   constructor(props) {
     super(props);
-    let data = props.data || {}
+    let data = props.data || {};
     data.color = data.color || {};
     data.position = data.position || {};
     data.size = data.size || {};
@@ -73,13 +73,13 @@ export default class PinNote extends Component {
 
   enableDrag = function () {
     this.HeaderRef.current.onmousedown = function (e) {
-      notePressed.call(this, e, this.NoteDiv, this.state, this.setState);
+      notePressed.call(this, e, this.NoteDiv);
     }.bind(this);
   }.bind(this);
 
   componentDidMount() {
     this.HeaderRef.current.onmousedown = function (e) {
-      notePressed.call(this, e, this.NoteDiv, this.state, this.setState);
+      notePressed.call(this, e, this.NoteDiv);
     }.bind(this);
   }
 
@@ -111,9 +111,10 @@ export default class PinNote extends Component {
           {state.title}
         </div>
         <div className="pinNote-Content">
-          <div className="pinNote-TextContent" contenteditable="true">
-            {state.text}
-          </div>
+          <textarea
+            className="pinNote-TextContent"
+            defaultValue={state.text}
+          ></textarea>
         </div>
       </div>
     );

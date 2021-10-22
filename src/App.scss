@@ -45,13 +45,15 @@ a {
     }
 }
 
-#content-container {
+#content-container, .container {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     height: auto;
     overflow-y: auto;
 }
+
+
 
 #root {
     height: 100%;
