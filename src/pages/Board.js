@@ -1,7 +1,7 @@
 ﻿import React from "react";
 import PinNote, { PinBoard } from "../components/BoardElements";
+import { PinNoteToolbar } from '../components/PinNoteToolbar';
 import Popup from "reactjs-popup";
-
 import "reactjs-popup/dist/index.css";
 import "./Board.scss";
 
@@ -22,16 +22,15 @@ export default function Board(props) {
       text: "MORE TEXT",
     },
   ];
-
-
+  
   return (
     <div>
-      <div className="BoardsPage-Header" >
-        <button>
-            aaa
-        </button>
-      </div>
-      <PinBoard Notes={BoardNotes} />
+        <PinNoteToolbar>
+            <button>
+                aaa
+            </button>
+        </PinNoteToolbar>
+        <PinBoard Notes={BoardNotes} />
     </div>
   );
 }
