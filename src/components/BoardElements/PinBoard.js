@@ -1,44 +1,72 @@
-import React, { useState, useRef, useEffect } from "react";
-import PinNote from './PinNote';
+import React, { Component } from "react";
+import PinNote from "./PinNote";
 
-export function PinBoard(props) {
-    const [state, setState] = useState({
-        Notes: props.Notes || []
-    })
+export class PinBoard extends Component {
+  constructor(props) {
+    super(props);
+    this.boardRef = React.createRef();
 
-    useEffect(function() {
-        let NoteButton = props.newNoteButton || {}
-        if (NoteButton.current) {
-            NoteButton.current.addEventListener("click", function(e) {
+    this.NoteButton = props.newNoteButton
+    this.state = {
+      Notes: props.Notes || [],
+    };
+  }
 
-                let onClick = function(e) {
-                    let boardElement = boardRef.current;
-                    state.Notes.push({
-                        position: {
-                            x: e.layerX + boardElement.scrollLeft,
-                            y: e.layerY + boardElement.scrollTop
-                        },
-                        title: "",
-                        text: "",
-                    })
-        
-                    setState({
-                        ...state,
-                    })
+  componentDidMount() {
+    let NoteButton = this.NoteButton || {};
+    if (NoteButton.current) {
+      NoteButton.current.addEventListener("click", function (e){
+        let boardElement = this.boardRef.current;
+        let DomRect = boardElement.getBoundingClientRect();
 
-                    boardRef.current.removeEventListener("click", onClick)
-                }
+        this.state.Notes.push({
+          noteId: Math.random(1, 99999),
+          position: {
+            x: DomRect.width / 2 + boardElement.scrollLeft,
+            y: DomRect.height / 2 + boardElement.scrollTop,
+          },
+          title: "",
+          text: "",
+        });
 
-                boardRef.current.addEventListener("click", onClick)
-            })
+        this.setState({
+          ...this.state,
+        });
+      }.bind(this));
+    }
+  }
+
+  onDelete = function(id) {
+    let Notes = this.state.Notes;
+    for (let index = 0; index < Notes.length; index++) {
+        if (Notes[index].noteId == id) {
+            Notes.splice(index, 1);
         }
-    }, [])
-    
-    const boardRef = useRef();
-    const BoardNotes = []
-    for (var i = 0; i < state.Notes.length; i++) {
-        BoardNotes[i] = <PinNote key={i} data={state.Notes[i]} />;
     }
 
-    return <div ref={boardRef} className="PinBoard">{BoardNotes}</div>;
+    this.setState({
+        ...this.state,
+        Notes: Notes,
+    });
+  }.bind(this);
+
+  render() {
+    let onDelete = this.onDelete
+    let BoardNotes = [];
+    let Notes = this.state.Notes
+    for (var i = 0; i < Notes.length; i++) {
+      let element = Notes[i];
+      BoardNotes[i] = (
+        <PinNote key={element.noteId} data={element} onDelete={function(){
+            onDelete(element.noteId)
+        }} />
+      );
+    }
+
+    return (
+      <div ref={this.boardRef} className="PinBoard">
+        {BoardNotes}
+      </div>
+    );
+  }
 }

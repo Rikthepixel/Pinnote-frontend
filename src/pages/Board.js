@@ -1,6 +1,7 @@
-﻿import React, {useRef} from "react";
-import PinNote, { PinBoard } from "../components/BoardElements";
+import React, {useRef} from "react";
+import { PinBoard } from "../components/BoardElements";
 import { PinNoteToolbar } from '../components/PinNoteToolbar';
+import { Button } from 'react-bootstrap';
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import "./Board.scss";
@@ -10,6 +11,7 @@ export default function Board(props) {
 
   const BoardNotes = [
     {
+      noteId: Math.random(1, 99999),
       title: "aa",
       text: "Some text",
       position: {
@@ -18,6 +20,7 @@ export default function Board(props) {
       },
     },
     {
+      noteId: Math.random(1, 99999),
       title: "bb",
       text: "MORE TEXT",
     },
@@ -26,11 +29,11 @@ export default function Board(props) {
   const newNoteButton = useRef()
 
   return (
-    <div className="container">
+    <div className="page-container">
         <PinNoteToolbar>
-            <button ref={newNoteButton}>
+            <Button ref={newNoteButton}>
                 + Note
-            </button>
+            </Button>
         </PinNoteToolbar>
         <PinBoard Notes={BoardNotes} newNoteButton={newNoteButton} />
     </div>
