@@ -1,17 +1,4 @@
-﻿:root {
-    --Primairy-color: #2898FF;
-    --Primairy-background-color: #FAFBFC;
-   
-    --Primairy-button-background: #eceef0;
-    --Primairy-button-background-active: #d0d5da;
-
-    --Secondary-color: #7cb8f0;
-    --Secondary-background-color: #abd0f3;
-
-    --Link-color: #0047FF;
-    --Link-hover-color: #002994;
-    --Link-color-bright: #0732a0;
-}
+﻿@import "~bootstrap/scss/bootstrap";
 
 body, html {
     margin: 0;
@@ -24,13 +11,8 @@ body {
 }
 
 * {
-    box-sizing: border-box;
     font-family: Bahnschrift, 'Trebuchet MS', 'Franklin Gothic Medium', Dubai, 'Century Gothic', Consolas;
     font-weight: 350;
-
-    &::after, &::before {
-        box-sizing: border-box;
-    }
 }
 
 code {
@@ -45,7 +27,7 @@ a {
     }
 }
 
-#content-container, .container {
+#content-container, .page-container {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -59,4 +41,8 @@ a {
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+.popup-content, .popup-arrow {
+    color: var(--bs-primary)
 }
