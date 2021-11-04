@@ -8,7 +8,7 @@
 .Navbar {
     @include centerFlex;
 
-    background-color: var(--Primairy-color);
+    background-color: var(--bs-primary);
     width: 100%;
     height: 4rem;
 
@@ -43,27 +43,31 @@
 }
 
 .NavLink {
-    background-image: linear-gradient(90deg, var(--Link-color), var(--Link-hover-color), var(--Link-color));
+    background-image: linear-gradient(90deg, var(--bs-dark), var(--bs-secondary), var(--bs-dark));
     background-size: 0% 3px;
     background-repeat: no-repeat;
     background-position: center bottom;
-    background-color: var(--Primairy-button-background);
-    color: var(--Link-color);
+    background-color: var(--bs-gray-100);
+    color: var(--bs-primary);
     border-radius: 12.5% / 50%;
     padding: 2% 10%;
     font-weight: bold;
     transition: background-size 0.25s ease-out;
 
     &.active {
-        background-color: var(--Primairy-button-background-active);
-        color: var(--Link-color-bright);
+        background-color: var(--bs-light);
+        color: var(--bs-gray-200);
     }
 
     &:hover {
         text-decoration: none;
     
         background-size: 100% 3px;
-        color: var(--Link-hover-color);
+        color: var(--bs-secondary);
+    }
+
+    &:hover.active {
+        color: var(--bs-gray-100);
     }
 }
 
