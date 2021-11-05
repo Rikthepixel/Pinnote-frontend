@@ -27,7 +27,7 @@ export function PinBoardItem(props) {
 
 export function PinBoardItemButton(props) {
     return (
-        <button className="PinBoardItemButton" type="button">
+        <button className="PinBoardItemButton" type="button" onClick={props.onClick}>
             <p>
                 Create new board
             </p>
