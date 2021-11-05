@@ -50,10 +50,11 @@ function onDoubleClick(e, divRef, editStyle, editClassNames, onWriteable, onUnWr
 export default function MakeWriteable(props) {
     const div = props.parentRef;
     const editClassNames = props.editClassName || ""
-    const editStyle = props.editStyle || {};    
+    const editStyle = props.editStyle || {};
+    const onEvent = props.onEvent != "dblclick" && props.onEvent != "click" ? "dblclick" : props.onEvent
 
     useEffect(() => {
-        div.current.addEventListener('dblclick', e => { onDoubleClick(e, div, editStyle, editClassNames, props.onWriteable, props.onUnWriteable)  })
+        div.current.addEventListener(onEvent, e => { onDoubleClick(e, div, editStyle, editClassNames, props.onWriteable, props.onUnWriteable)  })
     }, []);
 
     return ("");

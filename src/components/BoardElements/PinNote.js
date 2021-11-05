@@ -1,5 +1,11 @@
-import React, { useState, createRef, Component } from "react";
+import React, { createRef, Component } from "react";
 import MakeWriteable from "../MakeWriteable";
+import MoreIcon from "../../assets/img/icons/MoreIcon.svg";
+import Popup from "reactjs-popup";
+import { DropdownButton, ButtonGroup, Dropdown, Button } from "react-bootstrap";
+
+//Styling
+import "../../assets/scss/components/BoardElements/PinNote.scss";
 
 function disableSelect(e) {
   e.preventDefault();
@@ -20,8 +26,8 @@ function notePressed(e, target) {
   document.onmousemove = function (e) {
     this.setState({
       ...this.state,
-      positionX: e.pageX - offset.x - (e.pageX - e.clientX) - handle.x,
-      positionY: e.pageY - offset.y - (e.pageY - e.clientY) - handle.y,
+      positionX: e.pageX - offset.x - handle.x - (e.pageX - e.clientX),
+      positionY: e.pageY - offset.y - handle.y - (e.pageY - e.clientY),
     });
   }.bind(this);
   document.onmouseup = function (e) {
@@ -43,23 +49,28 @@ const defaultState = {
   text: "",
 };
 
-export class PinNote extends Component {
+export default class PinNote extends Component {
   constructor(props) {
     super(props);
-    props.data.color = props.data.color || {};
-    props.data.position = props.data.position || {};
-    props.data.size = props.data.size || {};
+    let data = props.data || {};
+    data.color = data.color || {};
+    data.position = data.position || {};
+    data.size = data.size || {};
+
+    this.onDelete = props.onDelete;
 
     this.state = {
-      colorR: props.data.color.R || defaultState.colorR,
-      colorG: props.data.color.G || defaultState.colorG,
-      colorB: props.data.color.B || defaultState.colorB,
-      positionX: props.data.position.x || defaultState.positionX,
-      positionY: props.data.position.y || defaultState.positionY,
-      width: props.data.size.width || defaultState.width,
-      height: props.data.size.height || defaultState.height,
-      title: props.data.title || defaultState.title,
-      text: props.data.text || defaultState.text,
+
+      noteId: data.noteId,
+      colorR: data.color.R || defaultState.colorR,
+      colorG: data.color.G || defaultState.colorG,
+      colorB: data.color.B || defaultState.colorB,
+      positionX: data.position.x || defaultState.positionX,
+      positionY: data.position.y || defaultState.positionY,
+      width: data.size.width || defaultState.width,
+      height: data.size.height || defaultState.height,
+      title: data.title || defaultState.title,
+      text: data.text || defaultState.text,
     };
 
     this.HeaderRef = createRef();
@@ -72,13 +83,13 @@ export class PinNote extends Component {
 
   enableDrag = function () {
     this.HeaderRef.current.onmousedown = function (e) {
-      notePressed.call(this, e, this.NoteDiv, this.state, this.setState);
+      notePressed.call(this, e, this.NoteDiv);
     }.bind(this);
   }.bind(this);
 
   componentDidMount() {
     this.HeaderRef.current.onmousedown = function (e) {
-      notePressed.call(this, e, this.NoteDiv, this.state, this.setState);
+      notePressed.call(this, e, this.NoteDiv);
     }.bind(this);
   }
 
@@ -94,25 +105,46 @@ export class PinNote extends Component {
             "rgb(" + [state.colorR, state.colorG, state.colorB].join() + ")",
           width: state.width,
           height: state.height,
-          left: state.positionX,
-          top: state.positionY,
+          left: state.positionX - state.width / 2,
+          top: state.positionY - state.height / 2,
         }}
       >
-        <div className="pinNote-Header" ref={this.HeaderRef}>
-          <MakeWriteable
-            parentRef={this.HeaderRef}
-            editStyle={{
-              backgroundColor: "#FFF",
-            }}
-            onWriteable={this.disableDrag}
-            onUnWriteable={this.enableDrag}
-          />
-          {state.title}
+        <div className="pinNote-Header">
+          <div className="pinNote-Header-Title" ref={this.HeaderRef}>
+            <MakeWriteable
+              parentRef={this.HeaderRef}
+              editStyle={{
+                backgroundColor: "#FFF",
+              }}
+              onWriteable={this.disableDrag}
+              onUnWriteable={this.enableDrag}
+            />
+            {state.title}
+          </div>
+
+          <Popup
+            trigger={() => (
+              <button className="pinNote-Header-Action">
+                <img
+                  src={MoreIcon}
+                  placeholder="..."
+                />
+              </button>
+            )}
+            position="right top"
+            closeOnDocumentClick
+            className="primairy"
+          >
+            <button onClick={this.onDelete}> Popup content </button>
+            <Dropdown.Divider />
+            <Button className="w-100" variant="danger" onClick={this.onDelete}> Delete </Button>
+          </Popup>
         </div>
         <div className="pinNote-Content">
-          <div className="pinNote-TextContent" contenteditable="true">
-            {state.text}
-          </div>
+          <textarea
+            className="pinNote-TextContent"
+            defaultValue={state.text}
+          ></textarea>
         </div>
       </div>
     );

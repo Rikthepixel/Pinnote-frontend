@@ -1,0 +1,26 @@
+﻿.BoardsPage-Header {
+    width: 100%;
+
+    & * {
+        border: none;
+    }
+}
+
+.pinBoard-Toolbar-Title {
+    font-size: 2rem;
+    font-weight: 500;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    border-radius: 0.5rem;
+    background-color: var(--bs-dark);
+    color: var(--bs-gray-100);
+
+    &:hover {
+        background-color: var(--bs-primary);
+        color: var(--bs-gray-300);
+    }
+
+    &[contenteditable=true] {
+        color: var(--bs-black)
+    }
+}

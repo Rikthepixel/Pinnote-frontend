@@ -1,10 +1,6 @@
 ﻿import React, { } from 'react';
 import { PinBoardItem } from "../components/BoardElements";
-
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
-
-import "./Boards.scss"
+import "../assets/scss/views/Boards.scss"
 
 export default function Boards(props) {
     document.title = "Pinnote - Boards";
