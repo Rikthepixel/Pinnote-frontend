@@ -1,6 +1,9 @@
 import React, { useState, useRef } from 'react';
 import {NavLink} from "react-router-dom";
 
+//Styling
+import "../../assets/scss/components/BoardElements/PinBoardItem.scss"
+
 export function PinBoardItem(props) {
     console.log(props)
     const [state, setState] = useState({

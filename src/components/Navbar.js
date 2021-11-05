@@ -2,10 +2,10 @@
 import { NavLink } from 'react-router-dom';
 
 //Images
-import logo from "../img/PinnoteLogo.png";
+import logo from "../assets/img/branding/PinnoteLogo.png";
 
 //CSS
-import "./Navbar.scss";
+import "../assets/scss/components/Navbar.scss";
 
 export default function Navbar() {
     
