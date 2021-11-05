@@ -1,5 +1,5 @@
 ﻿import React, { } from 'react';
-import { PinBoardItem } from "../components/BoardElements";
+import { PinBoardItem, PinBoardItemButton } from "../components/BoardElements";
 import "../assets/scss/views/Boards.scss"
 
 export default function Boards(props) {
@@ -12,6 +12,7 @@ export default function Boards(props) {
                 <PinBoardItem />
                 <PinBoardItem />
                 <PinBoardItem />
+                <PinBoardItemButton />
             </div>
         </div>
     );

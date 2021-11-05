@@ -5,7 +5,6 @@ import {NavLink} from "react-router-dom";
 import "../../assets/scss/components/BoardElements/PinBoardItem.scss"
 
 export function PinBoardItem(props) {
-    console.log(props)
     const [state, setState] = useState({
         background_image: props.backgroundImage || "",
         background_color: props.backgroundColor || [
@@ -23,5 +22,15 @@ export function PinBoardItem(props) {
                 {state.title}
             </p>
         </NavLink>
+    );
+}
+
+export function PinBoardItemButton(props) {
+    return (
+        <button className="PinBoardItemButton" type="button">
+            <p>
+                Create new board
+            </p>
+        </button>
     );
 }
