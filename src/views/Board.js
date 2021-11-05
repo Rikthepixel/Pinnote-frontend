@@ -3,7 +3,7 @@ import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import MakeWriteable from "../components/MakeWriteable";
 import { Button } from "react-bootstrap";
 import "reactjs-popup/dist/index.css";
-import "./Board.scss";
+import "../assets/scss/views/Board.scss";
 
 export default class Board extends Component {
   constructor(props) {

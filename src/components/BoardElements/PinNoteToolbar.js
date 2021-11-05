@@ -1,5 +1,5 @@
 import React from "react";
-import './PinNoteToolbar.scss';
+import '../../assets/scss/components/BoardElements/PinNoteToolbar.scss';
 
 export function PinNoteToolbar(props) {
     return (

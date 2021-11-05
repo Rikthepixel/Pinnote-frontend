@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import PinNote from "./PinNote";
 
+//Styling
+import "../../assets/scss/components/BoardElements/PinBoard.scss";
+
 export class PinBoard extends Component {
   constructor(props) {
     super(props);

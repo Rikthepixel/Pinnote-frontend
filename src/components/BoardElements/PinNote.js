@@ -1,8 +1,11 @@
 import React, { createRef, Component } from "react";
 import MakeWriteable from "../MakeWriteable";
-import MoreIcon from "../../img/MoreIcon.svg";
+import MoreIcon from "../../assets/img/icons/MoreIcon.svg";
 import Popup from "reactjs-popup";
 import { DropdownButton, ButtonGroup, Dropdown, Button } from "react-bootstrap";
+
+//Styling
+import "../../assets/scss/components/BoardElements/PinNote.scss";
 
 function disableSelect(e) {
   e.preventDefault();
