@@ -1,10 +1,9 @@
 ﻿.BoardGrid {
-    display: grid;
-    place-items: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-wrap: wrap;
 
-    grid-auto-flow: column;
-    grid-auto-columns: min-content;
-
-    grid-gap: 1%;
+    gap: 1em;
     margin: 1%;
 }
