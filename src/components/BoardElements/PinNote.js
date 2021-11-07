@@ -58,9 +58,7 @@ export default class PinNote extends Component {
     data.size = data.size || {};
 
     this.onDelete = props.onDelete;
-
     this.state = {
-
       noteId: data.noteId,
       colorR: data.color.R || defaultState.colorR,
       colorG: data.color.G || defaultState.colorG,
@@ -135,9 +133,8 @@ export default class PinNote extends Component {
             closeOnDocumentClick
             className="primairy"
           >
-            <button onClick={this.onDelete}> Popup content </button>
             <Dropdown.Divider />
-            <Button className="w-100" variant="danger" onClick={this.onDelete}> Delete </Button>
+            <Button className="w-100" variant="danger" onClick={ function() { this.onDelete(this.state.noteId) }.bind(this)}> Delete </Button>
           </Popup>
         </div>
         <div className="pinNote-Content">

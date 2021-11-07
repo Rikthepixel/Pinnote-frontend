@@ -13,7 +13,7 @@ export function PinBoardItem(props) {
             122
         ],
         title: props.title || "Unknown title",
-        link: props.link || "/Boards/Id"
+        link: props.link || `/Boards/${props.boardId}`
     });
 
     return (

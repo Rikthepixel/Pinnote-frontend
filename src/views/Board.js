@@ -1,67 +1,74 @@
-import React, { createRef, Component } from "react";
+import React, { useRef } from "react";
+import { useParams } from "react-router";
+import { useSelector, useDispatch } from "react-redux";
+import { Button } from "react-bootstrap";
+
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import MakeWriteable from "../components/MakeWriteable";
-import { Button } from "react-bootstrap";
 import "reactjs-popup/dist/index.css";
 import "../assets/scss/views/Board.scss";
 
-export default class Board extends Component {
-  constructor(props) {
-    super(props)
-    document.title = "Pinnote - Board";
+import { updateBoardTitle } from '../api'
 
-    this.state = {
-      title: "My board",
-      notes: [
-        {
-          noteId: Math.random(1, 99999),
-          title: "aa",
-          text: "Some text",
-          position: {
-            x: 200,
-            y: 300,
-          },
-        },
-        {
-          noteId: Math.random(1, 99999),
-          title: "bb",
-          text: "MORE TEXT",
-        },
-      ],
-    }
 
-    this.toolbarTitleRef = createRef();
-    this.newNoteButton = createRef();
-  }
+export default function Board(props) {
+  document.title = "Pinnote - Board";
 
-  updateTitle = function(div) {
-    this.setState({
-      ...this.state,
-      title: div.textContent
+  const { boardId } = useParams();
+  const toolbarTitleRef = useRef();
+  const newNoteButton = useRef();
+
+  const state = useSelector(state => {
+    let Board = null;
+    state.boards.boards.every((board) => {
+      if (boardId != board.boardId) {
+        return true;
+      }
+      Board = board;
+      return false;
     })
-  }.bind(this)
 
-  render() {
-    return (
-      <div className="page-container">
-        <PinNoteToolbar>
-          <div className="me-auto">
-            <div className="pinBoard-Toolbar-Title" ref={this.toolbarTitleRef}>
-              <MakeWriteable
-                parentRef={this.toolbarTitleRef}
-                editStyle={{
-                  backgroundColor: "#FFF",
-                }}
-                onUnWriteable={this.updateTitle}
-              />
-              {this.state.title}
-            </div>
-          </div>
-          <Button ref={this.newNoteButton}>+ Note</Button>
-        </PinNoteToolbar>
-        <PinBoard Notes={this.state.notes} newNoteButton={this.newNoteButton} />
-      </div>
-    );
+    return Board
+  })
+  const title = useSelector(state => {
+    let Board = null;
+    state.boards.boards.every((board) => {
+      if (boardId != board.boardId) {
+        return true;
+      }
+      Board = board;
+      return false;
+    })
+
+    return Board.title
+  })
+
+  const dispatch = useDispatch();
+  function updateTitle(div) {
+    let action = updateBoardTitle(boardId, div.textContent)
+    console.log(action)
+    dispatch(action)
   }
-  
+
+  return (
+    <div className="page-container">
+      <PinNoteToolbar>
+        <div className="me-auto">
+          <div className="pinBoard-Toolbar-Title" ref={toolbarTitleRef}>
+            <MakeWriteable
+              parentRef={toolbarTitleRef}
+              editStyle={{
+                backgroundColor: "#FFF",
+              }}
+              onUnWriteable={updateTitle}
+            />
+            {title}
+          </div>
+        </div>
+        <Button ref={newNoteButton}>+ Note</Button>
+      </PinNoteToolbar>
+      <PinBoard boardId={boardId} newNoteButton={newNoteButton} />
+    </div>
+  );
+
 }

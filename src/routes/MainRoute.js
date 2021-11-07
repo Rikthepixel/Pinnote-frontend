@@ -17,16 +17,14 @@ import {routes} from "./routes";
 import Navbar from "../components/Navbar";
 
 export default function MainRoute() {
-  const params = useParams();
-
   const RouteComponents = [];
   for (let [key, value] of Object.entries(routes)) {
     if (!value.component) {
       console.error("No component set for route");
     }
 
-    RouteComponents.push(<Route key={key} exact path={value.path}>
-        <value.component params={params} />
+    RouteComponents.push(<Route key={key} exact={value.exact} path={value.path}>
+        <value.component />
     </Route>);
   }
 

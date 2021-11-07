@@ -1,75 +1,56 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useRef } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import PinNote from "./PinNote";
+import { createPinNote, deletePinNote } from "../../api";
 
 //Styling
 import "../../assets/scss/components/BoardElements/PinBoard.scss";
 
-export class PinBoard extends Component {
-  constructor(props) {
-    super(props);
-    this.boardRef = React.createRef();
+export function PinBoard(props) {
+  const NoteButton = props.newNoteButton
+  const boardRef = useRef();
+  const dispatch = useDispatch();
 
-    this.NoteButton = props.newNoteButton
-    this.state = {
-      Notes: props.Notes || [],
-    };
+  const Notes = useSelector(state => {
+    let Notes = null;
+    state.boards.boards.every((board) => {
+      if (props.boardId != board.boardId) {
+        return true;
+      }
+      Notes = board.notes;
+      return false;
+    })
+    return Notes
+  })
+
+  function createNote(e) {
+    let boardElement = boardRef.current;
+    let DomRect = boardElement.getBoundingClientRect();
+
+    dispatch(createPinNote(props.boardId, {
+      x: DomRect.width / 2 + boardElement.scrollLeft,
+      y: DomRect.height / 2 + boardElement.scrollTop,
+    }));
   }
 
-  componentDidMount() {
-    let NoteButton = this.NoteButton || {};
-    if (NoteButton.current) {
-      NoteButton.current.addEventListener("click", function (e){
-        let boardElement = this.boardRef.current;
-        let DomRect = boardElement.getBoundingClientRect();
-
-        this.state.Notes.push({
-          noteId: Math.random(1, 99999),
-          position: {
-            x: DomRect.width / 2 + boardElement.scrollLeft,
-            y: DomRect.height / 2 + boardElement.scrollTop,
-          },
-          title: "",
-          text: "",
-        });
-
-        this.setState({
-          ...this.state,
-        });
-      }.bind(this));
-    }
+  function deleteNote(noteId) {
+    console.log(noteId)
+    dispatch(deletePinNote(props.boardId, noteId))
   }
 
-  onDelete = function(id) {
-    let Notes = this.state.Notes;
-    for (let index = 0; index < Notes.length; index++) {
-        if (Notes[index].noteId == id) {
-            Notes.splice(index, 1);
-        }
+  useEffect(() => {
+    if (NoteButton && NoteButton.current) {
+      NoteButton.current.addEventListener("click", createNote);
     }
+  }, [])
 
-    this.setState({
-        ...this.state,
-        Notes: Notes,
-    });
-  }.bind(this);
+  const renderedNotes = Notes.map((element, i) => {
+    return <PinNote key={element.noteId} data={element} onDelete={deleteNote} />
+  })
 
-  render() {
-    let onDelete = this.onDelete
-    let BoardNotes = [];
-    let Notes = this.state.Notes
-    for (var i = 0; i < Notes.length; i++) {
-      let element = Notes[i];
-      BoardNotes[i] = (
-        <PinNote key={element.noteId} data={element} onDelete={function(){
-            onDelete(element.noteId)
-        }} />
-      );
-    }
-
-    return (
-      <div ref={this.boardRef} className="PinBoard">
-        {BoardNotes}
-      </div>
-    );
-  }
+  return (
+    <div ref={boardRef} className="PinBoard">
+      {renderedNotes}
+    </div>
+  );
 }

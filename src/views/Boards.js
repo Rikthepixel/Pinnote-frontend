@@ -1,8 +1,8 @@
-﻿import React, { Component } from 'react';
+﻿import React, { } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { PinBoardItem, PinBoardItemButton } from "../components/BoardElements";
-import { getAllBoards, createBoard } from '../api'
+import { createPinBoard } from '../api'
 import "../assets/scss/views/Boards.scss"
 
 
@@ -11,10 +11,9 @@ export default function Boards(props) {
 
     const boards = useSelector(state => state.boards.boards)
     const dispatch = useDispatch();
-    console.log(createBoard)
 
     const renderedBoards = boards.map((element, index) => {
-        return <PinBoardItem key={index} title={element.title} background_color={element.background_color} />
+        return <PinBoardItem key={index} boardId={element.boardId} title={element.title} background_color={element.background_color} />
     })
 
     return (
@@ -22,7 +21,7 @@ export default function Boards(props) {
             <div className="BoardGrid">
                 {renderedBoards}
                 <PinBoardItemButton onClick={() => {
-                    dispatch(createBoard())
+                    dispatch(createPinBoard())
                 }} />
             </div>
         </div>

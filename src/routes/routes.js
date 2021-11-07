@@ -6,16 +6,19 @@ import Board from "../views/Board";
 export const routes = {
     Boards: {
         component: Boards,
-        path: "/Boards"
+        path: "/Boards",
+        exact: true
     },
 
     Home: {
         component: Boards,
-        path: "/"  
+        path: "/" ,
+        exact: true 
     },
 
     Board: {
         component: Board,
-        path: "/Boards/:id"
+        path: "/Boards/:boardId",
+        exact: true
     }
 }
