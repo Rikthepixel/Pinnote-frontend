@@ -13,7 +13,7 @@ export default function Boards(props) {
     const dispatch = useDispatch();
 
     const renderedBoards = boards.map((element, index) => {
-        return <PinBoardItem key={index} boardId={element.boardId} title={element.title} background_color={element.background_color} />
+        return <PinBoardItem key={index} boardId={element.boardId} />
     })
 
     return (

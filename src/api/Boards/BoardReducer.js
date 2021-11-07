@@ -20,12 +20,21 @@ const initialNoteState = {
     height: 200
 }
 
+const initialBoardState = {
+    title: "",
+    background_color: [
+        128,
+        128,
+        128
+    ],
+}
+
 const initialState = {
     boards: [
         {
             boardId: 1,
             title: "a board",
-            background_color: [128, 128, 128],
+            background_color: [0, 128, 128],
 
             notes: [],
         },
@@ -67,8 +76,8 @@ const BoardReducer = (state = initialState, action) => {
         case "CREATE_BOARD":
             state.boards.push({
                 boardId: generateRandomId(),
-                title: action.payload.title,
-                background_color: action.payload.background_color,
+                title: action.payload.title || initialBoardState.title,
+                background_color: action.payload.background_color || initialBoardState.background_color,
                 notes: [],
             });
             return {

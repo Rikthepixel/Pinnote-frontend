@@ -1,23 +1,26 @@
-import React, { useState, useRef } from 'react';
+import React, { } from 'react';
+import { useSelector } from 'react-redux';
 import {NavLink} from "react-router-dom";
 
 //Styling
 import "../../assets/scss/components/BoardElements/PinBoardItem.scss"
 
 export function PinBoardItem(props) {
-    const [state, setState] = useState({
-        background_image: props.backgroundImage || "",
-        background_color: props.backgroundColor || [
-            122,
-            122,
-            122
-        ],
-        title: props.title || "Unknown title",
-        link: props.link || `/Boards/${props.boardId}`
-    });
+    const state = useSelector(state => {
+        let Board = null;
+        state.boards.boards.every((board) => {
+          if (props.boardId != board.boardId) {
+            return true;
+          }
+          Board = board;
+          return false;
+        })
+    
+        return Board
+      })
 
     return (
-        <NavLink to={state.link} className="PinBoardItem" style={{ backgroundColor: "rgb(" + state.background_color.join() + ")" }}>
+        <NavLink to={`/Boards/${state.boardId}`} className="PinBoardItem" style={{ backgroundColor: `rgb(${state.background_color.join()})` }}>
             <p>
                 {state.title}
             </p>
