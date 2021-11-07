@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-function onDoubleClick(e, divRef, editStyle, editClassNames, onWriteable, onUnWriteable){
+function WriteableEvent (e, divRef, editStyle, editClassNames, onWriteable, onUnWriteable, onEventType, onEventFunc ){
     let div = divRef.current;
+
+    console.log("aa")
 
     div.contentEditable = "true";
     div.focus();
@@ -33,6 +35,7 @@ function onDoubleClick(e, divRef, editStyle, editClassNames, onWriteable, onUnWr
         if (typeof(onUnWriteable) == "function") {
             onUnWriteable(divRef.current)
         }
+        div.addEventListener(onEventType, onEventFunc)
     }
 
     let onKeyDown = e => {
@@ -43,6 +46,7 @@ function onDoubleClick(e, divRef, editStyle, editClassNames, onWriteable, onUnWr
         }
     }
 
+    div.removeEventListener(onEventType, onEventFunc)
     div.addEventListener("blur", Exit);
     div.addEventListener("keydown", onKeyDown);
 }
@@ -54,7 +58,10 @@ export default function MakeWriteable(props) {
     const onEvent = props.onEvent != "dblclick" && props.onEvent != "click" ? "dblclick" : props.onEvent
 
     useEffect(() => {
-        div.current.addEventListener(onEvent, e => { onDoubleClick(e, div, editStyle, editClassNames, props.onWriteable, props.onUnWriteable)  })
+        let onEventFunc = function(e) {
+            WriteableEvent(e, div, editStyle, editClassNames, props.onWriteable, props.onUnWriteable, onEvent, onEventFunc)
+        }
+        div.current.addEventListener(onEvent, onEventFunc)
     }, []);
 
     return ("");
