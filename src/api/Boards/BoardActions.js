@@ -43,3 +43,14 @@ export const deletePinNote = (boardId, noteId) => {
         }
     }
 }
+
+export const updatePinNote = (boardId, noteId, changes) => {
+    return {
+        type: "UPDATE_BOARD_NOTE",
+        payload: {
+            boardId: boardId,
+            noteId: noteId,
+            changes: changes
+        }
+    }
+}

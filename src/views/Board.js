@@ -15,9 +15,11 @@ export default function Board(props) {
   document.title = "Pinnote - Board";
 
   const { boardId } = useParams();
+  
   const toolbarTitleRef = useRef();
   const newNoteButton = useRef();
 
+  const dispatch = useDispatch();
   const state = useSelector(state => {
     let Board = null;
     state.boards.boards.every((board) => {
@@ -31,13 +33,11 @@ export default function Board(props) {
     return Board
   })
 
-  const dispatch = useDispatch();
+  
   function updateTitle(div) {
-    let action = updatePinBoard(boardId, {
+    dispatch(updatePinBoard(boardId, {
       title: div.textContent
-    })
-    console.log(action)
-    dispatch(action)
+    }))
   }
 
   return (

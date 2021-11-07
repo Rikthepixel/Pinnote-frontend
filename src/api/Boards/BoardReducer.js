@@ -4,6 +4,22 @@ function generateRandomId() {
     return Math.floor(Math.random() * 10000).toString();
 }
 
+const initialNoteState = {
+    title: "",
+    text: "",
+    position: {
+        x: 0,
+        y: 0
+    },
+    background_color: [
+        128,
+        128,
+        128
+    ],
+    width: 200,
+    height: 200
+}
+
 const initialState = {
     boards: [
         {
@@ -11,26 +27,7 @@ const initialState = {
             title: "a board",
             background_color: [128, 128, 128],
 
-            notes: [
-                {
-                    noteId: generateRandomId(),
-                    title: "Note 1",
-                    text: "Some text",
-                    position: {
-                        x: 200,
-                        y: 300,
-                    },
-                },
-                {
-                    noteId: generateRandomId(),
-                    title: "Note 2",
-                    text: "Some text",
-                    position: {
-                        x: 300,
-                        y: 300,
-                    },
-                },
-            ],
+            notes: [],
         },
     ],
 };
@@ -102,9 +99,12 @@ const BoardReducer = (state = initialState, action) => {
 
             board.notes.push({
                 noteId: generateRandomId(),
-                title: "",
-                text: "",
-                position: action.payload.position,
+                title: initialNoteState.title,
+                text: initialNoteState.text,
+                position: action.payload.position || initialNoteState.position,
+                background_color: initialNoteState.background_color,
+                width: initialNoteState.width,
+                height: initialNoteState.height
             });
 
             state.boards[boardIndex] = {
@@ -135,6 +135,27 @@ const BoardReducer = (state = initialState, action) => {
                     ...state.boards
                 ],
             };
+
+        case "UPDATE_BOARD_NOTE":
+            findBoardById(action.payload.boardId)
+            findNoteById(board, action.payload.noteId)
+
+            board.notes[noteIndex] = {
+                ...note,
+                ...action.payload.changes
+            }
+
+            state.boards[boardIndex] = {
+                ...board,
+                notes: [...board.notes],
+            }
+
+            return {
+                ...state,
+                boards: [
+                    ...state.boards
+                ],
+            }; 
 
         default:
             return state;

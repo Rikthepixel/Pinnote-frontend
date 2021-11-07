@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import PinNote from "./PinNote";
-import { createPinNote, deletePinNote } from "../../api";
+import { createPinNote } from "../../api";
 
 //Styling
 import "../../assets/scss/components/BoardElements/PinBoard.scss";
@@ -33,19 +33,14 @@ export function PinBoard(props) {
     }));
   }
 
-  function deleteNote(noteId) {
-    console.log(noteId)
-    dispatch(deletePinNote(props.boardId, noteId))
-  }
-
   useEffect(() => {
     if (NoteButton && NoteButton.current) {
       NoteButton.current.addEventListener("click", createNote);
     }
   }, [])
 
-  const renderedNotes = Notes.map((element, i) => {
-    return <PinNote key={element.noteId} data={element} onDelete={deleteNote} />
+  const renderedNotes = Notes.map((note, i) => {
+    return <PinNote key={note.noteId} noteId={note.noteId} boardId={props.boardId} />
   })
 
   return (
