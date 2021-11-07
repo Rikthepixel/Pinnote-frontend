@@ -14,12 +14,12 @@ export const createPinBoard = () => {
     };
 };
 
-export const updateBoardTitle = (boardId, newTitle) => {
+export const updatePinBoard = (boardId, changes) => {
     return {
-        type: "UPDATE_BOARD_TITLE",
+        type: "UPDATE_BOARD",
         payload: {
             boardId: boardId,
-            title: newTitle,
+            changes: changes,
         }
     }
 }

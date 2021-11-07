@@ -8,7 +8,7 @@ import MakeWriteable from "../components/MakeWriteable";
 import "reactjs-popup/dist/index.css";
 import "../assets/scss/views/Board.scss";
 
-import { updateBoardTitle } from '../api'
+import { updatePinBoard } from '../api'
 
 
 export default function Board(props) {
@@ -30,22 +30,12 @@ export default function Board(props) {
 
     return Board
   })
-  const title = useSelector(state => {
-    let Board = null;
-    state.boards.boards.every((board) => {
-      if (boardId != board.boardId) {
-        return true;
-      }
-      Board = board;
-      return false;
-    })
-
-    return Board.title
-  })
 
   const dispatch = useDispatch();
   function updateTitle(div) {
-    let action = updateBoardTitle(boardId, div.textContent)
+    let action = updatePinBoard(boardId, {
+      title: div.textContent
+    })
     console.log(action)
     dispatch(action)
   }
@@ -62,7 +52,7 @@ export default function Board(props) {
               }}
               onUnWriteable={updateTitle}
             />
-            {title}
+            {state.title}
           </div>
         </div>
         <Button ref={newNoteButton}>+ Note</Button>

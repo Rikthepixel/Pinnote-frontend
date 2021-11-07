@@ -79,13 +79,13 @@ const BoardReducer = (state = initialState, action) => {
                 boards: [...state.boards],
             };
 
-        case "UPDATE_BOARD_TITLE":
+        case "UPDATE_BOARD":
             findBoardById(action.payload.boardId)
 
             console.log(state.boards[boardIndex])
             state.boards[boardIndex] = {
                 ...board,
-                title: action.payload.title
+                ...action.payload.changes
             }
 
             console.log(state.boards[boardIndex])
