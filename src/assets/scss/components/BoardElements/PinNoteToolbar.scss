@@ -1,7 +1,9 @@
 .PinNote-Toolbar {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: flex-start;
+
+    gap: 0.5rem;
 
     padding: 0.5rem 2rem;
     background-color: var(--bs-secondary);

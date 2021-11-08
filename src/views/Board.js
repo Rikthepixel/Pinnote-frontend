@@ -5,17 +5,18 @@ import { Button } from "react-bootstrap";
 
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import MakeWriteable from "../components/MakeWriteable";
-import "reactjs-popup/dist/index.css";
-import "../assets/scss/views/Board.scss";
 
 import { updatePinBoard } from '../api'
 
+import MoreIcon from "../assets/img/icons/MoreIcon.svg";
+import "reactjs-popup/dist/index.css";
+import "../assets/scss/views/Board.scss";
 
 export default function Board(props) {
   document.title = "Pinnote - Board";
 
   const { boardId } = useParams();
-  
+
   const toolbarTitleRef = useRef();
   const newNoteButton = useRef();
 
@@ -33,7 +34,7 @@ export default function Board(props) {
     return Board
   })
 
-  
+
   function updateTitle(div) {
     dispatch(updatePinBoard(boardId, {
       title: div.textContent
@@ -43,20 +44,29 @@ export default function Board(props) {
   return (
     <div className="page-container">
       <PinNoteToolbar>
-        <div className="me-auto">
-          <div className="pinBoard-Toolbar-Title" ref={toolbarTitleRef}>
-            <MakeWriteable
-              parentRef={toolbarTitleRef}
-              editStyle={{
-                backgroundColor: "#FFF",
-              }}
-              onEvent="click"
-              onUnWriteable={updateTitle}
-            />
-            {state.title}
-          </div>
+        <div className="pinBoard-Toolbar-Title me-auto" ref={toolbarTitleRef}>
+          <MakeWriteable
+            parentRef={toolbarTitleRef}
+            editStyle={{
+              backgroundColor: "#FFF",
+            }}
+            onEvent="click"
+            onUnWriteable={updateTitle}
+          />
+          {state.title}
         </div>
         <Button ref={newNoteButton}>+ Note</Button>
+        <Button>
+          <img
+            src={MoreIcon}
+            placeholder="..."
+            className="me-1"
+            style={{
+              filter: "invert(100%)"
+            }}
+          />
+          Menu
+        </Button>
       </PinNoteToolbar>
       <PinBoard boardId={boardId} newNoteButton={newNoteButton} />
     </div>
