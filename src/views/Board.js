@@ -50,6 +50,7 @@ export default function Board(props) {
               editStyle={{
                 backgroundColor: "#FFF",
               }}
+              onEvent="click"
               onUnWriteable={updateTitle}
             />
             {state.title}
