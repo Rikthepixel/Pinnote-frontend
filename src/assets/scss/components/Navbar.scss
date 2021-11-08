@@ -1,12 +1,8 @@
-﻿@mixin centerFlex {
+﻿.Navbar {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: row;
-}
-
-.Navbar {
-    @include centerFlex;
 
     background-color: var(--bs-primary);
     width: 100%;
@@ -21,7 +17,10 @@
     }
 
     & > a {
-        @include centerFlex;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
     }
 }
 
@@ -36,7 +35,10 @@
 .NavMenu {
     width: 100%;
 
-    @include centerFlex;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
     flex-flow: column;
 
     padding: 0px 4% 0px 4%;

@@ -7,7 +7,7 @@ body, html {
 
 
 body {
-    background-color: var(--Primairy-background-color);
+    background-color: var(--bs-gray-100);
 }
 
 * {
@@ -23,7 +23,7 @@ a {
     text-decoration: none;
 
     &:hover {
-        text-decoration: solid 4px var(--Link-hover-color);
+        text-decoration: solid 4px var(--bs-secondary);
     }
 }
 
