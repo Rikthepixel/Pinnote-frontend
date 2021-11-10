@@ -1,18 +1,18 @@
-import React, { useRef } from "react";
-import { useParams } from "react-router";
+import React, { useRef, useState } from "react";
+import { useParams, Redirect } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { Button } from "react-bootstrap";
 
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import MakeWriteable from "../components/MakeWriteable";
 
-import { updatePinBoard } from '../api'
+import { updatePinBoard, removePinBoard } from '../api'
 
 import MoreIcon from "../assets/img/icons/MoreIcon.svg";
 import CloseIcon from "../assets/img/icons/CloseIcon.svg";
 import TrashIcon from "../assets/img/icons/TrashIcon.svg";
 
-import "reactjs-popup/dist/index.css";
+//import "reactjs-popup/dist/index.css";
 import "../assets/scss/views/Board.scss";
 
 export default function Board(props) {
@@ -25,6 +25,12 @@ export default function Board(props) {
   const newNoteButton = useRef();
 
   const dispatch = useDispatch();
+
+  const [redirect, setRedirect] = useState({
+    redirect: false,
+    link: ""
+  })
+
   const state = useSelector(state => {
     let Board = null;
     state.boards.boards.every((board) => {
@@ -46,6 +52,18 @@ export default function Board(props) {
     dispatch(updatePinBoard(boardId, {
       title: div.textContent
     }))
+  }
+  
+  function removeBoard() {
+    setRedirect({
+      redirect: true,
+      link: "/Boards"
+    })
+    dispatch(removePinBoard(boardId))
+  }
+
+  if (redirect.redirect) {
+    return <Redirect to={redirect.link} />
   }
 
   return (
@@ -70,7 +88,7 @@ export default function Board(props) {
         </div>
 
         <div className="pinBoard-Menu-Content p-3">
-          <Button variant="danger" className="w-100" >
+          <Button variant="danger" className="w-100" onClick={removeBoard}>
             <div className="d-flex align-items-center justify-content-center">
               <img
                 className="me-1"

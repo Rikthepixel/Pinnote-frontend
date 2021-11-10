@@ -14,6 +14,15 @@ export const createPinBoard = () => {
     };
 };
 
+export const removePinBoard = (boardId) => {
+    return {
+        type: "REMOVE_BOARD",
+        payload: {
+            boardId: boardId,
+        }
+    }
+}
+
 export const updatePinBoard = (boardId, changes) => {
     return {
         type: "UPDATE_BOARD",
