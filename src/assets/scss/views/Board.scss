@@ -15,7 +15,12 @@
     background-color: var(--bs-dark);
     color: var(--bs-gray-100);
 
-    &:hover {
+    overflow: hidden;
+    text-align: center;
+    word-wrap: break-word;
+    word-break: break-all;
+
+    &:hover, &:focus {
         background-color: var(--bs-primary);
         color: var(--bs-gray-300);
     }
