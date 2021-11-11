@@ -87,18 +87,22 @@ const BoardReducer = (state = initialState, action) => {
 
         case "REMOVE_BOARD":
             findBoardById(action.payload.boardId)
+            state.boards.splice(boardIndex, 1)
+
             return {
                 ...state,
                 boards: [
-                    ...state.boards.filter((_board) => {
-
-                    })
+                    ...state.boards
                 ],
             };
 
         case "UPDATE_BOARD":
             findBoardById(action.payload.boardId)
-            state.boards.splice(boardIndex, 1)
+
+            state.boards[boardIndex] = {
+                ...board,
+                ...action.payload.changes
+            }
 
             return {
                 ...state,

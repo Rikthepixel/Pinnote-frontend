@@ -1,8 +1,8 @@
 .PinBoardItem {
     overflow: hidden;
     aspect-ratio: 2/1;
-    height: 100px;
-    border-radius: 12.5% / 25%;
+    height: 6.5rem;
+    border-radius: 2em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,11 +11,11 @@
     transition: box-shadow 0.3s ease-in-out;
 
     &:hover {
-        box-shadow: 0 0 1em 0.5em rgba(0, 0, 0, 0.25) inset;
+        box-shadow: 0 0 0.25em 0.3em rgba(0, 0, 0, 0.1) inset;
     }
 
     & > p {
-        color: var(--bs-gray-100);
+        //color: var(--bs-gray-100);
         margin: 0;
         font-weight: 600;
         font-size: 1.3em;
@@ -23,28 +23,8 @@
 }
 
 .PinBoardItemButton {
-    border: none;
-
     background-color: var(--bs-gray-400);
-    overflow: hidden;
-    aspect-ratio: 2/1;
-    height: 100px;
-    border-radius: 12.5% / 25%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    box-shadow: 0 0 0 0 transparent inset;
-    transition: box-shadow 0.3s ease-in-out;
-
-    &:hover {
-        box-shadow: 0 0 1em 0.5em rgba(0, 0, 0, 0.25) inset;
-    }
-
     & > p {
         color: var(--bs-black);
-        margin: 0;
-        font-weight: 600;
-        font-size: 1.3em;
     }
 }
