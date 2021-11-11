@@ -114,7 +114,6 @@ const BoardReducer = (state = initialState, action) => {
 
         case "CREATE_BOARD_NOTE":
             findBoardById(action.payload.boardId)
-            console.log(board)
             board.notes.push({
                 noteId: generateRandomId(),
                 title: initialNoteState.title,

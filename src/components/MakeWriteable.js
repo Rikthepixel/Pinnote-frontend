@@ -3,8 +3,6 @@ import React, { useState, useRef, useEffect } from 'react';
 function WriteableEvent (e, divRef, editStyle, editClassNames, onWriteable, onUnWriteable, onEventType, onEventFunc ){
     let div = divRef.current;
 
-    console.log("aa")
-
     div.contentEditable = "true";
     div.focus();
 
