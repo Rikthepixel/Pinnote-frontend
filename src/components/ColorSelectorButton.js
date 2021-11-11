@@ -17,9 +17,9 @@ export default function ColorSelectorButton(props) {
     }
 
     const onCancel = (oldColor, newColor) => {
-        setDisplayColor(oldColor);
+        setDisplayColor(initialColor);
         if (typeof (props.onCancel) == "function") {
-            props.onCancel(oldColor)
+            props.onCancel(initialColor)
         }
     }
 
@@ -31,6 +31,7 @@ export default function ColorSelectorButton(props) {
     }
 
     const onChange = (newColor) => {
+        setDisplayColor(newColor);
         if (typeof (props.onChange) == "function") {
             props.onChange(newColor)
         }
@@ -50,12 +51,15 @@ export default function ColorSelectorButton(props) {
                     }}
                 /> 
                 : ""}
-                {props.text}
+                <p className="m-0 me-1">
+                    {props.text}
+                </p>
                 <div style={{
                     aspectRatio: "1 / 1",
                     backgroundColor: `rgb(${displayColor.join()})`,
                     height: "1em",
-                    borderRadius: "50%"
+                    borderRadius: "50%",
+                    border: "0.1em solid black"
                 }}>
 
                 </div>
