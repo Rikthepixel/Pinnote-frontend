@@ -6,7 +6,7 @@ export default function ColorSelectorButton(props) {
 
     const [shown, setShow] = useState(false);
     let initialColor = props.color
-    const [displayColor, setDisplayColor] = useState(initialColor || [ 0, 0, 0])
+    const [displayColor, setDisplayColor] = useState(initialColor || [0, 0, 0])
 
     const closeHandle = () => {
         setShow(false)
@@ -16,6 +16,14 @@ export default function ColorSelectorButton(props) {
         setShow(!shown)
         if (!shown == false) {
             onCancel()
+        } else {
+            onOpen()
+        }
+    }
+
+    const onOpen = () => {
+        if (typeof (props.onOpen) == "function") {
+            props.onOpen(setDisplayColor)
         }
     }
 
@@ -40,20 +48,20 @@ export default function ColorSelectorButton(props) {
         }
     }
 
-    return <div ref={props.ref} className={`${props.className} ${props.variant ? `bg-${props.variant}` : "bg-primary" } rounded`}>
+    return <div ref={props.ref} className={`${props.className} ${props.variant ? `bg-${props.variant}` : "bg-primary"} rounded`}>
         <Button className="w-100" onClick={toggleSelector}>
             <div className="d-flex align-items-center justify-content-center">
-                {props.icon ? 
-                <img
-                    className="me-1"
-                    src={props.icon}
-                    style={{
-                        filter: "invert(100%)",
-                        aspectRatio: "1",
-                        height: "1.2rem"
-                    }}
-                /> 
-                : ""}
+                {props.icon ?
+                    <img
+                        className="me-1"
+                        src={props.icon}
+                        style={{
+                            filter: "invert(100%)",
+                            aspectRatio: "1",
+                            height: "1.2rem"
+                        }}
+                    />
+                    : ""}
                 <p className="m-0 me-1">
                     {props.text}
                 </p>
@@ -70,7 +78,7 @@ export default function ColorSelectorButton(props) {
         </Button>
         <ColorSelector
             className={`w-100 mt-1 ${props.selectorClassName ? props.selectorClassName : "p-3"} `}
-            
+
             open={shown}
             closeHandle={closeHandle}
 

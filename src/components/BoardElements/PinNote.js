@@ -53,12 +53,12 @@ function PinNote(props) {
     dispatch(deletePinNote(props.boardId, props.noteId))
   }
 
-  function updateColor(color) {
-    dispatch(updatePinNote(props.boardId, props.noteId, {
-      background_color: [
-        ...color
-      ]
-    }))
+  let setColorDisplay = null;
+  function updateColor(color, save) {
+    dispatch(updatePinNote(props.boardId, props.noteId, save ?
+      { background_color: color } :
+      { draft_background_color: color }
+    ))
   }
 
   function disableDrag() {
@@ -116,7 +116,7 @@ function PinNote(props) {
       ref={NoteDiv}
       style={{
         backgroundColor:
-          `rgb(${state.background_color.join()})`,
+          `rgb(${state.draft_background_color ? state.draft_background_color.join() : state.background_color.join()})`,
         width: `${state.width}px`,
         height: `${state.height}px`,
         left: state.position.x - state.width / 2,
@@ -156,6 +156,12 @@ function PinNote(props) {
               />
             </button>
           )}
+          onClose={() => {
+            if (typeof(setColorDisplay) == "function") {
+              setColorDisplay(state.background_color);
+              updateColor(null, false);
+            }
+          }}
           position="right top"
           closeOnDocumentClick
           className="primairy"
@@ -167,8 +173,20 @@ function PinNote(props) {
             text="Change color"
             icon={BrushIcon}
             color={state.background_color}
-            onCancel={updateColor}
-            onSave={updateColor}
+            onOpen={(setDisplayColor) => {
+              setColorDisplay = setDisplayColor
+            }}
+            onCancel={(oldColor, setDisplayColor) => {
+              setDisplayColor(state.background_color);
+              updateColor(null, false);
+            }}
+            onChange={(newColor) => {
+              updateColor(newColor, false)
+            }}
+            onSave={(newColor) => {
+              state.draft_background_color = null;
+              updateColor(newColor, true);
+            }}
           />
           <Dropdown.Divider />
           <Button className="w-100" variant="danger" onClick={function () { onDelete(state.noteId) }}> Delete </Button>

@@ -57,13 +57,13 @@ export default function Board(props) {
   }
 
   function updateColor(color, save) {
-    dispatch(updatePinBoard(boardId, save ? 
-      {  background_color: color }
+    dispatch(updatePinBoard(boardId, save ?
+      { background_color: color }
       : { draft_background_color: color }
-      ))
+    ))
   }
 
-  function updateNoteColor(color, save) {
+  function updateNoteColor(color) {
     dispatch(updatePinBoard(boardId, {
       default_note_background_color: color
     }))
@@ -102,8 +102,8 @@ export default function Board(props) {
           </Button>
         </div>
 
-        <div className="pinBoard-Menu-Content p-3"> 
-          <ColorSelectorButton 
+        <div className="pinBoard-Menu-Content p-3">
+          <ColorSelectorButton
             variant="primary"
             className="w-100"
             text="Change background color"
@@ -121,7 +121,7 @@ export default function Board(props) {
               updateColor(newColor, true);
             }}
           />
-          <ColorSelectorButton 
+          <ColorSelectorButton
             variant="primary"
             className="w-100"
             text="Change default note color"
