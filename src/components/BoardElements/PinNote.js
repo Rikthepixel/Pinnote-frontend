@@ -1,10 +1,10 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
 import Popup from "reactjs-popup";
 
 import MakeWriteable from "../MakeWriteable";
-import { DropdownButton, ButtonGroup, Dropdown, Button } from "react-bootstrap";
+import { Dropdown, Button } from "react-bootstrap";
 import { updatePinNote, deletePinNote } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
@@ -23,10 +23,10 @@ function PinNote(props) {
   const HeaderRef = useRef();
   const NoteDiv = useRef();
 
-  let offset = {
+  const offsetRef = useRef({
     x: null,
     y: null
-  };
+  });
 
   const state = useSelector(state => {
     let note = null;
@@ -77,8 +77,8 @@ function PinNote(props) {
       document.onmousemove = function (e) {
         dispatch(updatePinNote(props.boardId, props.noteId, {
           position: {
-            x: e.pageX - offset.x - handle.x - (e.pageX - e.clientX),
-            y: e.pageY - offset.y - handle.y - (e.pageX - e.clientX),
+            x: e.pageX - offsetRef.current.x - handle.x - (e.pageX - e.clientX),
+            y: e.pageY - offsetRef.current.y - handle.y - (e.pageX - e.clientX),
           }
         }));
       };
@@ -100,7 +100,7 @@ function PinNote(props) {
 
   useEffect(() => {
     let Rect = NoteDiv.current.getBoundingClientRect();
-    offset = {
+    offsetRef.current = {
       x: Rect.x - state.position.x,
       y: Rect.y - state.position.y,
     };

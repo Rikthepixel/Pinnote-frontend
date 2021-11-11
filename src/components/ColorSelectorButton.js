@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import ColorSelector from "./ColorSelector";
 import { Button } from "react-bootstrap";
 
@@ -53,6 +53,7 @@ export default function ColorSelectorButton(props) {
             <div className="d-flex align-items-center justify-content-center">
                 {props.icon ?
                     <img
+                        alt=""
                         className="me-1"
                         src={props.icon}
                         style={{

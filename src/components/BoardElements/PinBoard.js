@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import PinNote from "./PinNote";
 import { createPinNote } from "../../api";
@@ -37,7 +37,7 @@ export function PinBoard(props) {
     if (NoteButton && NoteButton.current) {
       NoteButton.current.addEventListener("click", createNote);
     }
-  }, [])
+  }, [NoteButton])
 
   const renderedNotes = Notes.map((note, i) => {
     return <PinNote key={note.noteId} noteId={note.noteId} boardId={props.boardId} />

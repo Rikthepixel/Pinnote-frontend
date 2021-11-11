@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import {useEffect } from 'react';
 
 function WriteableEvent (e, divRef, editStyle, editClassNames, onWriteable, onUnWriteable, onEventType, onEventFunc ){
     let div = divRef.current;
@@ -51,13 +51,13 @@ function WriteableEvent (e, divRef, editStyle, editClassNames, onWriteable, onUn
 
 export default function MakeWriteable(props) {
     const div = props.parentRef;
-    const editClassNames = props.editClassName || ""
-    const editStyle = props.editStyle || {};
+    const editClassNames = props.editClassName
+    const editStyle = props.editStyle;
     const onEvent = props.onEvent != "dblclick" && props.onEvent != "click" ? "dblclick" : props.onEvent
 
     useEffect(() => {
         let onEventFunc = function(e) {
-            WriteableEvent(e, div, editStyle, editClassNames, props.onWriteable, props.onUnWriteable, onEvent, onEventFunc)
+            WriteableEvent(e, div, editStyle || {}, editClassNames || "", props.onWriteable, props.onUnWriteable, onEvent, onEventFunc)
         }
         div.current.addEventListener(onEvent, onEventFunc)
     }, []);
