@@ -11,11 +11,6 @@ const initialNoteState = {
         x: 0,
         y: 0
     },
-    background_color: [
-        128,
-        128,
-        128
-    ],
     width: 200,
     height: 200
 }
@@ -23,10 +18,15 @@ const initialNoteState = {
 const initialBoardState = {
     title: "",
     background_color: [
-        128,
-        128,
-        128
+        245,
+        245,
+        224
     ],
+    default_note_background_color: [
+        212,
+        214,
+        133
+    ]
 }
 
 const initialState = {
@@ -35,7 +35,7 @@ const initialState = {
             boardId: 1,
             title: "a board",
             background_color: [0, 128, 128],
-
+            default_note_background_color: [ 212, 214, 133 ],
             notes: [],
         },
     ],
@@ -78,6 +78,7 @@ const BoardReducer = (state = initialState, action) => {
                 boardId: generateRandomId(),
                 title: action.payload.title || initialBoardState.title,
                 background_color: action.payload.background_color || initialBoardState.background_color,
+                default_note_background_color: action.payload.default_note_background_color || initialBoardState.default_note_background_color,
                 notes: [],
             });
             return {
@@ -113,13 +114,13 @@ const BoardReducer = (state = initialState, action) => {
 
         case "CREATE_BOARD_NOTE":
             findBoardById(action.payload.boardId)
-
+            console.log(board)
             board.notes.push({
                 noteId: generateRandomId(),
                 title: initialNoteState.title,
                 text: initialNoteState.text,
                 position: action.payload.position || initialNoteState.position,
-                background_color: initialNoteState.background_color,
+                background_color: board.default_note_background_color,
                 width: initialNoteState.width,
                 height: initialNoteState.height
             });
