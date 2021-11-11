@@ -56,19 +56,16 @@ export default function Board(props) {
     }))
   }
 
-  function updateColor(color) {
-    dispatch(updatePinBoard(boardId, {
-      background_color: [
-        ...color
-      ]
-    }))
+  function updateColor(color, save) {
+    dispatch(updatePinBoard(boardId, save ? 
+      {  background_color: color }
+      : { draft_background_color: color }
+      ))
   }
 
-  function updateNoteColor(color) {
+  function updateNoteColor(color, save) {
     dispatch(updatePinBoard(boardId, {
-      default_note_background_color: [
-        ...color
-      ]
+      default_note_background_color: color
     }))
   }
 
@@ -113,13 +110,15 @@ export default function Board(props) {
             icon={BrushIcon}
             color={state.background_color}
             onCancel={(oldColor, setDisplayColor) => {
-              setDisplayColor(state.original_background_color);
-              updateColor(state.original_background_color);
+              setDisplayColor(state.background_color);
+              updateColor(null, false);
             }}
-            onChange={updateColor}
+            onChange={(newColor) => {
+              updateColor(newColor, false)
+            }}
             onSave={(newColor) => {
-              state.original_background_color = newColor;
-              updateColor(newColor);
+              state.draft_background_color = null;
+              updateColor(newColor, true);
             }}
           />
           <ColorSelectorButton 
@@ -150,7 +149,7 @@ export default function Board(props) {
       </div>
       <div className="pinBoard-Main-Container page-container"
         style={{
-          backgroundColor: `rgb(${state.background_color.join()})`
+          backgroundColor: `rgb(${state.draft_background_color ? state.draft_background_color.join() : state.background_color.join()})`
         }}>
         <PinNoteToolbar>
           <div className="pinBoard-Toolbar-Title me-auto" ref={toolbarTitleRef}>

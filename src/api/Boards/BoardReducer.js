@@ -28,7 +28,6 @@ const initialBoardState = {
         133
     ]
 }
-initialBoardState.original_background_color = initialBoardState.background_color
 
 const initialState = {
     boards: [
@@ -36,7 +35,6 @@ const initialState = {
             boardId: 1,
             title: "a board",
             background_color: [0, 128, 128],
-            original_background_color: [0, 128, 128],
             default_note_background_color: [ 26, 77, 73 ],
             notes: [],
         },
@@ -80,7 +78,6 @@ const BoardReducer = (state = initialState, action) => {
                 boardId: generateRandomId(),
                 title: action.payload.title || initialBoardState.title,
                 background_color: action.payload.background_color || initialBoardState.background_color,
-                original_background_color: action.payload.background_color || initialBoardState.background_color,
                 default_note_background_color: action.payload.default_note_background_color || initialBoardState.default_note_background_color,
                 notes: [],
             });
