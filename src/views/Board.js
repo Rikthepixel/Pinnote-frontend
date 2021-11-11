@@ -43,7 +43,6 @@ export default function Board(props) {
       Board = board;
       return false;
     })
-
     return Board
   })
 
@@ -113,8 +112,15 @@ export default function Board(props) {
             text="Change background color"
             icon={BrushIcon}
             color={state.background_color}
-            onCancel={updateColor}
-            onSave={updateColor}
+            onCancel={(oldColor, setDisplayColor) => {
+              setDisplayColor(state.original_background_color);
+              updateColor(state.original_background_color);
+            }}
+            onChange={updateColor}
+            onSave={(newColor) => {
+              state.original_background_color = newColor;
+              updateColor(newColor);
+            }}
           />
           <ColorSelectorButton 
             variant="primary"

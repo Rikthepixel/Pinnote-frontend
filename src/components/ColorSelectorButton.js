@@ -22,21 +22,21 @@ export default function ColorSelectorButton(props) {
     const onCancel = (oldColor, newColor) => {
         setDisplayColor(initialColor);
         if (typeof (props.onCancel) == "function") {
-            props.onCancel(initialColor)
+            props.onCancel(initialColor, setDisplayColor)
         }
     }
 
     const onSave = (newColor, oldColor) => {
         setDisplayColor(newColor);
         if (typeof (props.onSave) == "function") {
-            props.onSave(newColor)
+            props.onSave(newColor, setDisplayColor)
         }
     }
 
     const onChange = (newColor) => {
         setDisplayColor(newColor);
         if (typeof (props.onChange) == "function") {
-            props.onChange(newColor)
+            props.onChange(newColor, setDisplayColor)
         }
     }
 
