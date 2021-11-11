@@ -6,7 +6,7 @@ import Popup from "reactjs-popup";
 import MakeWriteable from "../MakeWriteable";
 import { DropdownButton, ButtonGroup, Dropdown, Button } from "react-bootstrap";
 import { updatePinNote, deletePinNote } from "../../api";
-import ColorSelector from "../ColorSelector";
+import ColorSelectorButton from "../ColorSelectorButton";
 
 import MoreIcon from "../../assets/img/icons/MoreIcon.svg";
 import BrushIcon from "../../assets/img/icons/BrushIcon.svg";
@@ -19,9 +19,6 @@ function disableSelect(e) {
 }
 
 function PinNote(props) {
-
-  const [colorSelector, setColorSelector] = useState(false)
-
   const dispatch = useDispatch();
   const HeaderRef = useRef();
   const NoteDiv = useRef();
@@ -63,7 +60,6 @@ function PinNote(props) {
       ]
     }))
   }
-
 
   function disableDrag() {
     HeaderRef.current.onmousedown = null;
@@ -138,7 +134,7 @@ function PinNote(props) {
               b: state.background_color[2]
             }))}`
           }}
-          >
+        >
           <MakeWriteable
             parentRef={HeaderRef}
             editStyle={{
@@ -147,7 +143,7 @@ function PinNote(props) {
             }}
             onWriteable={disableDrag}
             onUnWriteable={onUnWriteable}
-          />  
+          />
           {state.title}
         </div>
 
@@ -164,32 +160,15 @@ function PinNote(props) {
           closeOnDocumentClick
           className="primairy"
         >
-          <div className="w-100 bg-primary rounded">
-            <Button className="w-100" onClick={() => { setColorSelector(!colorSelector) }}>
-              <div className="d-flex align-items-center justify-content-center">
-                <img
-                  className="me-1"
-                  src={BrushIcon}
-                  style={{
-                    filter: "invert(100%)",
-                    aspectRatio: "1",
-                    height: "1.2rem"
-                  }}
-                />
-                Change color
-              </div>
-            </Button>
-            <ColorSelector
-              className="w-100 mt-1 p-1 pt-0"
-              color={state.background_color}
-
-              open={colorSelector}
-              closeHandle={() => { setColorSelector(false) }}
-
-              onCancel={updateColor}
-              onSave={updateColor}
-            />
-          </div>
+          <ColorSelectorButton
+            variant="primary"
+            className="w-100"
+            text="Change color"
+            icon={BrushIcon}
+            color={state.background_color}
+            onCancel={updateColor}
+            onSave={updateColor}
+          />
           <Dropdown.Divider />
           <Button className="w-100" variant="danger" onClick={function () { onDelete(state.noteId) }}> Delete </Button>
         </Popup>
