@@ -14,6 +14,9 @@ export default function ColorSelectorButton(props) {
 
     const toggleSelector = () => {
         setShow(!shown)
+        if (!shown == false) {
+            onCancel()
+        }
     }
 
     const onCancel = (oldColor, newColor) => {
@@ -66,7 +69,7 @@ export default function ColorSelectorButton(props) {
             </div>
         </Button>
         <ColorSelector
-            className="w-100 mt-1 p-3"
+            className={`w-100 mt-1 ${props.selectorClassName ? props.selectorClassName : "p-3"} `}
             
             open={shown}
             closeHandle={closeHandle}

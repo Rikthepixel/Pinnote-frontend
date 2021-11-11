@@ -162,7 +162,8 @@ function PinNote(props) {
         >
           <ColorSelectorButton
             variant="primary"
-            className="w-100"
+            className="w-100 p-0"
+            selectorClassName="p-1 pb-2"
             text="Change color"
             icon={BrushIcon}
             color={state.background_color}
