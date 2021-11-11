@@ -35,7 +35,7 @@ const initialState = {
             boardId: 1,
             title: "a board",
             background_color: [0, 128, 128],
-            default_note_background_color: [ 212, 214, 133 ],
+            default_note_background_color: [ 26, 77, 73 ],
             notes: [],
         },
     ],

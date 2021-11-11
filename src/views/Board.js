@@ -5,7 +5,7 @@ import { Button } from "react-bootstrap";
 
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import MakeWriteable from "../components/MakeWriteable";
-import ColorSelector from "../components/ColorSelector";
+import ColorSelectorButton from "../components/ColorSelectorButton";
 
 import { updatePinBoard, removePinBoard } from '../api'
 
@@ -13,6 +13,7 @@ import MoreIcon from "../assets/img/icons/MoreIcon.svg";
 import CloseIcon from "../assets/img/icons/CloseIcon.svg";
 import TrashIcon from "../assets/img/icons/TrashIcon.svg";
 import BrushIcon from "../assets/img/icons/BrushIcon.svg";
+import NoteIcon from "../assets/img/icons/NoteIcon.svg";
 
 import "reactjs-popup/dist/index.css";
 import "../assets/scss/views/Board.scss";
@@ -32,13 +33,6 @@ export default function Board(props) {
     redirect: false,
     link: ""
   })
-  const [backgroundColorSelector, setBackgroundColorSelector] = useState(false)
-  const closeHandlerBackgroundSelector = () => {
-    setBackgroundColorSelector(false)
-  }
-  const toggleBackgroundSelector = () => {
-    setBackgroundColorSelector(!backgroundColorSelector)
-  }
 
   const state = useSelector(state => {
     let Board = null;
@@ -66,6 +60,14 @@ export default function Board(props) {
   function updateColor(color) {
     dispatch(updatePinBoard(boardId, {
       background_color: [
+        ...color
+      ]
+    }))
+  }
+
+  function updateNoteColor(color) {
+    dispatch(updatePinBoard(boardId, {
+      default_note_background_color: [
         ...color
       ]
     }))
@@ -104,33 +106,25 @@ export default function Board(props) {
           </Button>
         </div>
 
-        <div className="pinBoard-Menu-Content p-3">
-          <div className="w-100 bg-primary rounded">
-            <Button className="w-100" onClick={toggleBackgroundSelector}>
-              <div className="d-flex align-items-center justify-content-center">
-                <img
-                  className="me-1"
-                  src={BrushIcon}
-                  style={{
-                    filter: "invert(100%)",
-                    aspectRatio: "1",
-                    height: "1.2rem"
-                  }}
-                />
-                Change background color
-              </div>
-            </Button>
-              <ColorSelector
-                className="w-100 mt-1 p-3"
-                color={state.background_color}
-
-                open={backgroundColorSelector}
-                closeHandle={closeHandlerBackgroundSelector}
-
-                onCancel={updateColor}
-                onSave={updateColor}
-              />
-          </div>
+        <div className="pinBoard-Menu-Content p-3"> 
+          <ColorSelectorButton 
+            variant="primary"
+            className="w-100"
+            text="Change background color"
+            icon={BrushIcon}
+            color={state.background_color}
+            onCancel={updateColor}
+            onSave={updateColor}
+          />
+          <ColorSelectorButton 
+            variant="primary"
+            className="w-100"
+            text="Change default note color"
+            icon={NoteIcon}
+            color={state.default_note_background_color}
+            onCancel={updateNoteColor}
+            onSave={updateNoteColor}
+          />
 
           <Button variant="danger" className="w-100" onClick={removeBoard}>
             <div className="d-flex align-items-center justify-content-center">
