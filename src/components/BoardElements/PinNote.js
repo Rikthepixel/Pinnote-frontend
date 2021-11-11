@@ -128,15 +128,26 @@ function PinNote(props) {
       }}
     >
       <div className="pinNote-Header">
-        <div className="pinNote-Header-Title" ref={HeaderRef}>
+        <div
+          className="pinNote-Header-Title"
+          ref={HeaderRef}
+          style={{
+            color: `${getContrastingColor(rgbaToHsva({
+              r: state.background_color[0],
+              g: state.background_color[1],
+              b: state.background_color[2]
+            }))}`
+          }}
+          >
           <MakeWriteable
             parentRef={HeaderRef}
             editStyle={{
               backgroundColor: "#FFF",
+              color: "black"
             }}
             onWriteable={disableDrag}
             onUnWriteable={onUnWriteable}
-          />
+          />  
           {state.title}
         </div>
 
@@ -168,16 +179,16 @@ function PinNote(props) {
                 Change color
               </div>
             </Button>
-              <ColorSelector
-                className="w-100 mt-1 p-1 pt-0"
-                color={state.background_color}
+            <ColorSelector
+              className="w-100 mt-1 p-1 pt-0"
+              color={state.background_color}
 
-                open={colorSelector}
-                closeHandle={() => { setColorSelector(false) }}
+              open={colorSelector}
+              closeHandle={() => { setColorSelector(false) }}
 
-                onCancel={updateColor}
-                onSave={updateColor}
-              />
+              onCancel={updateColor}
+              onSave={updateColor}
+            />
           </div>
           <Dropdown.Divider />
           <Button className="w-100" variant="danger" onClick={function () { onDelete(state.noteId) }}> Delete </Button>
@@ -192,11 +203,11 @@ function PinNote(props) {
               r: state.background_color[0],
               g: state.background_color[1],
               b: state.background_color[2]
-          }))}`
+            }))}`
           }}
         ></textarea>
       </div>
-    </div>
+    </div >
   );
 }
 
