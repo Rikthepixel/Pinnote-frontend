@@ -87,9 +87,18 @@ function PinNote(props) {
             y: e.pageY - offsetRef.current.y - handle.y - (e.pageX - e.clientX),
           }
 
-        if (typeof(props.onMove) == "function") {
-          props.onMove(newPosition, positionRef.current, state.width, state.height, movementOffset)
+        let setOffset = (x, y) => {
+          movementOffset.x = x;
+          movementOffset.y = y;
+          console.log(movementOffset)
         }
+          
+        if (typeof(props.onMove) == "function") {
+          props.onMove(newPosition, positionRef.current, state.width, state.height, setOffset)
+        }
+
+        console.log(movementOffset)
+
         dispatch(updatePinNote(props.boardId, props.noteId, {
           position: {
             x: newPosition.x + movementOffset.x,

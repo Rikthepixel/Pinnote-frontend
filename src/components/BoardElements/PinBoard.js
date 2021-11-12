@@ -40,7 +40,31 @@ export function PinBoard(props) {
   }, [NoteButton])
 
   const renderedNotes = Notes.map((note, i) => {
-    return <PinNote key={note.noteId} noteId={note.noteId} boardId={props.boardId} />
+    return <PinNote
+      key={note.noteId}
+      noteId={note.noteId}
+      boardId={props.boardId}
+
+      onMove={(Position, oldPosition, width, height, setOffset) => {
+        let velocity = {
+          x: Position.x - oldPosition.x,
+          y: Position.y - oldPosition.y
+        }
+        
+        let offsetX = 0
+        let offsetY = 0
+        if (Position.x - width / 2 < 0) {
+          offsetX = -(Position.x - width / 2)
+        }
+
+        if (Position.y - height / 2 < 0) {
+          offsetY = -(Position.y - height / 2)
+        }
+
+        setOffset(offsetX, offsetY)
+      }}
+
+    />
   })
 
   return (
