@@ -49,6 +49,8 @@ function PinNote(props) {
     return note;
   })
 
+  const positionRef = useRef(state.position)
+
   function onDelete() {
     dispatch(deletePinNote(props.boardId, props.noteId))
   }
@@ -75,10 +77,23 @@ function PinNote(props) {
 
       window.addEventListener("selectstart", disableSelect);
       document.onmousemove = function (e) {
-        dispatch(updatePinNote(props.boardId, props.noteId, {
-          position: {
+        let movementOffset = {
+          x: 0,
+          y: 0
+        }
+
+        let newPosition = {
             x: e.pageX - offsetRef.current.x - handle.x - (e.pageX - e.clientX),
             y: e.pageY - offsetRef.current.y - handle.y - (e.pageX - e.clientX),
+          }
+
+        if (typeof(props.onMove) == "function") {
+          props.onMove(newPosition, positionRef.current, state.width, state.height, movementOffset)
+        }
+        dispatch(updatePinNote(props.boardId, props.noteId, {
+          position: {
+            x: newPosition.x + movementOffset.x,
+            y: newPosition.y + movementOffset.y
           }
         }));
       };
@@ -100,6 +115,7 @@ function PinNote(props) {
 
   useEffect(() => {
     let Rect = NoteDiv.current.getBoundingClientRect();
+    positionRef.current = state.position
     offsetRef.current = {
       x: Rect.x - state.position.x,
       y: Rect.y - state.position.y,
@@ -108,6 +124,9 @@ function PinNote(props) {
 
   useEffect(() => {
     enableDrag()
+    if (typeof(props.onMount) == "function") {
+      props.onMount(state.position, state.width, state.height)
+    }
   }, []) //Initial drag enable
 
   return (
