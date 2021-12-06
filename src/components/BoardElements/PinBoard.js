@@ -6,7 +6,7 @@ import { createPinNote } from "../../api";
 //Styling
 import "../../assets/scss/components/BoardElements/PinBoard.scss";
 
-export function PinBoard(props) {
+export const PinBoard = (props) => {
   const NoteButton = props.newNoteButton
   const boardRef = useRef();
   const dispatch = useDispatch();
@@ -23,7 +23,7 @@ export function PinBoard(props) {
     return Notes
   })
 
-  function createNote(e) {
+  const createNote = (e) => {
     let boardElement = boardRef.current;
     let DomRect = boardElement.getBoundingClientRect();
 

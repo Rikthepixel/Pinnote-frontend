@@ -20,7 +20,7 @@ function disableSelect(e) {
   e.preventDefault();
 }
 
-function PinNote(props) {
+const PinNote = (props) => {
   const dispatch = useDispatch();
   const HeaderRef = useRef();
   const NoteDiv = useRef();
@@ -53,22 +53,22 @@ function PinNote(props) {
 
   const positionRef = useRef(state.position)
 
-  function onDelete() {
+  const onDelete = () => {
     deletePinNote(dispatch, props.boardId, props.noteId)
   }
 
   let setColorDisplay = null;
-  function updateColor(color, save) {
-    updatePinNote(dispatch, props.boardId, props.noteId, 
+  const updateColor = (color, save) => {
+    updatePinNote(dispatch, props.boardId, props.noteId,
       save ? { background_color: color } : { draft_background_color: color }
     )
   }
 
-  function disableDrag() {
+  const disableDrag = () => {
     HeaderRef.current.onmousedown = null;
   };
 
-  function enableDrag() {
+  const enableDrag = () => {
     HeaderRef.current.onmousedown = function (e) {
       let Rect = NoteDiv.current.getBoundingClientRect();
       let handle = {
@@ -115,13 +115,6 @@ function PinNote(props) {
       };
     };
   };
-
-  function onUnWriteable(element) {
-    updatePinNote(dispatch, props.boardId, props.noteId, {
-      title: element.textContent
-    })
-    enableDrag()
-  }
 
   useEffect(() => {
     let Rect = NoteDiv.current.getBoundingClientRect();
@@ -173,7 +166,12 @@ function PinNote(props) {
               color: "black"
             }}
             onWriteable={disableDrag}
-            onUnWriteable={onUnWriteable}
+            onUnWriteable={(element) => {
+              updatePinNote(dispatch, props.boardId, props.noteId, {
+                title: element.textContent
+              })
+              enableDrag()
+            }}
           />
           {state.title}
         </div>

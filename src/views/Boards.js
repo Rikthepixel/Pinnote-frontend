@@ -6,7 +6,7 @@ import { createPinBoard } from '../api'
 import "../assets/scss/views/Boards.scss"
 
 
-export default function Boards(props) {
+const Boards = (props) => {
     document.title = "Pinnote - Boards";
 
     const boards = useSelector(state => state.boards.boards)
@@ -27,3 +27,5 @@ export default function Boards(props) {
         </div>
     );
 }
+
+export default Boards

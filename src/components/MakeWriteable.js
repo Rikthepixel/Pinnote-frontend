@@ -49,7 +49,7 @@ function WriteableEvent (e, divRef, editStyle, editClassNames, onWriteable, onUn
     div.addEventListener("keydown", onKeyDown);
 }
 
-export default function MakeWriteable(props) {
+const MakeWriteable = (props) => {
     const div = props.parentRef;
     const editClassNames = props.editClassName
     const editStyle = props.editStyle;
@@ -64,3 +64,5 @@ export default function MakeWriteable(props) {
 
     return ("");
 }
+
+export default MakeWriteable

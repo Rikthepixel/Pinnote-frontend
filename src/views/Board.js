@@ -17,7 +17,7 @@ import NoteIcon from "../assets/img/icons/NoteIcon.svg";
 
 import "../assets/scss/views/Board.scss";
 
-export default function Board(props) {
+const Board = (props) => {
   document.title = "Pinnote - Board";
 
   const { boardId } = useParams();
@@ -45,27 +45,27 @@ export default function Board(props) {
     return Board
   })
 
-  function toggleMenu() {
+  const toggleMenu = () => {
     menuDiv.current.setAttribute("menu-extended", !(menuDiv.current.getAttribute("menu-extended") === 'true'))
   }
 
-  function updateTitle(div) {
+  const updateTitle = (div) => {
     updatePinBoard(dispatch, boardId, { title: div.textContent });
   }
 
-  function updateColor(color, save) {
+  const updateColor = (color, save) => {
     updatePinBoard(dispatch, boardId, 
       save ? { background_color: color } : { draft_background_color: color }
     )
   }
 
-  function updateNoteColor(color) {
+  const updateNoteColor = (color) => {
     updatePinBoard(dispatch, boardId, 
       { default_note_background_color: color }
     )
   }
 
-  function removeBoard() {
+  const removeBoard = () => {
     setRedirect({
       redirect: true,
       link: "/Boards"
@@ -180,3 +180,5 @@ export default function Board(props) {
   );
 
 }
+
+export default Board;

@@ -5,7 +5,7 @@ import Slider from '@uiw/react-color-slider';
 import { Button } from "react-bootstrap"
 
 
-export default function ColorSelector(props) {
+const ColorSelector = (props) => {
     let originalColor = props.color;
     const parentDiv = useRef();
     const [HSVA, setHSVA] = useState(rgbaToHsva({
@@ -15,13 +15,13 @@ export default function ColorSelector(props) {
         a: 1
     }))
 
-    function closeSelector() {
+    const closeSelector = () => {
         if (typeof (props.closeHandle) == "function") {
             props.closeHandle()
         }
     }
 
-    function onSave() {
+    const onSave = () => {
         let newColor = hsvaToRgba(HSVA)
         closeSelector()
 
@@ -34,7 +34,7 @@ export default function ColorSelector(props) {
         }
     }
 
-    function onCancel() {
+    const onCancel = () => {
         let newColor = hsvaToRgba(HSVA)
         closeSelector()
         if (typeof (props.onCancel) == "function") {
@@ -147,3 +147,5 @@ export default function ColorSelector(props) {
         </div>
     );
 }
+
+export default ColorSelector

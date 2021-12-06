@@ -5,7 +5,7 @@ import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
 //Styling
 import "../../assets/scss/components/BoardElements/PinBoardItem.scss"
 
-export function PinBoardItem(props) {
+export const PinBoardItem = (props) => {
     const state = useSelector(state => {
         let Board = null;
         state.boards.boards.every((board) => {
@@ -41,7 +41,7 @@ export function PinBoardItem(props) {
     );
 }
 
-export function PinBoardItemButton(props) {
+export const PinBoardItemButton = (props) => {
     return (
         <button className="PinBoardItem PinBoardItemButton" type="button" onClick={props.onClick}
             style={{

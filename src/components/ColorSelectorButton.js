@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import ColorSelector from "./ColorSelector";
 import { Button } from "react-bootstrap";
 
-export default function ColorSelectorButton(props) {
-
+const ColorSelectorButton = (props) => {
     const [shown, setShow] = useState(false);
     let initialColor = props.color
     const [displayColor, setDisplayColor] = useState(initialColor || [0, 0, 0])
@@ -90,3 +89,5 @@ export default function ColorSelectorButton(props) {
         />
     </div>
 }
+
+export default ColorSelectorButton

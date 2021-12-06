@@ -7,7 +7,7 @@ import logo from "../assets/img/branding/PinnoteLogo.png";
 //CSS
 import "../assets/scss/components/Navbar.scss";
 
-export default function Navbar() {
+const Navbar = () => {
     
     return (
         <nav className="Navbar">
@@ -29,3 +29,5 @@ export default function Navbar() {
         </nav>
     );
 }
+
+export default Navbar
