@@ -8,6 +8,7 @@ import MakeWriteable from "../components/MakeWriteable";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
 import { updatePinBoard, removePinBoard } from '../api'
+import { ConfirmationAlert } from '../utils/Alerts';
 
 import MoreIcon from "../assets/img/icons/MoreIcon.svg";
 import CloseIcon from "../assets/img/icons/CloseIcon.svg";
@@ -119,11 +120,24 @@ const Board = (props) => {
             variant="danger"
             className="w-100"
             onClick={() => {
-              setRedirect({
-                redirect: true,
-                link: "/Boards"
+              ConfirmationAlert({
+                ConfirmationTitle: "Are you sure you want to delete this board?",
+                ConfirmationText: "You won't be able to revert this!",
+                AcceptButtonText: "Yes, delete the board",
+                CancelButtonText: "No, keep the board",
+                AcceptedTitle: "Deleted",
+                AcceptedText: "Your board has been deleted",
+                CancelledTitle: "Cancelled",
+                CancelledText: "Your board was not deleted"
+              }).then((result) => {
+                if (result) {
+                  setRedirect({
+                    redirect: true,
+                    link: "/Boards"
+                  })
+                  removePinBoard(dispatch, boardId)
+                }
               })
-              removePinBoard(dispatch, boardId)
             }}
           >
             <div className="d-flex align-items-center justify-content-center">

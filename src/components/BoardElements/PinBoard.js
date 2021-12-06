@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+
 import PinNote from "./PinNote";
 import { createPinNote } from "../../api";
 
