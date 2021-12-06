@@ -21,7 +21,7 @@ export default function Boards(props) {
             <div className="BoardGrid">
                 {renderedBoards}
                 <PinBoardItemButton onClick={() => {
-                    dispatch(createPinBoard())
+                    createPinBoard(dispatch)
                 }} />
             </div>
         </div>

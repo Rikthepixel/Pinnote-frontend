@@ -27,10 +27,10 @@ export function PinBoard(props) {
     let boardElement = boardRef.current;
     let DomRect = boardElement.getBoundingClientRect();
 
-    dispatch(createPinNote(props.boardId, {
+    createPinNote(dispatch, props.boardId, {
       x: DomRect.width / 2 + boardElement.scrollLeft,
       y: DomRect.height / 2 + boardElement.scrollTop,
-    }));
+    });
   }
 
   useEffect(() => {

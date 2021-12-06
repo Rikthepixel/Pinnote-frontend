@@ -15,7 +15,6 @@ import TrashIcon from "../assets/img/icons/TrashIcon.svg";
 import BrushIcon from "../assets/img/icons/BrushIcon.svg";
 import NoteIcon from "../assets/img/icons/NoteIcon.svg";
 
-import "reactjs-popup/dist/index.css";
 import "../assets/scss/views/Board.scss";
 
 export default function Board(props) {
@@ -51,22 +50,19 @@ export default function Board(props) {
   }
 
   function updateTitle(div) {
-    dispatch(updatePinBoard(boardId, {
-      title: div.textContent
-    }))
+    updatePinBoard(dispatch, boardId, { title: div.textContent });
   }
 
   function updateColor(color, save) {
-    dispatch(updatePinBoard(boardId, save ?
-      { background_color: color }
-      : { draft_background_color: color }
-    ))
+    updatePinBoard(dispatch, boardId, 
+      save ? { background_color: color } : { draft_background_color: color }
+    )
   }
 
   function updateNoteColor(color) {
-    dispatch(updatePinBoard(boardId, {
-      default_note_background_color: color
-    }))
+    updatePinBoard(dispatch, boardId, 
+      { default_note_background_color: color }
+    )
   }
 
   function removeBoard() {
@@ -74,7 +70,7 @@ export default function Board(props) {
       redirect: true,
       link: "/Boards"
     })
-    dispatch(removePinBoard(boardId))
+    removePinBoard(dispatch, boardId)
   }
 
   if (redirect.redirect) {
@@ -142,7 +138,7 @@ export default function Board(props) {
                   height: "1.2rem"
                 }}
               />
-              Close board
+              Delete board
             </div>
           </Button>
         </div>

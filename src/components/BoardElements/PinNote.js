@@ -10,8 +10,10 @@ import ColorSelectorButton from "../ColorSelectorButton";
 
 import MoreIcon from "../../assets/img/icons/MoreIcon.svg";
 import BrushIcon from "../../assets/img/icons/BrushIcon.svg";
+import TrashIcon from "../../assets/img/icons/TrashIcon.svg";
 
 //Styling
+import "reactjs-popup/dist/index.css";
 import "../../assets/scss/components/BoardElements/PinNote.scss";
 
 function disableSelect(e) {
@@ -52,15 +54,14 @@ function PinNote(props) {
   const positionRef = useRef(state.position)
 
   function onDelete() {
-    dispatch(deletePinNote(props.boardId, props.noteId))
+    deletePinNote(dispatch, props.boardId, props.noteId)
   }
 
   let setColorDisplay = null;
   function updateColor(color, save) {
-    dispatch(updatePinNote(props.boardId, props.noteId, save ?
-      { background_color: color } :
-      { draft_background_color: color }
-    ))
+    updatePinNote(dispatch, props.boardId, props.noteId, 
+      save ? { background_color: color } : { draft_background_color: color }
+    )
   }
 
   function disableDrag() {
@@ -83,28 +84,28 @@ function PinNote(props) {
         }
 
         let newPosition = {
-            x: e.pageX - offsetRef.current.x - handle.x - (e.pageX - e.clientX),
-            y: e.pageY - offsetRef.current.y - handle.y - (e.pageX - e.clientX),
-          }
+          x: e.pageX - offsetRef.current.x - handle.x - (e.pageX - e.clientX),
+          y: e.pageY - offsetRef.current.y - handle.y - (e.pageX - e.clientX),
+        }
 
         let setOffset = (x, y) => {
           movementOffset.x = x;
           movementOffset.y = y;
           console.log(movementOffset)
         }
-          
-        if (typeof(props.onMove) == "function") {
+
+        if (typeof (props.onMove) == "function") {
           props.onMove(newPosition, positionRef.current, state.width, state.height, setOffset)
         }
 
         console.log(movementOffset)
 
-        dispatch(updatePinNote(props.boardId, props.noteId, {
+        updatePinNote(dispatch, props.boardId, props.noteId, {
           position: {
             x: newPosition.x + movementOffset.x,
             y: newPosition.y + movementOffset.y
           }
-        }));
+        });
       };
 
       document.onmouseup = function (e) {
@@ -116,9 +117,9 @@ function PinNote(props) {
   };
 
   function onUnWriteable(element) {
-    dispatch(updatePinNote(props.boardId, props.noteId, {
+    updatePinNote(dispatch, props.boardId, props.noteId, {
       title: element.textContent
-    }))
+    })
     enableDrag()
   }
 
@@ -133,18 +134,24 @@ function PinNote(props) {
 
   useEffect(() => {
     enableDrag()
-    if (typeof(props.onMount) == "function") {
+    if (typeof (props.onMount) == "function") {
       props.onMount(state.position, state.width, state.height)
     }
   }, []) //Initial drag enable
+
+  let displayColor = state.draft_background_color ? state.draft_background_color : state.background_color
+  let contrastColor = getContrastingColor(rgbaToHsva({
+    r: displayColor[0],
+    g: displayColor[1],
+    b: displayColor[2]
+  }))
 
   return (
     <div
       className="pinNote"
       ref={NoteDiv}
       style={{
-        backgroundColor:
-          `rgb(${state.draft_background_color ? state.draft_background_color.join() : state.background_color.join()})`,
+        backgroundColor: `rgb(${displayColor.join()})`,
         width: `${state.width}px`,
         height: `${state.height}px`,
         left: state.position.x - state.width / 2,
@@ -156,11 +163,7 @@ function PinNote(props) {
           className="pinNote-Header-Title"
           ref={HeaderRef}
           style={{
-            color: `${getContrastingColor(rgbaToHsva({
-              r: state.background_color[0],
-              g: state.background_color[1],
-              b: state.background_color[2]
-            }))}`
+            color: { contrastColor }
           }}
         >
           <MakeWriteable
@@ -181,11 +184,14 @@ function PinNote(props) {
               <img
                 src={MoreIcon}
                 placeholder="..."
+                style={{
+                  filter: contrastColor == "#fff" && "invert(100%)"
+                }}
               />
             </button>
           )}
           onClose={() => {
-            if (typeof(setColorDisplay) == "function") {
+            if (typeof (setColorDisplay) == "function") {
               setColorDisplay(state.background_color);
               updateColor(null, false);
             }
@@ -217,7 +223,22 @@ function PinNote(props) {
             }}
           />
           <Dropdown.Divider />
-          <Button className="w-100" variant="danger" onClick={function () { onDelete(state.noteId) }}> Delete </Button>
+          <Button
+            className="w-100"
+            variant="danger"
+            onClick={function () { onDelete(state.noteId) }}
+          >
+            <img
+              className="me-1"
+              src={TrashIcon}
+              style={{
+                filter: "invert(100%)",
+                aspectRatio: "1",
+                height: "1.2rem"
+              }}
+            />
+            Delete Note
+          </Button>
         </Popup>
       </div>
       <div className="pinNote-Content">

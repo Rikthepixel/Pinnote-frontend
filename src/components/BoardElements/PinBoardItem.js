@@ -19,16 +19,16 @@ export function PinBoardItem(props) {
         return Board
     })
 
-
+    let displayColor = state.background_color
 
     return (
         <NavLink to={`/Boards/${state.boardId}`} className="PinBoardItem"
             style={{
-                backgroundColor: `rgb(${state.background_color.join()})`,
+                backgroundColor: `rgb(${displayColor.join()})`,
                 color: `${getContrastingColor(rgbaToHsva({
-                    r: state.background_color[0],
-                    g: state.background_color[1],
-                    b: state.background_color[2]
+                    r: displayColor[0],
+                    g: displayColor[1],
+                    b: displayColor[2]
                 }))}`,
                 border: `0.1em solid black`
             
@@ -49,7 +49,7 @@ export function PinBoardItemButton(props) {
             }}
         >
             <p>
-                Create new board
+                + Board
             </p>
         </button>
     );
