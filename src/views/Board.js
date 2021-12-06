@@ -49,28 +49,16 @@ const Board = (props) => {
     menuDiv.current.setAttribute("menu-extended", !(menuDiv.current.getAttribute("menu-extended") === 'true'))
   }
 
-  const updateTitle = (div) => {
-    updatePinBoard(dispatch, boardId, { title: div.textContent });
-  }
-
   const updateColor = (color, save) => {
-    updatePinBoard(dispatch, boardId, 
+    updatePinBoard(dispatch, boardId,
       save ? { background_color: color } : { draft_background_color: color }
     )
   }
 
   const updateNoteColor = (color) => {
-    updatePinBoard(dispatch, boardId, 
+    updatePinBoard(dispatch, boardId,
       { default_note_background_color: color }
     )
-  }
-
-  const removeBoard = () => {
-    setRedirect({
-      redirect: true,
-      link: "/Boards"
-    })
-    removePinBoard(dispatch, boardId)
   }
 
   if (redirect.redirect) {
@@ -127,7 +115,17 @@ const Board = (props) => {
             onSave={updateNoteColor}
           />
 
-          <Button variant="danger" className="w-100" onClick={removeBoard}>
+          <Button
+            variant="danger"
+            className="w-100"
+            onClick={() => {
+              setRedirect({
+                redirect: true,
+                link: "/Boards"
+              })
+              removePinBoard(dispatch, boardId)
+            }}
+          >
             <div className="d-flex align-items-center justify-content-center">
               <img
                 className="me-1"
@@ -155,7 +153,9 @@ const Board = (props) => {
                 backgroundColor: "#FFF",
               }}
               onEvent="click"
-              onUnWriteable={updateTitle}
+              onUnWriteable={(div) => {
+                updatePinBoard(dispatch, boardId, { title: div.textContent });
+              }}
             />
             {state.title}
           </div>

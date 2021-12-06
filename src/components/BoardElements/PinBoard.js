@@ -46,11 +46,6 @@ export const PinBoard = (props) => {
       boardId={props.boardId}
 
       onMove={(Position, oldPosition, width, height, setOffset) => {
-        let velocity = {
-          x: Position.x - oldPosition.x,
-          y: Position.y - oldPosition.y
-        }
-        
         let offsetX = 0
         let offsetY = 0
         if (Position.x - width / 2 < 0) {

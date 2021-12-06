@@ -181,7 +181,7 @@ const PinNote = (props) => {
             <button className="pinNote-Header-Action">
               <img
                 src={MoreIcon}
-                placeholder="..."
+                alt="..."
                 style={{
                   filter: contrastColor == "#fff" && "invert(100%)"
                 }}
