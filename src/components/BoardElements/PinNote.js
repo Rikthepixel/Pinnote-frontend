@@ -1,10 +1,11 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, Fragment, forwardRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Dropdown, Button, Popover, OverlayTrigger } from "react-bootstrap";
+
 import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
-import Popup from "reactjs-popup";
 
 import MakeWriteable from "../MakeWriteable";
-import { Dropdown, Button } from "react-bootstrap";
+
 import { updatePinNote, deletePinNote } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
@@ -13,7 +14,6 @@ import BrushIcon from "../../assets/img/icons/BrushIcon.svg";
 import TrashIcon from "../../assets/img/icons/TrashIcon.svg";
 
 //Styling
-import "reactjs-popup/dist/index.css";
 import "../../assets/scss/components/BoardElements/PinNote.scss";
 
 function disableSelect(e) {
@@ -91,14 +91,11 @@ const PinNote = (props) => {
         let setOffset = (x, y) => {
           movementOffset.x = x;
           movementOffset.y = y;
-          console.log(movementOffset)
         }
 
         if (typeof (props.onMove) == "function") {
           props.onMove(newPosition, positionRef.current, state.width, state.height, setOffset)
         }
-
-        console.log(movementOffset)
 
         updatePinNote(dispatch, props.boardId, props.noteId, {
           position: {
@@ -176,68 +173,77 @@ const PinNote = (props) => {
           {state.title}
         </div>
 
-        <Popup
-          trigger={() => (
-            <button className="pinNote-Header-Action">
-              <img
-                src={MoreIcon}
-                alt="..."
-                style={{
-                  filter: contrastColor == "#fff" && "invert(100%)"
+        <OverlayTrigger
+          trigger="click"
+          placement="right-start"
+          onToggle={(shown) => {
+            if (!shown) {
+              enableDrag();
+              if (typeof (setColorDisplay) == "function") {
+                setColorDisplay(state.background_color);
+                updateColor(null, false);
+              }
+              return
+            }
+
+            disableDrag();
+          }}
+          overlay={
+            <Popover
+              className="p-2"
+            >
+              <ColorSelectorButton
+                variant="primary"
+                className="w-100 p-0"
+                selectorClassName="p-1 pb-2"
+                text="Change color"
+                icon={BrushIcon}
+                color={state.background_color}
+                onOpen={(setDisplayColor) => {
+                  setColorDisplay = setDisplayColor
+                }}
+                onCancel={(oldColor, setDisplayColor) => {
+                  setDisplayColor(state.background_color);
+                  updateColor(null, false);
+                }}
+                onChange={(newColor) => {
+                  updateColor(newColor, false)
+                }}
+                onSave={(newColor) => {
+                  state.draft_background_color = null;
+                  updateColor(newColor, true);
                 }}
               />
-            </button>
-          )}
-          onClose={() => {
-            if (typeof (setColorDisplay) == "function") {
-              setColorDisplay(state.background_color);
-              updateColor(null, false);
-            }
-          }}
-          position="right top"
-          closeOnDocumentClick
-          className="primairy"
+              <Dropdown.Divider />
+              <Button
+                className="w-100"
+                variant="danger"
+                onClick={function () { onDelete(state.noteId) }}
+              >
+                <img
+                  className="me-1"
+                  src={TrashIcon}
+                  style={{
+                    filter: "invert(100%)",
+                    aspectRatio: "1",
+                    height: "1.2rem"
+                  }}
+                />
+                Delete Note
+              </Button>
+            </Popover>
+          }
         >
-          <ColorSelectorButton
-            variant="primary"
-            className="w-100 p-0"
-            selectorClassName="p-1 pb-2"
-            text="Change color"
-            icon={BrushIcon}
-            color={state.background_color}
-            onOpen={(setDisplayColor) => {
-              setColorDisplay = setDisplayColor
-            }}
-            onCancel={(oldColor, setDisplayColor) => {
-              setDisplayColor(state.background_color);
-              updateColor(null, false);
-            }}
-            onChange={(newColor) => {
-              updateColor(newColor, false)
-            }}
-            onSave={(newColor) => {
-              state.draft_background_color = null;
-              updateColor(newColor, true);
-            }}
-          />
-          <Dropdown.Divider />
-          <Button
-            className="w-100"
-            variant="danger"
-            onClick={function () { onDelete(state.noteId) }}
-          >
+          <button className="pinNote-Header-Action">
             <img
-              className="me-1"
-              src={TrashIcon}
+              src={MoreIcon}
+              alt="..."
               style={{
-                filter: "invert(100%)",
-                aspectRatio: "1",
-                height: "1.2rem"
+                filter: contrastColor == "#fff" && "invert(100%)"
               }}
             />
-            Delete Note
-          </Button>
-        </Popup>
+          </button>
+        </OverlayTrigger>
       </div>
       <div className="pinNote-Content">
         <textarea
