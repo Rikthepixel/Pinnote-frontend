@@ -153,7 +153,7 @@ const PinNote = (props) => {
           className="pinNote-Header-Title"
           ref={HeaderRef}
           style={{
-            color: { contrastColor }
+            color: contrastColor
           }}
         >
           <MakeWriteable
@@ -250,11 +250,7 @@ const PinNote = (props) => {
           className="pinNote-TextContent"
           defaultValue={state.text}
           style={{
-            color: `${getContrastingColor(rgbaToHsva({
-              r: state.background_color[0],
-              g: state.background_color[1],
-              b: state.background_color[2]
-            }))}`
+            color: contrastColor
           }}
         ></textarea>
       </div>
