@@ -41,15 +41,16 @@
     transform: translate(calc(100% + 0.1rem), 0);
     transition: .1s ease;
 
-    box-shadow: -0.1rem 0px 0px 0px var(--bs-dark);
+   
     background-color: var(--bs-info);
 
-    width: 19.9rem;
+    width: 20rem;
     height: 100%;
 
     &[menu-extended=true] {
         transform: unset; 
-
+        box-shadow: -0.1em 0px 1em 0.1em rgba(0, 0, 0, 0.3);
+        
         & ~ .pinBoard-Main-Container {
             margin-right: 20rem;
         }
