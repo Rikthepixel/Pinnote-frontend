@@ -229,7 +229,7 @@ const PinNote = (props) => {
                     height: "1.2rem"
                   }}
                 />
-                Delete Note
+                Delete note
               </Button>
             </Popover>
           }

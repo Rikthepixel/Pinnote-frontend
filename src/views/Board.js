@@ -69,7 +69,7 @@ const Board = (props) => {
   return (
     <div className="page-container overflow-hidden position-relative">
       <div className="pinBoard-Menu" ref={menuDiv}>
-        <div className="d-flex border-2 border-bottom border-secondary w-100 p-2">
+        <div className="d-flex w-100 p-2">
           <div className="d-flex align-items-center justify-content-center w-100">
             <label className="d-inline-flex align-items-center fs-4">
               Board settings
@@ -91,7 +91,7 @@ const Board = (props) => {
           <ColorSelectorButton
             variant="primary"
             className="w-100"
-            text="Change background color"
+            text="Background color"
             icon={BrushIcon}
             color={state.background_color}
             onCancel={(oldColor, setDisplayColor) => {
@@ -109,7 +109,7 @@ const Board = (props) => {
           <ColorSelectorButton
             variant="primary"
             className="w-100"
-            text="Change default note color"
+            text="Default note color"
             icon={NoteIcon}
             color={state.default_note_background_color}
             onCancel={updateNoteColor}
