@@ -19,7 +19,7 @@ export const PinBoardItem = (props) => {
         return Board
     })
 
-    let displayColor = state.background_color
+    let displayColor = state.backgroundColor
 
     return (
         <NavLink to={`/Boards/${state.boardId}`} className="PinBoardItem"

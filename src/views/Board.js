@@ -1,20 +1,20 @@
 import React, { useRef, useState } from "react";
 import { useParams, Redirect } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
-import { Button } from "react-bootstrap";
+import { Button, Alert } from "react-bootstrap";
 
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import MakeWriteable from "../components/MakeWriteable";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
 import { updatePinBoard, removePinBoard } from '../api'
-import { ConfirmationAlert } from '../utils/Alerts';
+import { ConfirmationAlert, SingleFormAlert } from '../utils/Alerts';
+import boardSchema, { validateBoard } from "../api/Boards/BoardValidators";
 
-import MoreIcon from "../assets/img/icons/MoreIcon.svg";
-import CloseIcon from "../assets/img/icons/CloseIcon.svg";
-import TrashIcon from "../assets/img/icons/TrashIcon.svg";
-import BrushIcon from "../assets/img/icons/BrushIcon.svg";
-import NoteIcon from "../assets/img/icons/NoteIcon.svg";
+import {
+  MoreIcon, CloseIcon, TrashIcon,
+  BrushIcon, NoteIcon, EditIcon
+} from "../assets/img/icons";
 
 import "../assets/scss/views/Board.scss";
 
@@ -33,6 +33,7 @@ const Board = (props) => {
     redirect: false,
     link: ""
   })
+  const [fieldErrors, setFieldErrors] = useState({})
 
   const state = useSelector(state => {
     let Board = null;
@@ -52,19 +53,92 @@ const Board = (props) => {
 
   const updateColor = (color, save) => {
     updatePinBoard(dispatch, boardId,
-      save ? { background_color: color } : { draft_background_color: color }
+      save ? { backgroundColor: color } : { draftBackgroundColor: color }
     )
   }
 
-  const updateNoteColor = (color) => {
+  const updateNoteColor = color => {
     updatePinBoard(dispatch, boardId,
-      { default_note_background_color: color }
+      { defaultNoteBackgroundColor: color }
     )
+  }
+
+  const validateBoardTitle = newTitle => {
+    let errors = validateBoard({ title: newTitle.trim() })
+    setFieldErrors({
+      ...fieldErrors,
+      title: errors.title
+    })
+    return errors.title || []
+  }
+
+  const updateBoardTitle = newTitle => {
+    let errors = updatePinBoard(dispatch, boardId, { title: newTitle.trim() });
+    setFieldErrors({
+      ...fieldErrors,
+      title: errors.title
+    })
+    return errors.title
+  }
+
+  const onDeleteClick = () => {
+    ConfirmationAlert({
+      title: "Are you sure you want to delete this board?",
+      text: "You won't be able to revert this!",
+      timer: 10000,
+      acceptButtonText: "Yes, delete the board",
+      cancelButtonText: "No, keep the board",
+
+      acceptPopup: true,
+      acceptedTitle: "Deleted",
+      acceptedText: "Your board has been deleted",
+
+      cancelPopup: true,
+      cancelledTitle: "Cancelled",
+      cancelledText: "Your board was not deleted",
+    }).then((result) => {
+      if (result) {
+        setRedirect({
+          redirect: true,
+          link: "/Boards"
+        })
+        removePinBoard(dispatch, boardId)
+      }
+    })
+  }
+
+  const onTitleChangeClick = () => {
+    SingleFormAlert({
+      title: "Change board title",
+      text: "What do you want to change the board name to?",
+      inputPlaceholder: state.title,
+      acceptButtonText: "Confirm",
+      cancelButtonText: "Cancel",
+      validate: value => {
+        let result = { isValid: true, value: value, error: "" }
+        let errors = validateBoardTitle(value)
+        if (errors.length != 0) {
+          result.isValid = false
+          result.error = errors[0]
+
+          if (value.length > 30) {
+            result.value = value.substring(0, 30)
+          }
+        }
+        return result;
+      },
+    }).then(result => {
+      if (result.confirmed) {
+        updateBoardTitle(result.value)
+      }
+    })
   }
 
   if (redirect.redirect) {
     return <Redirect to={redirect.link} />
   }
+
+  let displayColor = state.draftBackgroundColor ? state.draftBackgroundColor : state.backgroundColor
 
   return (
     <div className="page-container overflow-hidden position-relative">
@@ -88,30 +162,51 @@ const Board = (props) => {
         </div>
 
         <div className="pinBoard-Menu-Content p-3">
+
+          <Button
+            variant="primary"
+            className="w-100"
+            onClick={onTitleChangeClick}
+          >
+            <div className="d-flex align-items-center justify-content-center">
+              <img
+                className="me-1"
+                src={EditIcon}
+                style={{
+                  filter: "invert(100%)",
+                  aspectRatio: "1",
+                  height: "1.2rem"
+                }}
+              />
+              Change title
+            </div>
+          </Button>
+
           <ColorSelectorButton
             variant="primary"
             className="w-100"
             text="Background color"
             icon={BrushIcon}
-            color={state.background_color}
+            color={state.backgroundColor}
             onCancel={(oldColor, setDisplayColor) => {
-              setDisplayColor(state.background_color);
+              setDisplayColor(state.backgroundColor);
               updateColor(null, false);
             }}
             onChange={(newColor) => {
               updateColor(newColor, false)
             }}
             onSave={(newColor) => {
-              state.draft_background_color = null;
+              state.draftBackgroundColor = null;
               updateColor(newColor, true);
             }}
           />
+
           <ColorSelectorButton
             variant="primary"
             className="w-100"
             text="Default note color"
             icon={NoteIcon}
-            color={state.default_note_background_color}
+            color={state.defaultNoteBackgroundColor}
             onCancel={updateNoteColor}
             onSave={updateNoteColor}
           />
@@ -119,26 +214,7 @@ const Board = (props) => {
           <Button
             variant="danger"
             className="w-100"
-            onClick={() => {
-              ConfirmationAlert({
-                ConfirmationTitle: "Are you sure you want to delete this board?",
-                ConfirmationText: "You won't be able to revert this!",
-                AcceptButtonText: "Yes, delete the board",
-                CancelButtonText: "No, keep the board",
-                AcceptedTitle: "Deleted",
-                AcceptedText: "Your board has been deleted",
-                CancelledTitle: "Cancelled",
-                CancelledText: "Your board was not deleted"
-              }).then((result) => {
-                if (result) {
-                  setRedirect({
-                    redirect: true,
-                    link: "/Boards"
-                  })
-                  removePinBoard(dispatch, boardId)
-                }
-              })
-            }}
+            onClick={onDeleteClick}
           >
             <div className="d-flex align-items-center justify-content-center">
               <img
@@ -157,22 +233,36 @@ const Board = (props) => {
       </div>
       <div className="pinBoard-Main-Container page-container"
         style={{
-          backgroundColor: `rgb(${state.draft_background_color ? state.draft_background_color.join() : state.background_color.join()})`
+          backgroundColor: `rgb(${displayColor.join()})`
         }}>
         <PinNoteToolbar>
-          <div className="pinBoard-Toolbar-Title me-auto" ref={toolbarTitleRef}>
-            <MakeWriteable
-              parentRef={toolbarTitleRef}
-              editStyle={{
-                backgroundColor: "#FFF",
-              }}
-              onEvent="click"
-              onUnWriteable={(div) => {
-                updatePinBoard(dispatch, boardId, { title: div.textContent });
-              }}
-            />
-            {state.title}
+          <div className="me-auto d-flex">
+            <div className="pinBoard-Toolbar-Title " ref={toolbarTitleRef}>
+              <MakeWriteable
+                text={state.title}
+                parentRef={toolbarTitleRef}
+                editStyle={{
+                  backgroundColor: "#FFF",
+                }}
+                onEvent="click"
+                onChange={text => validateBoardTitle(text).length == 0}
+                onUnWriteable={(div) => {
+                  if (validateBoardTitle(div.textContent).length == 0) {
+                    updateBoardTitle(state.title);
+                    return;
+                  }
+                  updateBoardTitle(div.textContent);
+                }}
+              />
+            </div>
+            {fieldErrors.title && <Alert
+              className="m-0 ms-1 p-0 pe-1 ps-1 d-flex align-items-center"
+              variant="danger"
+            >
+              {fieldErrors.title[0]}
+            </Alert>}
           </div>
+
           <Button ref={newNoteButton}>+ Note</Button>
           <Button
             onClick={toggleMenu}

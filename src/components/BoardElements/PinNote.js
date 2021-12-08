@@ -60,7 +60,7 @@ const PinNote = (props) => {
   let setColorDisplay = null;
   const updateColor = (color, save) => {
     updatePinNote(dispatch, props.boardId, props.noteId,
-      save ? { background_color: color } : { draft_background_color: color }
+      save ? { backgroundColor: color } : { draftBackgroundColor: color }
     )
   }
 
@@ -129,7 +129,7 @@ const PinNote = (props) => {
     }
   }, []) //Initial drag enable
 
-  let displayColor = state.draft_background_color ? state.draft_background_color : state.background_color
+  let displayColor = state.draftBackgroundColor ? state.draftBackgroundColor : state.backgroundColor
   let contrastColor = getContrastingColor(rgbaToHsva({
     r: displayColor[0],
     g: displayColor[1],
@@ -180,7 +180,7 @@ const PinNote = (props) => {
             if (!shown) {
               enableDrag();
               if (typeof (setColorDisplay) == "function") {
-                setColorDisplay(state.background_color);
+                setColorDisplay(state.backgroundColor);
                 updateColor(null, false);
               }
               return
@@ -198,19 +198,19 @@ const PinNote = (props) => {
                 selectorClassName="p-1 pb-2"
                 text="Change color"
                 icon={BrushIcon}
-                color={state.background_color}
+                color={state.backgroundColor}
                 onOpen={(setDisplayColor) => {
                   setColorDisplay = setDisplayColor
                 }}
                 onCancel={(oldColor, setDisplayColor) => {
-                  setDisplayColor(state.background_color);
+                  setDisplayColor(state.backgroundColor);
                   updateColor(null, false);
                 }}
                 onChange={(newColor) => {
                   updateColor(newColor, false)
                 }}
                 onSave={(newColor) => {
-                  state.draft_background_color = null;
+                  state.draftBackgroundColor = null;
                   updateColor(newColor, true);
                 }}
               />

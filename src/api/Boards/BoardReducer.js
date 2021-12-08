@@ -17,12 +17,12 @@ const initialNoteState = {
 
 const initialBoardState = {
     title: "",
-    background_color: [
+    backgroundColor: [
         245,
         245,
         224
     ],
-    default_note_background_color: [
+    defaultNoteBackgroundColor: [
         212,
         214,
         133
@@ -34,8 +34,8 @@ const initialState = {
         {
             boardId: 1,
             title: "a board",
-            background_color: [0, 128, 128],
-            default_note_background_color: [ 26, 77, 73 ],
+            backgroundColor: [0, 128, 128],
+            defaultNoteBackgroundColor: [ 26, 77, 73 ],
             notes: [],
         },
     ],
@@ -77,8 +77,8 @@ const BoardReducer = (state = initialState, action) => {
             state.boards.push({
                 boardId: generateRandomId(),
                 title: action.payload.title || initialBoardState.title,
-                background_color: action.payload.background_color || initialBoardState.background_color,
-                default_note_background_color: action.payload.default_note_background_color || initialBoardState.default_note_background_color,
+                backgroundColor: action.payload.backgroundColor || initialBoardState.backgroundColor,
+                defaultNoteBackgroundColor: action.payload.defaultNoteBackgroundColor || initialBoardState.defaultNoteBackgroundColor,
                 notes: [],
             });
             return {
@@ -119,7 +119,7 @@ const BoardReducer = (state = initialState, action) => {
                 title: initialNoteState.title,
                 text: initialNoteState.text,
                 position: action.payload.position || initialNoteState.position,
-                background_color: board.default_note_background_color,
+                backgroundColor: board.defaultNoteBackgroundColor,
                 width: initialNoteState.width,
                 height: initialNoteState.height
             });

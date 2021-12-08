@@ -1,3 +1,5 @@
+import boardSchema, { validateBoard } from "./BoardValidators";
+
 export const getAllPinBoards = (dispatch) => {
     dispatch({
         type: "GET_ALL_BOARDS",
@@ -23,6 +25,12 @@ export const removePinBoard = (dispatch, boardId) => {
 }
 
 export const updatePinBoard = (dispatch, boardId, changes) => {
+   
+    let errors = validateBoard(changes)
+    if (Object.keys(errors).length > 0) {
+        return errors
+    }
+
     dispatch({
         type: "UPDATE_BOARD",
         payload: {
@@ -30,6 +38,8 @@ export const updatePinBoard = (dispatch, boardId, changes) => {
             changes: changes,
         }
     })
+
+    return {}
 }
 
 export const createPinNote = (dispatch, boardId, position) => {
@@ -53,6 +63,7 @@ export const deletePinNote = (dispatch, boardId, noteId) => {
 }
 
 export const updatePinNote = (dispatch, boardId, noteId, changes) => {
+
     dispatch({
         type: "UPDATE_BOARD_NOTE",
         payload: {
