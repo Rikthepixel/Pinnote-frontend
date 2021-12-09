@@ -9,10 +9,9 @@ import MakeWriteable from "../MakeWriteable";
 import { updatePinNote, deletePinNote } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
-import MoreIcon from "../../assets/img/icons/MoreIcon.svg";
-import BrushIcon from "../../assets/img/icons/BrushIcon.svg";
-import TrashIcon from "../../assets/img/icons/TrashIcon.svg";
-
+import { MoreIcon, BrushIcon, TrashIcon, EditIcon } from "../../assets/img/icons";
+import { noteSchema, validateNote } from "../../api/Boards/BoardValidators";
+import { SingleFormAlert } from "../../utils/Alerts";
 //Styling
 import "../../assets/scss/components/BoardElements/PinNote.scss";
 
@@ -27,7 +26,7 @@ const MovingPopover = React.forwardRef(
     }, [children, popper]);
 
     return (
-      <Popover ref={ref} body {...props}>
+      <Popover ref={ref} {...props}>
         {children}
       </Popover>
     );
@@ -38,11 +37,11 @@ const PinNote = (props) => {
   const dispatch = useDispatch();
   const HeaderRef = useRef();
   const NoteDiv = useRef();
-
   const offsetRef = useRef({
     x: null,
     y: null
   });
+  const stateRef = useRef();
 
   const state = useSelector(state => {
     let note = {};
@@ -55,11 +54,53 @@ const PinNote = (props) => {
     })
     return note;
   })
+  stateRef.current = state
 
   const positionRef = useRef(state.position)
 
   const onDelete = () => {
     deletePinNote(dispatch, props.noteId)
+  }
+
+  const updateTitle = (title = "", validate) => {
+    let errors = {}
+    title = title.trim()
+
+    if (validate) {
+      errors = validateNote({ title: title })
+    } else {
+      errors = updatePinNote(dispatch, props.noteId, { title: title });
+    }
+    return errors.title || []
+  }
+
+  const onTitleChangeClick = () => {
+    SingleFormAlert({
+      title: "Change note title",
+      text: "What do you want to change the note title to?",
+      inputPlaceholder: state.title,
+      inputValue: state.title,
+      acceptButtonText: "Confirm",
+      cancelButtonText: "Cancel",
+      validate: value => {
+        let result = { isValid: true, value: value, error: "" }
+        let errors = updateTitle(value, true)
+        if (errors.length != 0) {
+          result.isValid = false
+          result.error = errors[0]
+          if (value.length > 100) {
+            result.value = value.substring(0, 100)
+          }
+        }
+        return result;
+      },
+    }).then(result => {
+      if (result.confirmed) {
+        updateTitle(result.value);
+        return
+      }
+      updateTitle(stateRef.current.title);
+    })
   }
 
   let setColorDisplay = null;
@@ -80,26 +121,26 @@ const PinNote = (props) => {
         x: e.clientX - Rect.x,
         y: e.clientY - Rect.y,
       };
-
       window.addEventListener("selectstart", disableSelect);
       document.onmousemove = function (e) {
+        const state = stateRef.current
+        let Rect = NoteDiv.current.getBoundingClientRect();
+        let newPosition = {
+          x: e.pageX - (Rect.x - state.position.x) - handle.x - (e.pageX - e.clientX),
+          y: e.pageY - (Rect.y - state.position.y) - handle.y - (e.pageX - e.clientX),
+        }
+
         let movementOffset = {
           x: 0,
           y: 0
         }
-
-        let newPosition = {
-          x: e.pageX - offsetRef.current.x - handle.x - (e.pageX - e.clientX),
-          y: e.pageY - offsetRef.current.y - handle.y - (e.pageX - e.clientX),
-        }
-
         let setOffset = (x, y) => {
           movementOffset.x = x;
           movementOffset.y = y;
-        }
+        }        
 
         if (typeof (props.onMove) == "function") {
-          props.onMove(newPosition, positionRef.current, state.width, state.height, setOffset)
+          props.onMove(newPosition, state.position, state.width, state.height, setOffset)
         }
 
         updatePinNote(dispatch, props.noteId, {
@@ -117,15 +158,6 @@ const PinNote = (props) => {
       };
     };
   };
-
-  useEffect(() => {
-    let Rect = NoteDiv.current.getBoundingClientRect();
-    positionRef.current = state.position
-    offsetRef.current = {
-      x: Rect.x - state.position.x,
-      y: Rect.y - state.position.y,
-    };
-  }, [state.position]) //Update offset, if size or position of parent changes, offset changes
 
   useEffect(() => {
     enableDrag()
@@ -168,11 +200,12 @@ const PinNote = (props) => {
               color: "black"
             }}
             onWriteable={disableDrag}
-            onUnWriteable={(text) => {
-              updatePinNote(dispatch, props.noteId, {
+            onUnWriteable={(text, setText) => {
+              let errors = updatePinNote(dispatch, props.noteId, {
                 title: text
               })
-              enableDrag()
+              if (errors.title) { setText(state.title) }
+              enableDrag();
             }}
           />
           {state.title}
@@ -192,7 +225,27 @@ const PinNote = (props) => {
             }
           }}
           overlay={
-            <MovingPopover>
+            <MovingPopover
+              className="p-2 d-flex align-items-center justify-content-center flex-column gap-2"
+            >
+              <Button
+                variant="primary"
+                className="w-100"
+                onClick={onTitleChangeClick}
+              >
+                <div className="d-flex align-items-center justify-content-center">
+                  <img
+                    className="me-1"
+                    src={EditIcon}
+                    style={{
+                      filter: "invert(100%)",
+                      aspectRatio: "1",
+                      height: "1.2rem"
+                    }}
+                  />
+                  Change title
+                </div>
+              </Button>
               <ColorSelectorButton
                 variant="primary"
                 className="w-100 p-0"
@@ -215,11 +268,11 @@ const PinNote = (props) => {
                   updateColor(newColor, true);
                 }}
               />
-              <Dropdown.Divider />
+              <Dropdown.Divider className="m-0 w-100" />
               <Button
                 className="w-100"
                 variant="danger"
-                onClick={function () { onDelete(state.noteId) }}
+                onClick={onDelete}
               >
                 <img
                   className="me-1"

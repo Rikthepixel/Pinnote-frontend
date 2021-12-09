@@ -7,10 +7,15 @@ const MakeWriteable = (props) => {
     const onEventType = props.onEvent != "dblclick" && props.onEvent != "click" ? "dblclick" : props.onEvent
 
     useEffect(() => {
+        let setText = (newText = "") => {
+            divRef.current.textContent = newText
+        }
+
         let text = props.text || divRef.current.textContent
         if (text) {
-            divRef.current.textContent = text
+            setText(text)
         }
+
         let onEventFunc = function(e) {
             let div = divRef.current;
             
@@ -43,9 +48,9 @@ const MakeWriteable = (props) => {
                 }
         
                 if (typeof(props.onUnWriteable) == "function") {
-                    let validationResult = props.onUnWriteable(e.target.textContent)
+                    let validationResult = props.onUnWriteable(e.target.textContent, setText)
                     if (validationResult === false) {
-                        div.textContent = text
+                        setText(text)
                     }
                 }
                 div.addEventListener(onEventType, onEventFunc)
@@ -65,7 +70,7 @@ const MakeWriteable = (props) => {
                     let target = e.target
                     let validationResult = props.onChange(target.textContent)
                     if (validationResult === false) {
-                        target.textContent = previousState
+                        setText(previousState)
                     }
                     previousState = target.textContent
                 }

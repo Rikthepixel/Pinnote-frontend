@@ -1,4 +1,4 @@
-import boardSchema, { validateBoard } from "./BoardValidators";
+import boardSchema, { validateBoard, validateNote } from "./BoardValidators";
 
 export const loadBoard = (dispatch, id) => {
     if (!id) { return }
@@ -66,6 +66,10 @@ export const deletePinNote = (dispatch, noteId) => {
 }
 
 export const updatePinNote = (dispatch, noteId, changes) => {
+    let errors = validateNote(changes)
+    if (Object.keys(errors).length > 0) {
+        return errors
+    }
 
     dispatch({
         type: "UPDATE_BOARD_NOTE",
@@ -74,4 +78,6 @@ export const updatePinNote = (dispatch, noteId, changes) => {
             changes: changes
         }
     })
+
+    return {}
 }

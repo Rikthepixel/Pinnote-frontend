@@ -51,9 +51,9 @@ const ColorSelector = (props) => {
             <div className={`d-flex gap-3`} style={{
                 flexDirection: "column",
                 backgroundColor: "var(--bs-info)",
-                padding: "5%",
+                padding: "0.5em",
                 border: "0.1rem solid var(--bs-dark)",
-                borderRadius: "0.5rem"
+                borderRadius: "0.5em"
             }}>
                 <Hue
                     hue={HSVA.h}

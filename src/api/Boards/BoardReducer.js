@@ -40,6 +40,7 @@ const initialState = {
 };
 
 const getBoardById = (state, id) => {
+    if (!id) { return [null, null]}
     let board, index;
     state.boards.every((_board, _index) => {
         if (_board.id == id) {
@@ -54,6 +55,7 @@ const getBoardById = (state, id) => {
 }
 
 const getNoteById = (state, id) => {
+    if (!id) { return [null, null]}
     let note, index;
     state.board.notes.every((_note, _index) => {
         if (_note.id != id) {
@@ -67,13 +69,12 @@ const getNoteById = (state, id) => {
 }
 
 const BoardReducer = (state = initialState, action) => {
-    let payload = action.payload;
-    let board, boardIndex = null;
-    let note, noteIndex = null;
+    let payload = action.payload || {};
+    let [board, boardIndex] = getBoardById(state, payload.boardId);
+    let [note, noteIndex] = getNoteById(state, payload.noteId);
 
     switch (action.type) {
         case "LOAD_BOARD":
-            [board, boardIndex] = getBoardById(state, payload.boardId)
             return Object.assign({}, state, {
                 board: board
             })
@@ -92,7 +93,6 @@ const BoardReducer = (state = initialState, action) => {
             });
 
         case "REMOVE_BOARD":
-            getBoardById(payload.boardId)
             state.boards.splice(boardIndex, 1)
 
             if (state.board.id == payload.boardId) {
@@ -104,8 +104,6 @@ const BoardReducer = (state = initialState, action) => {
             });
 
         case "UPDATE_BOARD":
-            [board, boardIndex] = getBoardById(state, payload.boardId)
-
             state.boards[boardIndex] = Object.assign({}, board, payload.changes)
 
             if (state.board.id == payload.boardId) {
@@ -124,7 +122,7 @@ const BoardReducer = (state = initialState, action) => {
                 id: generateRandomId(),
                 title: initialNoteState.title,
                 text: initialNoteState.text,
-                position: action.payload.position || initialNoteState.position,
+                position: payload.position || initialNoteState.position,
                 backgroundColor: board.defaultNoteBackgroundColor,
                 width: initialNoteState.width,
                 height: initialNoteState.height
@@ -139,10 +137,9 @@ const BoardReducer = (state = initialState, action) => {
         case "REMOVE_BOARD_NOTE":
             if (!state.board) { return state }
             board = state.board
-
-            [note, noteIndex] = getNoteById(state, action.payload.noteId)
             if (!note) { return state }
             board.notes.splice(noteIndex, 1)
+            console.log("removed")
 
             return Object.assign({}, state, {
                 board: Object.assign({}, board, {

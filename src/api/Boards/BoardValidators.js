@@ -1,7 +1,7 @@
 import * as yup from "yup";
 import { vector2Schema, rgbColorSchema } from "../../utils/Validators";
 
-const noteSchema = yup.object().shape({
+export const noteSchema = yup.object().shape({
     id: yup.number().required().integer(),
     title: yup.string().max(100),
     text: yup.string(),
@@ -32,5 +32,19 @@ export const validateBoard = (object) => {
     })
     return errors
 };
+
+export const validateNote = (object) => {
+    let errors = {}
+    Object.keys(noteSchema.fields).forEach((key) => {
+        if (key in object) {
+            try {
+                noteSchema.validateSyncAt(key, object)
+            } catch (error) {
+                errors[key] = error.errors
+            }
+        }
+    })
+    return errors  
+}
 
 export default boardSchema;

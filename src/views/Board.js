@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Alert } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
 import { updatePinBoard, removePinBoard, loadBoard } from '../api'
 import { ConfirmationAlert, SingleFormAlert } from '../utils/Alerts';
-import boardSchema, { validateBoard } from "../api/Boards/BoardValidators";
+import { validateBoard } from "../api/Boards/BoardValidators";
 
 import {
   MoreIcon, CloseIcon, TrashIcon,
@@ -31,7 +31,6 @@ const Board = (props) => {
     redirect: false,
     link: ""
   })
-  const [fieldErrors, setFieldErrors] = useState({})
 
   const state = useSelector(state => {
     return state.boards.board || {}
@@ -67,10 +66,6 @@ const Board = (props) => {
       console.log(title)
       errors = updatePinBoard(dispatch, boardId, { title: title });
     }
-    setFieldErrors({
-      ...fieldErrors,
-      title: errors.title
-    })
     return errors.title || []
   }
 
@@ -103,7 +98,7 @@ const Board = (props) => {
   const onTitleChangeClick = () => {
     SingleFormAlert({
       title: "Change board title",
-      text: "What do you want to change the board name to?",
+      text: "What do you want to change the board title to?",
       inputPlaceholder: state.title,
       inputValue: state.title,
       acceptButtonText: "Confirm",

@@ -75,7 +75,7 @@ const ColorSelectorButton = (props) => {
             </div>
         </Button>
         <ColorSelector
-            className={`w-100 mt-1 ${props.selectorClassName ? props.selectorClassName : "p-3"} `}
+            className={`mt-1 ${props.selectorClassName ? props.selectorClassName : "p-3"} `}
 
             open={shown}
             closeHandle={closeHandle}
