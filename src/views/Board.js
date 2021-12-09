@@ -1,13 +1,12 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useParams, Redirect } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import { Button, Alert } from "react-bootstrap";
 
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
-import MakeWriteable from "../components/MakeWriteable";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
-import { updatePinBoard, removePinBoard } from '../api'
+import { updatePinBoard, removePinBoard, loadBoard } from '../api'
 import { ConfirmationAlert, SingleFormAlert } from '../utils/Alerts';
 import boardSchema, { validateBoard } from "../api/Boards/BoardValidators";
 
@@ -23,7 +22,6 @@ const Board = (props) => {
 
   const { boardId } = useParams();
 
-  const toolbarTitleRef = useRef();
   const menuDiv = useRef();
   const newNoteButton = useRef();
 
@@ -36,16 +34,12 @@ const Board = (props) => {
   const [fieldErrors, setFieldErrors] = useState({})
 
   const state = useSelector(state => {
-    let Board = null;
-    state.boards.boards.every((board) => {
-      if (boardId != board.boardId) {
-        return true;
-      }
-      Board = board;
-      return false;
-    })
-    return Board
+    return state.boards.board || {}
   })
+
+  useEffect(() => {
+    loadBoard(dispatch, boardId);
+  }, [])
 
   const toggleMenu = () => {
     menuDiv.current.setAttribute("menu-extended", !(menuDiv.current.getAttribute("menu-extended") === 'true'))
@@ -63,22 +57,21 @@ const Board = (props) => {
     )
   }
 
-  const validateBoardTitle = newTitle => {
-    let errors = validateBoard({ title: newTitle.trim() })
+  const updateBoardTitle = (title = "", validate) => {
+    let errors
+    title = title.trim()
+    
+    if (validate) {
+      errors = validateBoard({ title: title })
+    } else {
+      console.log(title)
+      errors = updatePinBoard(dispatch, boardId, { title: title });
+    }
     setFieldErrors({
       ...fieldErrors,
       title: errors.title
     })
     return errors.title || []
-  }
-
-  const updateBoardTitle = newTitle => {
-    let errors = updatePinBoard(dispatch, boardId, { title: newTitle.trim() });
-    setFieldErrors({
-      ...fieldErrors,
-      title: errors.title
-    })
-    return errors.title
   }
 
   const onDeleteClick = () => {
@@ -112,11 +105,12 @@ const Board = (props) => {
       title: "Change board title",
       text: "What do you want to change the board name to?",
       inputPlaceholder: state.title,
+      inputValue: state.title,
       acceptButtonText: "Confirm",
       cancelButtonText: "Cancel",
       validate: value => {
         let result = { isValid: true, value: value, error: "" }
-        let errors = validateBoardTitle(value)
+        let errors = updateBoardTitle(value, true)
         if (errors.length != 0) {
           result.isValid = false
           result.error = errors[0]
@@ -140,7 +134,7 @@ const Board = (props) => {
     return <Redirect to={redirect.link} />
   }
 
-  let displayColor = state.draftBackgroundColor ? state.draftBackgroundColor : state.backgroundColor
+  let displayColor = (state.draftBackgroundColor ? state.draftBackgroundColor : state.backgroundColor) || [123, 123, 123]
 
   return (
     <div className="page-container overflow-hidden position-relative">
@@ -238,33 +232,9 @@ const Board = (props) => {
           backgroundColor: `rgb(${displayColor.join()})`
         }}>
         <PinNoteToolbar>
-          <div className="me-auto d-flex">
-            <div className="pinBoard-Toolbar-Title " ref={toolbarTitleRef}>
-              <MakeWriteable
-                text={state.title}
-                parentRef={toolbarTitleRef}
-                editStyle={{
-                  backgroundColor: "#FFF",
-                }}
-                onEvent="click"
-                onChange={text => validateBoardTitle(text).length == 0}
-                onUnWriteable={(div) => {
-                  if (validateBoardTitle(div.textContent).length == 0) {
-                    updateBoardTitle(state.title);
-                    return;
-                  }
-                  updateBoardTitle(div.textContent);
-                }}
-              />
-            </div>
-            {fieldErrors.title && <Alert
-              className="m-0 ms-1 p-0 pe-1 ps-1 d-flex align-items-center"
-              variant="danger"
-            >
-              {fieldErrors.title[0]}
-            </Alert>}
+          <div className="me-auto pinBoard-Toolbar-Title">
+            {state.title}
           </div>
-
           <Button ref={newNoteButton}>+ Note</Button>
           <Button
             onClick={toggleMenu}
@@ -280,7 +250,7 @@ const Board = (props) => {
             Menu
           </Button>
         </PinNoteToolbar>
-        <PinBoard boardId={boardId} newNoteButton={newNoteButton} />
+        <PinBoard newNoteButton={newNoteButton} />
       </div>
     </div>
   );

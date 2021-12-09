@@ -1,10 +1,30 @@
 import * as yup from "yup"
 
+const vector2Schema = yup.object().shape({
+    x: yup.number().default(0),
+    y: yup.number().default(0)
+})
+
+const rgbColorSchema = yup.array().of(
+    yup.number().required().integer().min(0).max(255)
+).length(3)
+
+const noteSchema = yup.object().shape({
+    id: yup.number().required().integer(),
+    title: yup.string().max(100),
+    text: yup.string(),
+    position: vector2Schema.required(),
+    backgroundColor: rgbColorSchema.required(),
+    width: yup.number().default(200).required(),
+    height: yup.number().default(200).required()
+})
+
 const boardSchema = yup.object().shape({
+    id: yup.number().required().integer(),
     title: yup.string().required().label("Title").max(30),
-    backgroundColor: yup.array().label("Background color").of(
-        yup.number().required().integer().min(0).max(255)
-    ).required().length(3),
+    backgroundColor: rgbColorSchema.required().label("Background color"),
+    defaultNoteColor: rgbColorSchema.required().label("Default note color"),
+    notes: yup.array().label("Notes").of(noteSchema).required().length(3),
 });
 
 export const validateBoard = (object) => {

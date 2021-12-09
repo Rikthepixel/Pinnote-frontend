@@ -56,6 +56,7 @@ export const SingleFormAlert = (config) => {
             inputAttributes: config.inputAttributes || {
                 autocapitalize: 'off'
             },
+            inputValue: config.inputValue,
             didOpen: () => {
                 const input = Swal.getInput()
                 input.oninput = () => {

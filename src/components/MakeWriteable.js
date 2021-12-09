@@ -7,6 +7,10 @@ const MakeWriteable = (props) => {
     const onEventType = props.onEvent != "dblclick" && props.onEvent != "click" ? "dblclick" : props.onEvent
 
     useEffect(() => {
+        let text = props.text || divRef.current.textContent
+        if (text) {
+            divRef.current.textContent = text
+        }
         let onEventFunc = function(e) {
             let div = divRef.current;
             
@@ -23,7 +27,7 @@ const MakeWriteable = (props) => {
             }
         
             if (typeof(props.onWriteable) == "function") {
-                props.onWriteable(divRef.current)
+                props.onWriteable(divRef.current.textContent)
             }
             
             let Exit = (e) => {
@@ -39,9 +43,9 @@ const MakeWriteable = (props) => {
                 }
         
                 if (typeof(props.onUnWriteable) == "function") {
-                    let validationResult = props.onUnWriteable(e.target)
+                    let validationResult = props.onUnWriteable(e.target.textContent)
                     if (validationResult === false) {
-                        div.textContent = props.text
+                        div.textContent = text
                     }
                 }
                 div.addEventListener(onEventType, onEventFunc)
@@ -73,10 +77,6 @@ const MakeWriteable = (props) => {
             div.addEventListener("input", onInput)
         }
         divRef.current.addEventListener(onEventType, onEventFunc)
-
-        if (props.text) {
-            divRef.current.textContent = props.text
-        }
     }, []);
 
     return "";

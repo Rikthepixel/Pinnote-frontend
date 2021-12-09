@@ -31,22 +31,13 @@ const PinNote = (props) => {
   });
 
   const state = useSelector(state => {
-    let note = null;
-    state.boards.boards.every(_board => {
-      if (props.boardId != _board.boardId) {
-        return true;
-      }
-
-      _board.notes.every(_note => {
-        if (props.noteId != _note.noteId) {
-          return true;
-        }
-
-        note = _note;
+    let note = {};
+    ((state.boards.board || {}).notes || []).every((_note) => {
+      if (_note.id == props.noteId) {
+        note = _note
         return false;
-      })
-
-      return false;
+      }
+      return true;
     })
     return note;
   })
@@ -54,12 +45,12 @@ const PinNote = (props) => {
   const positionRef = useRef(state.position)
 
   const onDelete = () => {
-    deletePinNote(dispatch, props.boardId, props.noteId)
+    deletePinNote(dispatch, props.noteId)
   }
 
   let setColorDisplay = null;
   const updateColor = (color, save) => {
-    updatePinNote(dispatch, props.boardId, props.noteId,
+    updatePinNote(dispatch, props.noteId,
       save ? { backgroundColor: color } : { draftBackgroundColor: color }
     )
   }
@@ -97,7 +88,7 @@ const PinNote = (props) => {
           props.onMove(newPosition, positionRef.current, state.width, state.height, setOffset)
         }
 
-        updatePinNote(dispatch, props.boardId, props.noteId, {
+        updatePinNote(dispatch, props.noteId, {
           position: {
             x: newPosition.x + movementOffset.x,
             y: newPosition.y + movementOffset.y
@@ -163,9 +154,9 @@ const PinNote = (props) => {
               color: "black"
             }}
             onWriteable={disableDrag}
-            onUnWriteable={(element) => {
-              updatePinNote(dispatch, props.boardId, props.noteId, {
-                title: element.textContent
+            onUnWriteable={(text) => {
+              updatePinNote(dispatch, props.noteId, {
+                title: text
               })
               enableDrag()
             }}
@@ -176,6 +167,7 @@ const PinNote = (props) => {
         <OverlayTrigger
           trigger="click"
           placement="right-start"
+          rootClose
           onToggle={(shown) => {
             if (!shown) {
               enableDrag();

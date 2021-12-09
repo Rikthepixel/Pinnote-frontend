@@ -1,10 +1,15 @@
 import boardSchema, { validateBoard } from "./BoardValidators";
 
-export const getAllPinBoards = (dispatch) => {
+export const loadBoard = (dispatch, id) => {
+    if (!id) { return }
+
     dispatch({
-        type: "GET_ALL_BOARDS",
-    });
-};
+        type: "LOAD_BOARD",
+        payload: {
+            boardId: id
+        }
+    })
+}
 
 export const createPinBoard = (dispatch) => {
     dispatch({
@@ -42,32 +47,29 @@ export const updatePinBoard = (dispatch, boardId, changes) => {
     return {}
 }
 
-export const createPinNote = (dispatch, boardId, position) => {
+export const createPinNote = (dispatch, position) => {
     dispatch({
         type: "CREATE_BOARD_NOTE",
         payload: {
-            boardId: boardId,
             position: position
         }
     })
 }
 
-export const deletePinNote = (dispatch, boardId, noteId) => {
+export const deletePinNote = (dispatch, noteId) => {
     dispatch({
         type: "REMOVE_BOARD_NOTE",
         payload: {
-            boardId: boardId,
             noteId: noteId
         }
     })
 }
 
-export const updatePinNote = (dispatch, boardId, noteId, changes) => {
+export const updatePinNote = (dispatch, noteId, changes) => {
 
     dispatch({
         type: "UPDATE_BOARD_NOTE",
         payload: {
-            boardId: boardId,
             noteId: noteId,
             changes: changes
         }

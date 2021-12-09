@@ -13,22 +13,14 @@ export const PinBoard = (props) => {
   const dispatch = useDispatch();
 
   const Notes = useSelector(state => {
-    let Notes = null;
-    state.boards.boards.every((board) => {
-      if (props.boardId != board.boardId) {
-        return true;
-      }
-      Notes = board.notes;
-      return false;
-    })
-    return Notes
+    return (state.boards.board || {}).notes || []
   })
 
   const createNote = (e) => {
     let boardElement = boardRef.current;
     let DomRect = boardElement.getBoundingClientRect();
 
-    createPinNote(dispatch, props.boardId, {
+    createPinNote(dispatch, {
       x: DomRect.width / 2 + boardElement.scrollLeft,
       y: DomRect.height / 2 + boardElement.scrollTop,
     });
@@ -42,8 +34,8 @@ export const PinBoard = (props) => {
 
   const renderedNotes = Notes.map((note, i) => {
     return <PinNote
-      key={note.noteId}
-      noteId={note.noteId}
+      key={note.id}
+      noteId={note.id}
       boardId={props.boardId}
 
       onMove={(Position, oldPosition, width, height, setOffset) => {

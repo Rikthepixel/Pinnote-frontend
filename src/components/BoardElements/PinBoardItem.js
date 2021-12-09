@@ -7,22 +7,21 @@ import "../../assets/scss/components/BoardElements/PinBoardItem.scss"
 
 export const PinBoardItem = (props) => {
     const state = useSelector(state => {
-        let Board = null;
-        state.boards.boards.every((board) => {
-            if (props.boardId != board.boardId) {
-                return true;
+        let board = null;
+        state.boards.boards.every((_board) => {
+            if (props.boardId == _board.id) {
+                board = _board;
+                return false;
             }
-            Board = board;
-            return false;
+            return true;
         })
-
-        return Board
+        return board
     })
 
     let displayColor = state.backgroundColor
 
     return (
-        <NavLink to={`/Boards/${state.boardId}`} className="PinBoardItem"
+        <NavLink to={`/Boards/${state.id}`} className="PinBoardItem"
             style={{
                 backgroundColor: `rgb(${displayColor.join()})`,
                 color: `${getContrastingColor(rgbaToHsva({
@@ -31,7 +30,7 @@ export const PinBoardItem = (props) => {
                     b: displayColor[2]
                 }))}`,
                 border: `0.1em solid black`
-            
+
             }}>
 
             <p>

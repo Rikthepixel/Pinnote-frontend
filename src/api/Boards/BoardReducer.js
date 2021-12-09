@@ -1,5 +1,3 @@
-import { act } from "react-dom/test-utils";
-
 function generateRandomId() {
     return Math.floor(Math.random() * 10000).toString();
 }
@@ -32,90 +30,98 @@ const initialBoardState = {
 const initialState = {
     boards: [
         {
-            boardId: 1,
+            id: 1,
             title: "a board",
             backgroundColor: [0, 128, 128],
-            defaultNoteBackgroundColor: [ 26, 77, 73 ],
+            defaultNoteBackgroundColor: [26, 77, 73],
             notes: [],
         },
     ],
 };
 
+const getBoardById = (state, id) => {
+    let board, index;
+    state.boards.every((_board, _index) => {
+        if (_board.id == id) {
+            
+            index = _index;
+            board = _board;
+            return false;
+        }
+        return true;
+    });
+    return [board, index]
+}
+
+const getNoteById = (state, id) => {
+    let note, index;
+    state.board.notes.every((_note, _index) => {
+        if (_note.id.toString() != id.toString()) {
+            return true;
+        }
+        note = _note;
+        index = _index;
+        return false;
+    })
+    return [note, index]
+}
+
 const BoardReducer = (state = initialState, action) => {
+    let payload = action.payload;
     let board, boardIndex = null;
     let note, noteIndex = null;
 
-    function findBoardById(id) {
-        state.boards.every((_board, index) => {
-            if (_board.boardId != id) {
-                return true;
-            }
-            boardIndex = index;
-            board = _board;
-            return false;
-        });
-    }
-
-    function findNoteById(board, id) {
-        board.notes.every((_note, i) => {
-            if (_note.noteId != id) {
-                return true;
-            }
-            note = _note;
-            noteIndex = i;
-            return false;
-        })
-    }
-
     switch (action.type) {
-        case "GET_ALL_BOARDS":
-            return {
-                ...state,
-            };
+        case "LOAD_BOARD":
+            [board, boardIndex] = getBoardById(state, payload.boardId)
+            return Object.assign({}, state, {
+                board: board
+            })
 
         case "CREATE_BOARD":
             state.boards.push({
-                boardId: generateRandomId(),
-                title: action.payload.title || initialBoardState.title,
-                backgroundColor: action.payload.backgroundColor || initialBoardState.backgroundColor,
-                defaultNoteBackgroundColor: action.payload.defaultNoteBackgroundColor || initialBoardState.defaultNoteBackgroundColor,
+                id: generateRandomId(),
+                title: payload.title || initialBoardState.title,
+                backgroundColor: payload.backgroundColor || initialBoardState.backgroundColor,
+                defaultNoteBackgroundColor: payload.defaultNoteBackgroundColor || initialBoardState.defaultNoteBackgroundColor,
                 notes: [],
             });
-            return {
-                ...state,
-                boards: [...state.boards],
-            };
+
+            return Object.assign({}, state, {
+                boards: [...state.boards]
+            });
 
         case "REMOVE_BOARD":
-            findBoardById(action.payload.boardId)
+            getBoardById(payload.boardId)
             state.boards.splice(boardIndex, 1)
 
-            return {
-                ...state,
-                boards: [
-                    ...state.boards
-                ],
-            };
-
-        case "UPDATE_BOARD":
-            findBoardById(action.payload.boardId)
-
-            state.boards[boardIndex] = {
-                ...board,
-                ...action.payload.changes
+            if (state.board.id == payload.boardId) {
+                state.board = null;
             }
 
-            return {
-                ...state,
-                boards: [
-                    ...state.boards
-                ],
-            };
+            return Object.assign({}, state, {
+                boards: [...state.boards]
+            });
+
+        case "UPDATE_BOARD":
+            [board, boardIndex] = getBoardById(state, payload.boardId)
+
+            state.boards[boardIndex] = Object.assign({}, board, payload.changes)
+
+            if (state.board.id == payload.boardId) {
+                state.board = state.boards[boardIndex]
+            }
+
+            return Object.assign({}, state, {
+                boards: [...state.boards]
+            });
 
         case "CREATE_BOARD_NOTE":
-            findBoardById(action.payload.boardId)
+            if (!state.board) { return state }
+            board = state.board
+
             board.notes.push({
-                noteId: generateRandomId(),
+                id: generateRandomId(),
                 title: initialNoteState.title,
                 text: initialNoteState.text,
                 position: action.payload.position || initialNoteState.position,
@@ -124,55 +130,38 @@ const BoardReducer = (state = initialState, action) => {
                 height: initialNoteState.height
             });
 
-            state.boards[boardIndex] = {
-                ...board,
-                notes: [...board.notes],
-            }
-
-            return {
-                ...state,
-                boards: [
-                    ...state.boards
-                ],
-            };
+            return Object.assign({}, state, {
+                board: Object.assign({}, board, {
+                    notes: [...board.notes]
+                })
+            });
 
         case "REMOVE_BOARD_NOTE":
-            findBoardById(action.payload.boardId)
-            findNoteById(board, action.payload.noteId)
+            if (!state.board) { return state }
+            board = state.board
+
+            [note, noteIndex] = getNoteById(state, action.payload.noteId)
+            if (!note) { return state }
             board.notes.splice(noteIndex, 1)
 
-            state.boards[boardIndex] = {
-                ...board,
-                notes: [...board.notes],
-            }
-
-            return {
-                ...state,
-                boards: [
-                    ...state.boards
-                ],
-            };
+            return Object.assign({}, state, {
+                board: Object.assign({}, board, {
+                    notes: [...board.notes]
+                })
+            });
 
         case "UPDATE_BOARD_NOTE":
-            findBoardById(action.payload.boardId)
-            findNoteById(board, action.payload.noteId)
+            if (!state.board) { return state; }
+            board = state.board;
+            [note, noteIndex]= getNoteById(state, payload.noteId);
+            if (!note) { return state; }
 
-            board.notes[noteIndex] = {
-                ...note,
-                ...action.payload.changes
-            }
-
-            state.boards[boardIndex] = {
-                ...board,
-                notes: [...board.notes],
-            }
-
-            return {
-                ...state,
-                boards: [
-                    ...state.boards
-                ],
-            }; 
+            board.notes[noteIndex] = Object.assign({}, note, payload.changes)
+            return Object.assign({}, state, {
+                board: Object.assign({}, board, {
+                    notes: [...board.notes]
+                })
+            });
 
         default:
             return state;

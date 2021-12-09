@@ -12,8 +12,8 @@ const Boards = (props) => {
     const boards = useSelector(state => state.boards.boards)
     const dispatch = useDispatch();
 
-    const renderedBoards = boards.map((element, index) => {
-        return <PinBoardItem key={index} boardId={element.boardId} />
+    const renderedBoards = boards.map((board, index) => {
+        return <PinBoardItem key={index} boardId={board.id} />
     })
 
     return (
