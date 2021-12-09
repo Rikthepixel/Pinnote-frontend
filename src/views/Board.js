@@ -129,8 +129,10 @@ const Board = (props) => {
       },
     }).then(result => {
       if (result.confirmed) {
-        updateBoardTitle(result.value)
+        updateBoardTitle(result.value);
+        return
       }
+      updateBoardTitle(state.title);
     })
   }
 

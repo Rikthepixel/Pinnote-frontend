@@ -58,11 +58,12 @@ const MakeWriteable = (props) => {
             let previousState = div.textContent
             let onInput = e => {
                 if (typeof(props.onChange) == 'function') {
-                    let validationResult = props.onChange(e.target.textContent)
+                    let target = e.target
+                    let validationResult = props.onChange(target.textContent)
                     if (validationResult === false) {
-                        e.target.textContent = previousState
+                        target.textContent = previousState
                     }
-                    previousState = e.target.textContent
+                    previousState = target.textContent
                 }
             }
         
