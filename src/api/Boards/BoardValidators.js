@@ -1,13 +1,5 @@
-import * as yup from "yup"
-
-const vector2Schema = yup.object().shape({
-    x: yup.number().default(0),
-    y: yup.number().default(0)
-})
-
-const rgbColorSchema = yup.array().of(
-    yup.number().required().integer().min(0).max(255)
-).length(3)
+import * as yup from "yup";
+import { vector2Schema, rgbColorSchema } from "../../utils/Validators";
 
 const noteSchema = yup.object().shape({
     id: yup.number().required().integer(),
@@ -17,7 +9,7 @@ const noteSchema = yup.object().shape({
     backgroundColor: rgbColorSchema.required(),
     width: yup.number().default(200).required(),
     height: yup.number().default(200).required()
-})
+});
 
 const boardSchema = yup.object().shape({
     id: yup.number().required().integer(),
@@ -39,6 +31,6 @@ export const validateBoard = (object) => {
         }
     })
     return errors
-}
+};
 
-export default boardSchema
+export default boardSchema;

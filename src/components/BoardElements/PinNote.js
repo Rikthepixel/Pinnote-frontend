@@ -20,6 +20,20 @@ function disableSelect(e) {
   e.preventDefault();
 }
 
+const MovingPopover = React.forwardRef(
+  ({ popper, children, show: _, ...props }, ref) => {
+    useEffect(() => {
+      popper.scheduleUpdate();
+    }, [children, popper]);
+
+    return (
+      <Popover ref={ref} body {...props}>
+        {children}
+      </Popover>
+    );
+  },
+);
+
 const PinNote = (props) => {
   const dispatch = useDispatch();
   const HeaderRef = useRef();
@@ -170,20 +184,15 @@ const PinNote = (props) => {
           rootClose
           onToggle={(shown) => {
             if (!shown) {
-              enableDrag();
               if (typeof (setColorDisplay) == "function") {
                 setColorDisplay(state.backgroundColor);
                 updateColor(null, false);
               }
               return
             }
-
-            disableDrag();
           }}
           overlay={
-            <Popover
-              className="p-2"
-            >
+            <MovingPopover>
               <ColorSelectorButton
                 variant="primary"
                 className="w-100 p-0"
@@ -223,7 +232,7 @@ const PinNote = (props) => {
                 />
                 Delete note
               </Button>
-            </Popover>
+            </MovingPopover>
           }
         >
           <button className="pinNote-Header-Action">

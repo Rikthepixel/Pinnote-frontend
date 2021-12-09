@@ -56,7 +56,7 @@ const getBoardById = (state, id) => {
 const getNoteById = (state, id) => {
     let note, index;
     state.board.notes.every((_note, _index) => {
-        if (_note.id.toString() != id.toString()) {
+        if (_note.id != id) {
             return true;
         }
         note = _note;
