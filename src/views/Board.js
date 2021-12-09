@@ -38,6 +38,8 @@ const Board = (props) => {
 
   useEffect(() => {
     loadBoard(dispatch, boardId);
+
+
   }, [])
 
   const toggleMenu = () => {
@@ -173,7 +175,7 @@ const Board = (props) => {
             </div>
           </Button>
 
-          <ColorSelectorButton
+          {state.backgroundColor && <ColorSelectorButton
             variant="primary"
             className="w-100"
             text="Background color"
@@ -190,17 +192,17 @@ const Board = (props) => {
               state.draftBackgroundColor = null;
               updateColor(newColor, true);
             }}
-          />
+          />}
 
-          <ColorSelectorButton
+          {state.defaultNoteBackgroundColor && <ColorSelectorButton
             variant="primary"
             className="w-100"
-            text="Default note color"
+            text="Note color"
             icon={NoteIcon}
             color={state.defaultNoteBackgroundColor}
             onCancel={updateNoteColor}
             onSave={updateNoteColor}
-          />
+          />}
 
           <Button
             variant="danger"
