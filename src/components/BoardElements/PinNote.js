@@ -37,10 +37,7 @@ const PinNote = (props) => {
   const dispatch = useDispatch();
   const HeaderRef = useRef();
   const NoteDiv = useRef();
-  const offsetRef = useRef({
-    x: null,
-    y: null
-  });
+  const setColorSelectorDisplay = useRef();
   const stateRef = useRef();
 
   const state = useSelector(state => {
@@ -56,16 +53,9 @@ const PinNote = (props) => {
   })
   stateRef.current = state
 
-  const positionRef = useRef(state.position)
-
-  const onDelete = () => {
-    deletePinNote(dispatch, props.noteId)
-  }
-
   const updateTitle = (title = "", validate) => {
     let errors = {}
     title = title.trim()
-
     if (validate) {
       errors = validateNote({ title: title })
     } else {
@@ -103,13 +93,6 @@ const PinNote = (props) => {
     })
   }
 
-  let setColorDisplay = null;
-  const updateColor = (color, save) => {
-    updatePinNote(dispatch, props.noteId,
-      save ? { backgroundColor: color } : { draftBackgroundColor: color }
-    )
-  }
-
   const disableDrag = () => {
     HeaderRef.current.onmousedown = null;
   };
@@ -137,7 +120,7 @@ const PinNote = (props) => {
         let setOffset = (x, y) => {
           movementOffset.x = x;
           movementOffset.y = y;
-        }        
+        }
 
         if (typeof (props.onMove) == "function") {
           props.onMove(newPosition, state.position, state.width, state.height, setOffset)
@@ -189,16 +172,11 @@ const PinNote = (props) => {
         <div
           className="pinNote-Header-Title"
           ref={HeaderRef}
-          style={{
-            color: contrastColor
-          }}
+          style={{ color: contrastColor }}
         >
           <MakeWriteable
             parentRef={HeaderRef}
-            editStyle={{
-              backgroundColor: "#FFF",
-              color: "black"
-            }}
+            editStyle={{ backgroundColor: "#FFF", color: "black" }}
             onWriteable={disableDrag}
             onUnWriteable={(text, setText) => {
               let errors = updatePinNote(dispatch, props.noteId, {
@@ -216,12 +194,9 @@ const PinNote = (props) => {
           placement="right-start"
           rootClose
           onToggle={(shown) => {
-            if (!shown) {
-              if (typeof (setColorDisplay) == "function") {
-                setColorDisplay(state.backgroundColor);
-                updateColor(null, false);
-              }
-              return
+            if (!shown && typeof (setColorSelectorDisplay.current) == "function") {
+              setColorSelectorDisplay.current(state.backgroundColor);
+              updatePinNote(dispatch, props.noteId, { draftBackgroundColorn: null })
             }
           }}
           overlay={
@@ -253,35 +228,20 @@ const PinNote = (props) => {
                 text="Change color"
                 icon={BrushIcon}
                 color={state.backgroundColor}
-                onOpen={(setDisplayColor) => {
-                  setColorDisplay = setDisplayColor
-                }}
-                onCancel={(oldColor, setDisplayColor) => {
-                  setDisplayColor(state.backgroundColor);
-                  updateColor(null, false);
-                }}
-                onChange={(newColor) => {
-                  updateColor(newColor, false)
-                }}
-                onSave={(newColor) => {
-                  state.draftBackgroundColor = null;
-                  updateColor(newColor, true);
-                }}
+                onOpen={(setColor) => { setColorSelectorDisplay.current = setColor }}
+                onCancel={(_, setDisplayColor) => { setDisplayColor(state.backgroundColor); updatePinNote(dispatch, props.noteId, { draftBackgroundColor: null })}}
+                onChange={color => updatePinNote(dispatch, props.noteId, { draftBackgroundColor: color })}
+                onSave={color => updatePinNote(dispatch, props.noteId, { draftBackgroundColor: null, backgroundColor: color })}
               />
               <Dropdown.Divider className="m-0 w-100" />
               <Button
                 className="w-100"
                 variant="danger"
-                onClick={onDelete}
+                onClick={() => deletePinNote(dispatch, props.noteId)}
               >
                 <img
-                  className="me-1"
-                  src={TrashIcon}
-                  style={{
-                    filter: "invert(100%)",
-                    aspectRatio: "1",
-                    height: "1.2rem"
-                  }}
+                  className="me-1" src={TrashIcon}
+                  style={{ filter: "invert(100%)", aspectRatio: "1", height: "1.2rem" }}
                 />
                 Delete note
               </Button>
@@ -290,11 +250,8 @@ const PinNote = (props) => {
         >
           <button className="pinNote-Header-Action">
             <img
-              src={MoreIcon}
-              alt="..."
-              style={{
-                filter: contrastColor == "#fff" && "invert(100%)"
-              }}
+              src={MoreIcon} alt="..."
+              style={{filter: contrastColor == "#fff" && "invert(100%)" }}
             />
           </button>
         </OverlayTrigger>
@@ -303,12 +260,10 @@ const PinNote = (props) => {
         <textarea
           className="pinNote-TextContent"
           defaultValue={state.text}
-          style={{
-            color: contrastColor
-          }}
+          style={{ color: contrastColor }}
         ></textarea>
       </div>
-    </div >
+    </div>
   );
 }
 

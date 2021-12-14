@@ -1,40 +1,47 @@
 import sweetalert2 from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
+
+import "./Alerts.css";
+
 const Swal = withReactContent(sweetalert2);
+
+const defaults = {
+    customClass: { container: "PriorityAlert" },
+    heightAuto: false,
+}
 
 export const ConfirmationAlert = (config) => {
     return new Promise((resolve) => {
         Swal.fire({
+            ...defaults,
             title: config.title,
             text: config.text,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: config.acceptButtonText,
             cancelButtonText: config.cancelButtonText,
-            reverseButtons: true,
-            heightAuto: false,
             timer: config.timer
         }).then((result) => {
             if (result.isConfirmed) {
                 resolve(true)
                 if (config.acceptPopup) {
                     Swal.fire({
+                        ...defaults,
                         title: config.acceptedTitle,
                         text: config.acceptedText,
                         timer: config.acceptPopupTimer || 5000,
                         icon: 'success',
-                        heightAuto: false
                     })
                 }
             } else if (result.isDismissed) {
                 resolve(false)
                 if (config.cancelPopup) {
                     Swal.fire({
+                        ...defaults,
                         title: config.cancelledTitle,
                         text: config.cancelledText,
                         timer: config.cancelPopupTimer || 5000,
                         icon: 'error',
-                        heightAuto: false
                     })
                 }
             }
@@ -46,6 +53,7 @@ export const ConfirmationAlert = (config) => {
 export const SingleFormAlert = (config) => {
     return new Promise((resolve) => {
         Swal.fire({
+            ...defaults,
             title: config.title,
             text: config.text,
             timer: config.timer,
@@ -76,7 +84,6 @@ export const SingleFormAlert = (config) => {
                 }
             },
             inputPlaceholder: config.inputPlaceholder,
-            heightAuto: false,
             preConfirm: (value) => {
                 if (typeof (config.validate) != 'function') {
                     return value
@@ -97,21 +104,20 @@ export const SingleFormAlert = (config) => {
                 returnValue.confirmed = true
                 if (config.acceptPopup) {
                     Swal.fire({
+                        ...defaults,
                         title: config.acceptedTitle,
                         text: config.acceptedText,
                         icon: 'success',
-                        heightAuto: false
                     })
                 }
             } else if (result.isDismissed) {
                 returnValue.confirmed = false
                 if (config.cancelPopup) {
                     Swal.fire({
+                        ...defaults,
                         title: config.cancelledTitle,
                         text: config.cancelledText,
-
                         icon: 'error',
-                        heightAuto: false
                     })
                 }
             }
