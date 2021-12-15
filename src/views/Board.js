@@ -6,7 +6,7 @@ import { Button } from "react-bootstrap";
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
-import { updatePinBoard, removePinBoard, loadBoard } from "../api";
+import { updatePinBoard, removePinBoard, loadBoard, unloadBoard } from "../api";
 import { ConfirmationAlert, SingleFormAlert } from "../utils/Alerts";
 import { validateBoard } from "../api/Boards/BoardValidators";
 
@@ -38,6 +38,10 @@ const Board = (props) => {
 
   useEffect(() => {
     loadBoard(dispatch, boardId);
+
+    return () => {
+      unloadBoard(dispatch);
+    }
   }, []);
 
   const toggleMenu = () => {
@@ -220,9 +224,7 @@ const Board = (props) => {
       </div>
       <div
         className="pinBoard-Main-Container page-container"
-        style={{
-          backgroundColor: `rgb(${displayColor.join()})`,
-        }}
+        style={{ backgroundColor: `rgb(${displayColor.join()})` }}
       >
         <PinNoteToolbar>
           <div className="me-auto pinBoard-Toolbar-Title">{state.title}</div>

@@ -5,10 +5,8 @@ function generateRandomId() {
 const initialNoteState = {
     title: "",
     text: "",
-    position: {
-        x: 0,
-        y: 0
-    },
+    positionX: 0,
+    positionY: 0,
     width: 200,
     height: 200
 }
@@ -74,10 +72,16 @@ const BoardReducer = (state = initialState, action) => {
     let [note, noteIndex] = getNoteById(state, payload.noteId);
 
     switch (action.type) {
-        case "LOAD_BOARD":
+        case "SUBSCRIBED_TO_BOARD":
             return Object.assign({}, state, {
-                board: board
+                board: payload.board
             })
+
+        case "UNSUBSCRIBED_FROM_BOARD":
+            return {
+                ...state,
+                board: null
+            }
 
         case "CREATE_BOARD":
             state.boards.push({
@@ -104,14 +108,8 @@ const BoardReducer = (state = initialState, action) => {
             });
 
         case "UPDATE_BOARD":
-            state.boards[boardIndex] = Object.assign({}, board, payload.changes)
-
-            if (state.board.id == payload.boardId) {
-                state.board = state.boards[boardIndex]
-            }
-
             return Object.assign({}, state, {
-                boards: [...state.boards]
+                board: Object.assign({}, board, payload.changes)
             });
 
         case "CREATE_BOARD_NOTE":
@@ -122,7 +120,8 @@ const BoardReducer = (state = initialState, action) => {
                 id: generateRandomId(),
                 title: initialNoteState.title,
                 text: initialNoteState.text,
-                position: payload.position || initialNoteState.position,
+                positionX: payload.positionX || initialNoteState.positionX,
+                positionY: payload.positionY || initialNoteState.positionY,
                 backgroundColor: board.defaultNoteBackgroundColor,
                 width: initialNoteState.width,
                 height: initialNoteState.height
@@ -139,7 +138,6 @@ const BoardReducer = (state = initialState, action) => {
             board = state.board
             if (!note) { return state }
             board.notes.splice(noteIndex, 1)
-            console.log("removed")
 
             return Object.assign({}, state, {
                 board: Object.assign({}, board, {

@@ -108,29 +108,28 @@ const PinNote = (props) => {
       document.onmousemove = function (e) {
         const state = stateRef.current
         let Rect = NoteDiv.current.getBoundingClientRect();
-        let newPosition = {
-          x: e.pageX - (Rect.x - state.position.x) - handle.x - (e.pageX - e.clientX),
-          y: e.pageY - (Rect.y - state.position.y) - handle.y - (e.pageX - e.clientX),
-        }
+        let newPositionX = e.pageX - (Rect.x - state.positionX) - handle.x - (e.pageX - e.clientX)
+        let newPositionY = e.pageY - (Rect.y - state.positionY) - handle.y - (e.pageX - e.clientX)
 
-        let movementOffset = {
-          x: 0,
-          y: 0
-        }
+        let [movementOffsetX, movementOffsetY] = [0, 0];
         let setOffset = (x, y) => {
-          movementOffset.x = x;
-          movementOffset.y = y;
+          movementOffsetX = x;
+          movementOffsetY = y;
         }
 
         if (typeof (props.onMove) == "function") {
-          props.onMove(newPosition, state.position, state.width, state.height, setOffset)
+          props.onMove({
+            x: newPositionX,
+            y: newPositionY
+          }, {
+            x: state.positionX,
+            y: state.positionY
+          }, state.width, state.height, setOffset)
         }
 
         updatePinNote(dispatch, props.noteId, {
-          position: {
-            x: newPosition.x + movementOffset.x,
-            y: newPosition.y + movementOffset.y
-          }
+          positionX: newPositionX + movementOffsetX,
+          positionY: newPositionY + movementOffsetY
         });
       };
 
@@ -162,10 +161,10 @@ const PinNote = (props) => {
       ref={NoteDiv}
       style={{
         backgroundColor: `rgb(${displayColor.join()})`,
-        width: `${state.width}px`,
-        height: `${state.height}px`,
-        left: state.position.x - state.width / 2,
-        top: state.position.y - state.height / 2,
+        width: `${state.width || 200}px`,
+        height: `${state.height || 200}px`,
+        left: state.positionX - (state.width || 200) / 2,
+        top: state.positionY - (state.height || 200) / 2,
       }}
     >
       <div className="pinNote-Header">

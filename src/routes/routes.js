@@ -1,7 +1,6 @@
 //Imports
 import Boards from "../views/Boards";
 import Board from "../views/Board";
-import HubTest from "../views/HubTest";
 
 //Routes
 export const routes = {
@@ -22,10 +21,4 @@ export const routes = {
         path: "/Boards/:boardId",
         exact: true
     },
-
-    ConnectionTest: {
-        component: HubTest,
-        path: "/Test",
-        exact: true
-    }
 }

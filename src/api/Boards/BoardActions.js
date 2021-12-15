@@ -1,13 +1,70 @@
 import boardSchema, { validateBoard, validateNote } from "./BoardValidators";
+import { HubConnectionBuilder } from "@microsoft/signalr";
+
+const boardHubConnection = new HubConnectionBuilder()
+    .withUrl(`${process.env.REACT_APP_BACKEND_URL}/boardHub`)
+    .build();
+
+const colorDTOtoColor = (dto) => {
+    return JSON.parse(dto, (key, value) => {
+        if (!key) {
+            return value
+        }
+        return parseInt(value)
+    })
+}
+
+const noteDTOtoNote = (dto) => {
+    console.log(dto);
+    return {
+        ...dto,
+        backgroundColor: colorDTOtoColor(dto.backgroundColor)
+    }
+}
+
+const boardDTOtoBoard = (dto) => {
+    return {
+        ...dto,
+        backgroundColor: colorDTOtoColor(dto.backgroundColor),
+        notes: dto.notes.map(noteDTO => noteDTOtoNote(noteDTO)),
+    }
+}
 
 export const loadBoard = (dispatch, id) => {
-    if (!id) { return }
+    return new Promise((resolve, reject) => {
+        if (!id) { return }
+        boardHubConnection.start()
+            .then(() => {
+                boardHubConnection.invoke("Subscribe", 2)
+                    .then((response) => {
+                        if (response.error) {
+                            reject(response.error);
+                            return;
+                        }
+
+                        let parsedBoard = boardDTOtoBoard(response.data)
+                        console.log(parsedBoard);
+                        dispatch({
+                            type: "SUBSCRIBED_TO_BOARD",
+                            payload: {
+                                board: parsedBoard
+                            }
+                        });
+                        resolve(parsedBoard)
+                    })
+                    .catch(err => reject(err))
+            })
+            .catch(err => reject(err));
+    })
+}
+
+export const unloadBoard = (dispatch) => {
+    boardHubConnection.send("UnSubscribe")
+    boardHubConnection.off();
+    boardHubConnection.stop();
 
     dispatch({
-        type: "LOAD_BOARD",
-        payload: {
-            boardId: id
-        }
+        type: "UNSUBSCRIBED_FROM_BOARD"
     })
 }
 
@@ -30,7 +87,7 @@ export const removePinBoard = (dispatch, boardId) => {
 }
 
 export const updatePinBoard = (dispatch, boardId, changes) => {
-   
+
     let errors = validateBoard(changes)
     if (Object.keys(errors).length > 0) {
         return errors
@@ -61,6 +118,16 @@ export const deletePinNote = (dispatch, noteId) => {
         type: "REMOVE_BOARD_NOTE",
         payload: {
             noteId: noteId
+        }
+    })
+}
+
+export const setPinNotePosition = (dispatch, noteId, x, y) => {
+    dispatch({
+        type: "SET_NOTE_POSITION",
+        payload: {
+            x: x,
+            y: y,
         }
     })
 }
