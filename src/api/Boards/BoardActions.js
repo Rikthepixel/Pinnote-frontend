@@ -5,27 +5,34 @@ const boardHubConnection = new HubConnectionBuilder()
     .withUrl(`${process.env.REACT_APP_BACKEND_URL}/boardHub`)
     .build();
 
-const colorDTOtoColor = (dto) => {
-    return JSON.parse(dto, (key, value) => {
-        if (!key) {
-            return value
-        }
-        return parseInt(value)
-    })
-}
-
 const noteDTOtoNote = (dto) => {
-    console.log(dto);
+    let backgroundColor = [dto.backgroundColorR, dto.backgroundColorG, dto.backgroundColorB]
+
+    delete dto.backgroundColorR;
+    delete dto.backgroundColorG;
+    delete dto.backgroundColorB;
+
     return {
         ...dto,
-        backgroundColor: colorDTOtoColor(dto.backgroundColor)
+        backgroundColor: backgroundColor
     }
 }
 
 const boardDTOtoBoard = (dto) => {
+    let backgroundColor = [dto.backgroundColorR, dto.backgroundColorG, dto.backgroundColorB];
+    let defaultBackgroundColor = [dto.defaultBackgroundColorR, dto.defaultBackgroundColorG, dto.defaultBackgroundColorB];
+
+    delete dto.backgroundColorR;
+    delete dto.backgroundColorG;
+    delete dto.backgroundColorB;
+    delete dto.defaultBackgroundColorR;
+    delete dto.defaultBackgroundColorG;
+    delete dto.defaultBackgroundColorB;
+
     return {
         ...dto,
-        backgroundColor: colorDTOtoColor(dto.backgroundColor),
+        backgroundColor: backgroundColor,
+        defaultNoteBackgroundColor: defaultBackgroundColor,
         notes: dto.notes.map(noteDTO => noteDTOtoNote(noteDTO)),
     }
 }
@@ -42,8 +49,24 @@ export const loadBoard = (dispatch, id) => {
                             return;
                         }
 
+                        boardHubConnection.on("NoteAdded", (note) => {
+                            console.log(note);
+                            dispatch({
+                                type: "CREATE_BOARD_NOTE",
+                                payload: noteDTOtoNote(note)
+                            })
+                        })
+
+                        boardHubConnection.on("NoteRemoved", (note) => {
+                            dispatch({
+                                type: "REMOVE_BOARD_NOTE",
+                                payload: {
+                                    noteId: note.id
+                                }
+                            })
+                        })
+
                         let parsedBoard = boardDTOtoBoard(response.data)
-                        console.log(parsedBoard);
                         dispatch({
                             type: "SUBSCRIBED_TO_BOARD",
                             payload: {
@@ -105,21 +128,27 @@ export const updatePinBoard = (dispatch, boardId, changes) => {
 }
 
 export const createPinNote = (dispatch, position) => {
-    dispatch({
-        type: "CREATE_BOARD_NOTE",
-        payload: {
-            position: position
-        }
+
+    boardHubConnection.invoke("CreateNote", {
+        positionX: position.x,
+        positionY: position.y
     })
+    .then((response) => {
+        console.log(response);
+    })
+    .catch((err) => {
+        console.error(err)
+    });
 }
 
 export const deletePinNote = (dispatch, noteId) => {
-    dispatch({
-        type: "REMOVE_BOARD_NOTE",
-        payload: {
-            noteId: noteId
-        }
+    boardHubConnection.invoke("DeleteNote", noteId)
+    .then((response) => {
+        console.log(response);
     })
+    .catch((err) => {
+        console.error(err)
+    });
 }
 
 export const setPinNotePosition = (dispatch, noteId, x, y) => {

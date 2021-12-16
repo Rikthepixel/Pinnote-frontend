@@ -116,17 +116,7 @@ const BoardReducer = (state = initialState, action) => {
             if (!state.board) { return state }
             board = state.board
 
-            board.notes.push({
-                id: generateRandomId(),
-                title: initialNoteState.title,
-                text: initialNoteState.text,
-                positionX: payload.positionX || initialNoteState.positionX,
-                positionY: payload.positionY || initialNoteState.positionY,
-                backgroundColor: board.defaultNoteBackgroundColor,
-                width: initialNoteState.width,
-                height: initialNoteState.height
-            });
-
+            board.notes.push(payload);
             return Object.assign({}, state, {
                 board: Object.assign({}, board, {
                     notes: [...board.notes]
