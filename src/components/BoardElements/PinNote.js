@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, Fragment, forwardRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Dropdown, Button, Popover, OverlayTrigger } from "react-bootstrap";
 
@@ -6,7 +6,7 @@ import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
 
 import MakeWriteable from "../MakeWriteable";
 
-import { updatePinNote, deletePinNote } from "../../api";
+import { deletePinNote, setNoteColor, setNotePosition, setNoteText, setNoteTitle } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
 import { MoreIcon, BrushIcon, TrashIcon, EditIcon } from "../../assets/img/icons";
@@ -39,7 +39,9 @@ const PinNote = (props) => {
   const NoteDiv = useRef();
   const setColorSelectorDisplay = useRef();
   const stateRef = useRef();
+  const setTitleText = useRef();
 
+  const [draftBackgroundColor, setDraftBackgroundColor] = useState();
   const state = useSelector(state => {
     let note = {};
     ((state.boards.board || {}).notes || []).every((_note) => {
@@ -53,16 +55,21 @@ const PinNote = (props) => {
   })
   stateRef.current = state
 
+
   const updateTitle = (title = "", validate) => {
     let errors = {}
     title = title.trim()
     if (validate) {
       errors = validateNote({ title: title })
     } else {
-      errors = updatePinNote(dispatch, props.noteId, { title: title });
+      errors = setNoteTitle(props.noteId, { title: title });
     }
     return errors.title || []
   }
+
+  useEffect(() => {
+    setTitleText.current(stateRef.current.title);
+  }, [state.title])
 
   const onTitleChangeClick = () => {
     SingleFormAlert({
@@ -127,10 +134,11 @@ const PinNote = (props) => {
           }, state.width, state.height, setOffset)
         }
 
-        updatePinNote(dispatch, props.noteId, {
-          positionX: newPositionX + movementOffsetX,
-          positionY: newPositionY + movementOffsetY
-        });
+        setNotePosition(
+          props.noteId,
+          newPositionX + movementOffsetX,
+          newPositionY + movementOffsetY
+        );
       };
 
       document.onmouseup = function (e) {
@@ -148,7 +156,7 @@ const PinNote = (props) => {
     }
   }, []) //Initial drag enable
 
-  let displayColor = state.draftBackgroundColor ? state.draftBackgroundColor : state.backgroundColor
+  let displayColor = draftBackgroundColor ? draftBackgroundColor : state.backgroundColor
   let contrastColor = getContrastingColor(rgbaToHsva({
     r: displayColor[0],
     g: displayColor[1],
@@ -176,12 +184,11 @@ const PinNote = (props) => {
           <MakeWriteable
             parentRef={HeaderRef}
             editStyle={{ backgroundColor: "#FFF", color: "black" }}
+            onMount={(setText) => setTitleText.current = setText}
             onWriteable={disableDrag}
             onUnWriteable={(text, setText) => {
-              let errors = updatePinNote(dispatch, props.noteId, {
-                title: text
-              })
-              if (errors.title) { setText(state.title) }
+              let errors = setNoteTitle(props.noteId, text)
+              if (errors.title) { setText(stateRef.current.title) }
               enableDrag();
             }}
           />
@@ -195,7 +202,7 @@ const PinNote = (props) => {
           onToggle={(shown) => {
             if (!shown && typeof (setColorSelectorDisplay.current) == "function") {
               setColorSelectorDisplay.current(state.backgroundColor);
-              updatePinNote(dispatch, props.noteId, { draftBackgroundColorn: null })
+              setDraftBackgroundColor(null);
             }
           }}
           overlay={
@@ -228,15 +235,21 @@ const PinNote = (props) => {
                 icon={BrushIcon}
                 color={state.backgroundColor}
                 onOpen={(setColor) => { setColorSelectorDisplay.current = setColor }}
-                onCancel={(_, setDisplayColor) => { setDisplayColor(state.backgroundColor); updatePinNote(dispatch, props.noteId, { draftBackgroundColor: null })}}
-                onChange={color => updatePinNote(dispatch, props.noteId, { draftBackgroundColor: color })}
-                onSave={color => updatePinNote(dispatch, props.noteId, { draftBackgroundColor: null, backgroundColor: color })}
+                onCancel={(_, setDisplayColor) => { 
+                  setDisplayColor(state.backgroundColor);
+                  setDraftBackgroundColor(null);
+                }}
+                onChange={color => setDraftBackgroundColor(color)}
+                onSave={color => {
+                  setDraftBackgroundColor(null);
+                  setNoteColor(props.noteId, color[0], color[1], color[2]);
+                }}
               />
               <Dropdown.Divider className="m-0 w-100" />
               <Button
                 className="w-100"
                 variant="danger"
-                onClick={() => deletePinNote(dispatch, props.noteId)}
+                onClick={() => deletePinNote(props.noteId)}
               >
                 <img
                   className="me-1" src={TrashIcon}
@@ -258,8 +271,9 @@ const PinNote = (props) => {
       <div className="pinNote-Content">
         <textarea
           className="pinNote-TextContent"
-          defaultValue={state.text}
+          value={state.text}
           style={{ color: contrastColor }}
+          onChange={(e) => setNoteText(props.noteId, e.target.value)}
         ></textarea>
       </div>
     </div>

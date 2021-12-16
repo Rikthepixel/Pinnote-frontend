@@ -11,6 +11,10 @@ const MakeWriteable = (props) => {
             divRef.current.textContent = newText
         }
 
+        if (typeof(props.onMount) == "function"){
+            props.onMount(setText);
+        }
+
         let text = props.text || divRef.current.textContent
         if (text) {
             setText(text)

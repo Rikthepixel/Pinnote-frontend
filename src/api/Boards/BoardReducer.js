@@ -138,10 +138,8 @@ const BoardReducer = (state = initialState, action) => {
         case "UPDATE_BOARD_NOTE":
             if (!state.board) { return state; }
             board = state.board;
-            [note, noteIndex]= getNoteById(state, payload.noteId);
             if (!note) { return state; }
-
-            board.notes[noteIndex] = Object.assign({}, note, payload.changes)
+            board.notes[noteIndex] = Object.assign({}, note, payload);
             return Object.assign({}, state, {
                 board: Object.assign({}, board, {
                     notes: [...board.notes]

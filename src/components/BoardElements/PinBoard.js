@@ -20,10 +20,10 @@ export const PinBoard = (props) => {
     let boardElement = boardRef.current;
     let DomRect = boardElement.getBoundingClientRect();
 
-    createPinNote(dispatch, {
-      x: DomRect.width / 2 + boardElement.scrollLeft,
-      y: DomRect.height / 2 + boardElement.scrollTop,
-    });
+    createPinNote(
+      DomRect.width / 2 + boardElement.scrollLeft,
+      DomRect.height / 2 + boardElement.scrollTop
+    );
   }
 
   useEffect(() => {

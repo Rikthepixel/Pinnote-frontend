@@ -14,6 +14,7 @@ const noteDTOtoNote = (dto) => {
 
     return {
         ...dto,
+        noteId: dto.id,
         backgroundColor: backgroundColor
     }
 }
@@ -31,6 +32,7 @@ const boardDTOtoBoard = (dto) => {
 
     return {
         ...dto,
+        boardId: dto.id,
         backgroundColor: backgroundColor,
         defaultNoteBackgroundColor: defaultBackgroundColor,
         notes: dto.notes.map(noteDTO => noteDTOtoNote(noteDTO)),
@@ -50,12 +52,18 @@ export const loadBoard = (dispatch, id) => {
                         }
 
                         boardHubConnection.on("NoteAdded", (note) => {
-                            console.log(note);
                             dispatch({
                                 type: "CREATE_BOARD_NOTE",
                                 payload: noteDTOtoNote(note)
                             })
-                        })
+                        });
+
+                        boardHubConnection.on("NoteUpdated", (note) => {
+                            dispatch({
+                                type: "UPDATE_BOARD_NOTE",
+                                payload: noteDTOtoNote(note)
+                            })
+                        });
 
                         boardHubConnection.on("NoteRemoved", (note) => {
                             dispatch({
@@ -64,7 +72,7 @@ export const loadBoard = (dispatch, id) => {
                                     noteId: note.id
                                 }
                             })
-                        })
+                        });
 
                         let parsedBoard = boardDTOtoBoard(response.data)
                         dispatch({
@@ -127,11 +135,11 @@ export const updatePinBoard = (dispatch, boardId, changes) => {
     return {}
 }
 
-export const createPinNote = (dispatch, position) => {
+export const createPinNote = (positionX, positionY) => {
 
     boardHubConnection.invoke("CreateNote", {
-        positionX: position.x,
-        positionY: position.y
+        positionX: positionX,
+        positionY: positionY
     })
     .then((response) => {
         console.log(response);
@@ -141,7 +149,7 @@ export const createPinNote = (dispatch, position) => {
     });
 }
 
-export const deletePinNote = (dispatch, noteId) => {
+export const deletePinNote = (noteId) => {
     boardHubConnection.invoke("DeleteNote", noteId)
     .then((response) => {
         console.log(response);
@@ -151,29 +159,87 @@ export const deletePinNote = (dispatch, noteId) => {
     });
 }
 
-export const setPinNotePosition = (dispatch, noteId, x, y) => {
-    dispatch({
-        type: "SET_NOTE_POSITION",
-        payload: {
-            x: x,
-            y: y,
+export const setNotePosition = (noteId, positionX, positionY) => {
+    let errors = validateNote({
+        position: {
+            x: positionX,
+            y: positionY
         }
     })
-}
-
-export const updatePinNote = (dispatch, noteId, changes) => {
-    let errors = validateNote(changes)
     if (Object.keys(errors).length > 0) {
         return errors
     }
 
-    dispatch({
-        type: "UPDATE_BOARD_NOTE",
-        payload: {
-            noteId: noteId,
-            changes: changes
-        }
+    boardHubConnection.invoke("SetNotePosition", {
+        id: noteId,
+        positionX: positionX,
+        positionY: positionY
     })
+    .catch((err) => {
+        console.error(err)
+    });
+
+    return {}
+}
+
+export const setNoteColor = (noteId, colorR, colorG, colorB) => {
+    let errors = validateNote({
+        backgroundColor: [colorR, colorG, colorB]
+    })
+    if (Object.keys(errors).length > 0) {
+        return errors
+    }
+
+    boardHubConnection.invoke("SetNoteColor", {
+        id: noteId,
+        backgroundColorR: colorR,
+        backgroundColorG: colorG,
+        backgroundColorB: colorB
+    })
+    .then((response) => {
+        console.log(response);
+    })
+    .catch((err) => {
+        console.error(err)
+    });
+
+    return {}
+}
+
+export const setNoteText = (noteId, text) => {
+    let errors = validateNote({
+        text: text
+    })
+    if (Object.keys(errors).length > 0) {
+        return errors
+    }
+
+    boardHubConnection.invoke("SetNoteText", {
+        id: noteId,
+        text: text
+    })
+    .catch((err) => {
+        console.error(err)
+    });
+
+    return {}
+}
+
+export const setNoteTitle = (noteId, title) => {
+    let errors = validateNote({
+        title: title
+    })
+    if (Object.keys(errors).length > 0) {
+        return errors
+    }
+
+    boardHubConnection.invoke("SetNoteTitle", {
+        id: noteId,
+        title: title
+    })
+    .catch((err) => {
+        console.error(err)
+    });
 
     return {}
 }
