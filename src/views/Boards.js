@@ -1,27 +1,29 @@
-﻿import React, { } from 'react';
+﻿import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { PinBoardItem, PinBoardItemButton } from "../components/BoardElements";
-import { createPinBoard } from '../api'
+import { createBoard, fetchMyWorkspaces } from '../api'
 import "../assets/scss/views/Boards.scss"
 
 
 const Boards = (props) => {
     document.title = "Pinnote - Boards";
 
-    const boards = useSelector(state => state.boards.boards)
+    const boards = useSelector(state => state.boards.boards || [])
     const dispatch = useDispatch();
 
-    const renderedBoards = boards.map((board, index) => {
-        return <PinBoardItem key={index} boardId={board.id} />
-    })
+    useEffect(() => {
+        fetchMyWorkspaces(dispatch);
+    }, [])
 
     return (
         <div className="page-container">
             <div className="BoardGrid">
-                {renderedBoards}
+                {boards.map((board, index) => {
+                    return <PinBoardItem key={index} boardId={board.id} />
+                })}
                 <PinBoardItemButton onClick={() => {
-                    createPinBoard(dispatch)
+                    createBoard(dispatch, 1)
                 }} />
             </div>
         </div>

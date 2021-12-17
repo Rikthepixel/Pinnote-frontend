@@ -1,8 +1,11 @@
 import boardSchema, { validateBoard, validateNote } from "./BoardValidators";
 import { HubConnectionBuilder } from "@microsoft/signalr";
+import axios from "axios";
+
+const url = process.env.REACT_APP_BACKEND_URL;
 
 const boardHubConnection = new HubConnectionBuilder()
-    .withUrl(`${process.env.REACT_APP_BACKEND_URL}/boardHub`)
+    .withUrl(`${url}/boardHub`)
     .build();
 
 const noteDTOtoNote = (dto) => {
@@ -58,20 +61,27 @@ const boardDTOtoBoard = (dto) => {
 
 export const loadBoard = (dispatch, id) => {
     return new Promise((resolve, reject) => {
-        if (!id) {
+        id = parseInt(id);
+        if (typeof(id) != 'number') {
             return;
         }
+
+        console.log(id);
+        
         boardHubConnection
             .start()
             .then(() => {
                 boardHubConnection
-                    .invoke("Subscribe", 2)
+                    .invoke("Subscribe", id)
                     .then((response) => {
                         if (response.error) {
                             reject(response.error);
                             return;
                         }
 
+                        let timestampBuffer = []
+
+                        boardHubConnection.off();
                         boardHubConnection.on("BoardUpdated", (board) => {
                             delete board.notes;
 
@@ -81,10 +91,10 @@ export const loadBoard = (dispatch, id) => {
                             });
                         });
 
-                        boardHubConnection.on("NoteAdded", (note) => {
+                        boardHubConnection.on("NoteAdded", (response) => {
                             dispatch({
                                 type: "CREATE_BOARD_NOTE",
-                                payload: noteDTOtoNote(note),
+                                payload: noteDTOtoNote(response.data),
                             });
                         });
 
@@ -129,13 +139,46 @@ export const unloadBoard = (dispatch) => {
     });
 };
 
-export const createPinBoard = (dispatch) => {
-    dispatch({
-        type: "CREATE_BOARD",
-        payload: {
-            title: "new board",
-        },
-    });
+export const fetchMyWorkspaces = (dispatch) => {
+    axios.get(`${url}/api/workspaces/`)
+        .then((response) => {
+            let allBoards = []
+            response.data.forEach((workspace) => {
+                workspace.boards.forEach((board) => {
+                    allBoards.push(boardDTOtoBoard(board));
+                })
+            })
+
+            dispatch({
+                type: "BOARDS_FETCHED",
+                payload: allBoards
+            });
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+export const createBoard = (dispatch, workspaceId, title = "new board") => {
+    if (typeof(workspaceId) != 'number') {
+        return;
+    }
+    axios.post(`${url}/api/workspaces/${workspaceId}/Boards`, {
+        title: title,
+        backgroundColorR: 123,
+        backgroundColorG: 123,
+        backgroundColorB: 123,
+        visibilityId: 1
+    })
+    .then((response) => {
+        dispatch({
+            type: "CREATE_BOARD",
+            payload: boardDTOtoBoard(response.data),
+        });
+    })
+    .catch((err) => {
+        console.error(err);
+    })
 };
 
 export const removePinBoard = (dispatch, boardId) => {

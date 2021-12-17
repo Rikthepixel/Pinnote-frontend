@@ -1,40 +1,6 @@
-function generateRandomId() {
-    return Math.floor(Math.random() * 10000).toString();
-}
-
-const initialNoteState = {
-    title: "",
-    text: "",
-    positionX: 0,
-    positionY: 0,
-    width: 200,
-    height: 200
-}
-
-const initialBoardState = {
-    title: "",
-    backgroundColor: [
-        245,
-        245,
-        224
-    ],
-    defaultNoteBackgroundColor: [
-        212,
-        214,
-        133
-    ]
-}
-
 const initialState = {
-    boards: [
-        {
-            id: 1,
-            title: "a board",
-            backgroundColor: [0, 128, 128],
-            defaultNoteBackgroundColor: [26, 77, 73],
-            notes: [],
-        },
-    ],
+    boards: [],
+    board: null
 };
 
 const getBoardById = (state, id) => {
@@ -73,6 +39,9 @@ const BoardReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case "SUBSCRIBED_TO_BOARD":
+            console.log(Object.assign({}, state, {
+                board: payload.board
+            }));
             return Object.assign({}, state, {
                 board: payload.board
             })
@@ -83,14 +52,14 @@ const BoardReducer = (state = initialState, action) => {
                 board: null
             }
 
+        case "BOARDS_FETCHED":
+            return {
+                ...state,
+                boards: action.payload
+            }
+
         case "CREATE_BOARD":
-            state.boards.push({
-                id: generateRandomId(),
-                title: payload.title || initialBoardState.title,
-                backgroundColor: payload.backgroundColor || initialBoardState.backgroundColor,
-                defaultNoteBackgroundColor: payload.defaultNoteBackgroundColor || initialBoardState.defaultNoteBackgroundColor,
-                notes: [],
-            });
+            state.boards.push(payload);
 
             return Object.assign({}, state, {
                 boards: [...state.boards]
@@ -116,6 +85,11 @@ const BoardReducer = (state = initialState, action) => {
             if (!state.board) { return state }
             board = state.board
 
+            //This fixes note duplication glitch because client NoteAdded occationally fires multiple tines
+            if (typeof(note) == "object") {
+                return state;
+            }
+
             board.notes.push(payload);
             return Object.assign({}, state, {
                 board: Object.assign({}, board, {
@@ -139,6 +113,7 @@ const BoardReducer = (state = initialState, action) => {
             if (!state.board) { return state; }
             board = state.board;
             if (!note) { return state; }
+            
             board.notes[noteIndex] = Object.assign({}, note, payload);
             return Object.assign({}, state, {
                 board: Object.assign({}, board, {
@@ -150,6 +125,7 @@ const BoardReducer = (state = initialState, action) => {
             if (!state.board) { return state; }
             board = state.board;
             if (!note) { return state; }
+            
             board.notes[noteIndex] = Object.assign({}, note, {
                 positionX: payload.positionX,
                 positionY: payload.positionY
