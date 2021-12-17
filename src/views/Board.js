@@ -6,7 +6,7 @@ import { Button } from "react-bootstrap";
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
-import { updatePinBoard, removePinBoard, loadBoard, unloadBoard } from "../api";
+import { removePinBoard, loadBoard, unloadBoard, setBoardTitle, setBoardColor, setBoardNoteColor } from "../api";
 import { ConfirmationAlert, SingleFormAlert } from "../utils/Alerts";
 import { validateBoard } from "../api/Boards/BoardValidators";
 
@@ -28,13 +28,18 @@ const Board = (props) => {
 
   const menuDiv = useRef();
   const newNoteButton = useRef();
+  const setDisplaySelectorBackgroundColor = useRef();
+  const setDisplaySelectorDefaultBackgroundColor = useRef();
+  const stateRef = useRef();
 
   const [redirect, setRedirect] = useState("");
+  const [draftBackgroundColor, setDraftBackgroundColor] = useState();
 
   const dispatch = useDispatch();
   const state = useSelector((state) => {
     return state.boards.board || {};
   });
+  stateRef.current = state;
 
   useEffect(() => {
     loadBoard(dispatch, boardId);
@@ -43,6 +48,19 @@ const Board = (props) => {
       unloadBoard(dispatch);
     }
   }, []);
+
+  useEffect(() => {
+    if (typeof(setDisplaySelectorDefaultBackgroundColor.current) == 'function' && stateRef.current.defaultNoteBackgroundColor != null){
+      setDisplaySelectorDefaultBackgroundColor.current(stateRef.current.defaultNoteBackgroundColor);
+    }
+  }, [state.defaultNoteBackgroundColor])
+
+  useEffect(() => {
+    if (typeof(setDisplaySelectorBackgroundColor.current) == 'function' && stateRef.current.backgroundColor != null){
+      setDraftBackgroundColor(null);
+      setDisplaySelectorBackgroundColor.current(stateRef.current.backgroundColor);
+    }
+  }, [state.backgroundColor])
 
   const toggleMenu = () => {
     menuDiv.current.setAttribute(
@@ -58,8 +76,7 @@ const Board = (props) => {
     if (validate) {
       errors = validateBoard({ title: title });
     } else {
-      console.log(title);
-      errors = updatePinBoard(dispatch, boardId, { title: title });
+      errors = setBoardTitle(title);
     }
     return errors.title || [];
   };
@@ -121,8 +138,8 @@ const Board = (props) => {
     return <Redirect to={redirect} />;
   }
 
-  let displayColor = (state.draftBackgroundColor
-    ? state.draftBackgroundColor
+  let displayColor = (draftBackgroundColor
+    ? draftBackgroundColor
     : state.backgroundColor) || [123, 123, 123];
 
   return (
@@ -166,23 +183,16 @@ const Board = (props) => {
               text="Background color"
               icon={BrushIcon}
               color={state.backgroundColor}
+              onMount={(setDisplayColor) => setDisplaySelectorBackgroundColor.current = setDisplayColor}
               onCancel={(_, setDisplayColor) => {
                 setDisplayColor(state.backgroundColor);
-                updatePinBoard(dispatch, boardId, {
-                  draftBackgroundColor: null,
-                });
+                setDraftBackgroundColor(null);
               }}
-              onChange={(color) =>
-                updatePinBoard(dispatch, boardId, {
-                  draftBackgroundColor: color,
-                })
-              }
-              onSave={(color) =>
-                updatePinBoard(dispatch, boardId, {
-                  draftBackgroundColor: null,
-                  backgroundColor: color,
-                })
-              }
+              onChange={(color) => setDraftBackgroundColor(color)}
+              onSave={(color) => {
+                setDraftBackgroundColor(color);
+                setBoardColor(color[0], color[1], color[2]);
+              }}
             />
           )}
 
@@ -193,16 +203,9 @@ const Board = (props) => {
               text="Note color"
               icon={NoteIcon}
               color={state.defaultNoteBackgroundColor}
-              onCancel={(color) =>
-                updatePinBoard(dispatch, boardId, {
-                  defaultNoteBackgroundColor: color,
-                })
-              }
-              onSave={(color) =>
-                updatePinBoard(dispatch, boardId, {
-                  defaultNoteBackgroundColor: color,
-                })
-              }
+              onMount={(setDisplayColor) => setDisplaySelectorDefaultBackgroundColor.current = setDisplayColor}
+              onCancel={(color, setDisplayColor) => setDisplayColor(state.defaultNoteBackgroundColor)}
+              onSave={(color) => setBoardNoteColor(color[0], color[1], color[2])}
             />
           )}
 

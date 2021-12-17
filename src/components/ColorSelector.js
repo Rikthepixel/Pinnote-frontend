@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { rgbaToHsva, hsvaToRgba } from '@uiw/color-convert'
 import Hue from '@uiw/react-color-hue';
 import Slider from '@uiw/react-color-slider';
@@ -15,9 +15,24 @@ const ColorSelector = (props) => {
         a: 1
     }))
 
+    const setColor = (color) => {
+        setHSVA(rgbaToHsva({
+            r: color[0],
+            g: color[1],
+            b: color[2],
+            a: 1
+        }))
+    }
+
     const closeSelector = () => {
         if (typeof (props.closeHandle) == "function") {
             props.closeHandle()
+        }
+    }
+
+    const onMount = () => {
+        if (typeof(props.onMount) == 'function') {
+            props.onMount(setColor)
         }
     }
 
@@ -33,6 +48,10 @@ const ColorSelector = (props) => {
             ], originalColor)
         }
     }
+
+    useEffect(() => {
+        onMount();
+    }, [])
 
     const onCancel = () => {
         let newColor = hsvaToRgba(HSVA)

@@ -42,13 +42,18 @@ const boardDTOtoBoard = (dto) => {
     delete dto.defaultBackgroundColorG;
     delete dto.defaultBackgroundColorB;
 
-    return {
+    let newBoard = {
         ...dto,
         boardId: dto.id,
         backgroundColor: backgroundColor,
-        defaultNoteBackgroundColor: defaultBackgroundColor,
-        notes: dto.notes.map((noteDTO) => noteDTOtoNote(noteDTO)),
+        defaultNoteBackgroundColor: defaultBackgroundColor
     };
+
+    if (dto.notes) {
+        newBoard.notes = dto.notes.map((noteDTO) => noteDTOtoNote(noteDTO));
+    }
+
+    return newBoard;
 };
 
 export const loadBoard = (dispatch, id) => {
@@ -66,6 +71,15 @@ export const loadBoard = (dispatch, id) => {
                             reject(response.error);
                             return;
                         }
+
+                        boardHubConnection.on("BoardUpdated", (board) => {
+                            delete board.notes;
+
+                            dispatch({
+                                type: "UPDATE_BOARD",
+                                payload: boardDTOtoBoard(board),
+                            });
+                        });
 
                         boardHubConnection.on("NoteAdded", (note) => {
                             dispatch({
@@ -133,22 +147,70 @@ export const removePinBoard = (dispatch, boardId) => {
     });
 };
 
-export const updatePinBoard = (dispatch, boardId, changes) => {
-    let errors = validateBoard(changes);
+export const setBoardTitle = (newTitle) => {
+    let errors = validateBoard({
+        title: newTitle,
+    });
     if (Object.keys(errors).length > 0) {
         return errors;
     }
 
-    dispatch({
-        type: "UPDATE_BOARD",
-        payload: {
-            boardId: boardId,
-            changes: changes,
-        },
-    });
+    boardHubConnection
+        .invoke("SetBoardTitle", {
+            title: newTitle,
+        })
+        .catch((err) => {
+            console.error(err);
+        });
 
     return {};
-};
+}
+
+export const setBoardNoteColor = (colorR, colorG, colorB) => {
+    let errors = validateBoard({
+        defaultNoteColor: [colorR, colorG, colorB],
+    });
+    if (Object.keys(errors).length > 0) {
+        return errors;
+    }
+    boardHubConnection
+        .invoke("SetBoardNoteColor", {
+            DefaultBackgroundColorR: colorR,
+            DefaultBackgroundColorG: colorG,
+            DefaultBackgroundColorB: colorB,
+        })
+        .then((response) => {
+            //console.log(response);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+
+    return {};
+}
+
+export const setBoardColor = (colorR, colorG, colorB) => {
+    let errors = validateBoard({
+        backgroundColor: [colorR, colorG, colorB],
+    });
+    if (Object.keys(errors).length > 0) {
+        return errors;
+    }
+    boardHubConnection
+        .invoke("SetBoardColor", {
+            backgroundColorR: colorR,
+            backgroundColorG: colorG,
+            backgroundColorB: colorB,
+        })
+        .then((response) => {
+            //console.log(response);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+
+    return {};
+}
 
 export const createPinNote = (positionX, positionY) => {
     boardHubConnection
@@ -157,7 +219,7 @@ export const createPinNote = (positionX, positionY) => {
             positionY: positionY,
         })
         .then((response) => {
-            console.log(response);
+            //console.log(response);
         })
         .catch((err) => {
             console.error(err);
@@ -168,7 +230,7 @@ export const deletePinNote = (noteId) => {
     boardHubConnection
         .invoke("DeleteNote", noteId)
         .then((response) => {
-            console.log(response);
+            //console.log(response);
         })
         .catch((err) => {
             console.error(err);
@@ -224,7 +286,7 @@ export const setNoteColor = (noteId, colorR, colorG, colorB) => {
             backgroundColorB: colorB,
         })
         .then((response) => {
-            console.log(response);
+            //console.log(response);
         })
         .catch((err) => {
             console.error(err);
