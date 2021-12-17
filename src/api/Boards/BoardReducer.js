@@ -66,15 +66,19 @@ const BoardReducer = (state = initialState, action) => {
             });
 
         case "REMOVE_BOARD":
-            state.boards.splice(boardIndex, 1)
+            if (board != null){
+                state.boards.splice(boardIndex, 1)
+                state = Object.assign({}, state, {
+                    boards: [...state.boards]
+                })
+            }
 
             if (state.board.id == payload.boardId) {
                 state.board = null;
+                state = Object.assign({}, state)
             }
 
-            return Object.assign({}, state, {
-                boards: [...state.boards]
-            });
+            return state;
 
         case "UPDATE_BOARD":
             return Object.assign({}, state, {

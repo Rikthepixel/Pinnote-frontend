@@ -82,12 +82,12 @@ export const loadBoard = (dispatch, id) => {
                         let timestampBuffer = []
 
                         boardHubConnection.off();
-                        boardHubConnection.on("BoardUpdated", (board) => {
-                            delete board.notes;
+                        boardHubConnection.on("BoardUpdated", (response) => {
+                            delete response.data.notes;
 
                             dispatch({
                                 type: "UPDATE_BOARD",
-                                payload: boardDTOtoBoard(board),
+                                payload: boardDTOtoBoard(response.data),
                             });
                         });
 
@@ -98,18 +98,18 @@ export const loadBoard = (dispatch, id) => {
                             });
                         });
 
-                        boardHubConnection.on("NoteUpdated", (note) => {
+                        boardHubConnection.on("NoteUpdated", (response) => {
                             dispatch({
                                 type: "UPDATE_BOARD_NOTE",
-                                payload: noteDTOtoNote(note),
+                                payload: noteDTOtoNote(response.data),
                             });
                         });
 
-                        boardHubConnection.on("NoteRemoved", (note) => {
+                        boardHubConnection.on("NoteRemoved", (response) => {
                             dispatch({
                                 type: "REMOVE_BOARD_NOTE",
                                 payload: {
-                                    noteId: note.id,
+                                    noteId: response.data.id,
                                 },
                             });
                         });
@@ -181,12 +181,27 @@ export const createBoard = (dispatch, workspaceId, title = "new board") => {
     })
 };
 
-export const removePinBoard = (dispatch, boardId) => {
-    dispatch({
-        type: "REMOVE_BOARD",
-        payload: {
-            boardId: boardId,
-        },
+export const deleteBoard = (dispatch, boardId) => {
+    return new Promise((resolve, reject) => {
+        if (typeof(boardId) != 'number') {
+            return;
+        }
+
+        axios.delete(`${url}/api/boards/${boardId}`)
+            .then((response) => {
+                if (response.error) { reject(response.error)}
+                dispatch({
+                    type: "REMOVE_BOARD",
+                    payload: {
+                        boardId: boardId,
+                    },
+                });
+
+                resolve(response);
+            })
+            .catch((err) => {
+                reject(err)
+            }); 
     });
 };
 

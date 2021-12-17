@@ -6,7 +6,7 @@ import { Button } from "react-bootstrap";
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
-import { removePinBoard, loadBoard, unloadBoard, setBoardTitle, setBoardColor, setBoardNoteColor } from "../api";
+import { deleteBoard, loadBoard, unloadBoard, setBoardTitle, setBoardColor, setBoardNoteColor } from "../api";
 import { ConfirmationAlert, SingleFormAlert } from "../utils/Alerts";
 import { validateBoard } from "../api/Boards/BoardValidators";
 
@@ -98,8 +98,14 @@ const Board = (props) => {
       cancelledText: "Your board was not deleted",
     }).then((result) => {
       if (result) {
-        setRedirect("/Boards");
-        removePinBoard(dispatch, boardId);
+        deleteBoard(dispatch, parseInt(boardId))
+          .then((response) => {
+            if (response.error) { return }
+            setRedirect("/boards");
+          })
+          .catch((err) => {
+            console.error(err)
+          });
       }
     });
   };
