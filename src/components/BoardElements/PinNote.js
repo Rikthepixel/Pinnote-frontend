@@ -6,7 +6,7 @@ import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
 
 import MakeWriteable from "../MakeWriteable";
 
-import { deletePinNote, setNoteColor, setNotePosition, setNoteText, setNoteTitle } from "../../api";
+import { deletePinNote, setNoteColor, setNotePosition, setNoteText, setNoteTitle, setMovingNote } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
 import { MoreIcon, BrushIcon, TrashIcon, EditIcon } from "../../assets/img/icons";
@@ -107,16 +107,14 @@ const PinNote = (props) => {
   const enableDrag = () => {
     HeaderRef.current.onmousedown = function (e) {
       let Rect = NoteDiv.current.getBoundingClientRect();
-      let handle = {
-        x: e.clientX - Rect.x,
-        y: e.clientY - Rect.y,
-      };
+      let handleX = e.clientX - Rect.x
+      let handleY = e.clientY - Rect.y
       window.addEventListener("selectstart", disableSelect);
       document.onmousemove = function (e) {
         const state = stateRef.current
         let Rect = NoteDiv.current.getBoundingClientRect();
-        let newPositionX = e.pageX - (Rect.x - state.positionX) - handle.x - (e.pageX - e.clientX)
-        let newPositionY = e.pageY - (Rect.y - state.positionY) - handle.y - (e.pageX - e.clientX)
+        let newPositionX = e.pageX - handleX - (Rect.x - state.positionX) - (e.pageX - e.clientX)
+        let newPositionY = e.pageY - handleY - (Rect.y - state.positionY) - (e.pageX - e.clientX)
 
         let [movementOffsetX, movementOffsetY] = [0, 0];
         let setOffset = (x, y) => {
@@ -135,6 +133,7 @@ const PinNote = (props) => {
         }
 
         setNotePosition(
+          dispatch,
           props.noteId,
           newPositionX + movementOffsetX,
           newPositionY + movementOffsetY
@@ -271,7 +270,7 @@ const PinNote = (props) => {
       <div className="pinNote-Content">
         <textarea
           className="pinNote-TextContent"
-          value={state.text}
+          value={state.text || ""}
           style={{ color: contrastColor }}
           onChange={(e) => setNoteText(props.noteId, e.target.value)}
         ></textarea>

@@ -146,6 +146,20 @@ const BoardReducer = (state = initialState, action) => {
                 })
             });
 
+        case "UPDATE_BOARD_NOTE_POSITION":
+            if (!state.board) { return state; }
+            board = state.board;
+            if (!note) { return state; }
+            board.notes[noteIndex] = Object.assign({}, note, {
+                positionX: payload.positionX,
+                positionY: payload.positionY
+            });
+            return Object.assign({}, state, {
+                board: Object.assign({}, board, {
+                    notes: [...board.notes]
+                })
+            });
+
         default:
             return state;
     }
