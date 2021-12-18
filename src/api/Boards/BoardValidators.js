@@ -11,9 +11,9 @@ export const noteSchema = yup.object().shape({
     height: yup.number().default(200).required()
 });
 
-const boardSchema = yup.object().shape({
+export const boardSchema = yup.object().shape({
     id: yup.number().required().integer(),
-    title: yup.string().required().label("Title").max(30),
+    title: yup.string().required().label("Title").min(5).max(30),
     backgroundColor: rgbColorSchema.required().label("Background color"),
     defaultNoteColor: rgbColorSchema.required().label("Default note color"),
     notes: yup.array().label("Notes").of(noteSchema).required().length(3),

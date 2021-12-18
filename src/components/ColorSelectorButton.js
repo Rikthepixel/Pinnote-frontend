@@ -3,6 +3,8 @@ import ColorSelector from "./ColorSelector";
 import { Button } from "react-bootstrap";
 
 const ColorSelectorButton = (props) => {
+    const saveOnChange = !(props.onSave && props.onCancel) 
+
     const [shown, setShow] = useState(false);
     let initialColor = props.color
     const [displayColor, setDisplayColor] = useState(initialColor || [0, 0, 0])
@@ -45,21 +47,24 @@ const ColorSelectorButton = (props) => {
     }
 
     const onCancel = (oldColor, newColor) => {
-        setColor(initialColor);
+        if (!saveOnChange) {
+            setColor(initialColor);
+        }
+        
         if (typeof (props.onCancel) == "function") {
             props.onCancel(initialColor, setColor)
         }
     }
 
     const onSave = (newColor, oldColor) => {
-        setColor(newColor);
+        setDisplayColor(newColor);
         if (typeof (props.onSave) == "function") {
             props.onSave(newColor, setColor)
         }
     }
 
     const onChange = (newColor) => {
-        setColor(newColor);
+        setDisplayColor(newColor);
         if (typeof (props.onChange) == "function") {
             props.onChange(newColor, setColor)
         }
@@ -104,9 +109,10 @@ const ColorSelectorButton = (props) => {
 
             color={displayColor}
             onMount={onInternalMount}
-            onCancel={onCancel}
-            onSave={onSave}
+            onCancel={typeof(props.onCancel) == "function" && onCancel}
+            onSave={typeof(props.onSave) == "function" && onSave}
             onChange={onChange}
+            hasSliders={props.hasSliders}
         />
     </div>
 }

@@ -1,0 +1,14 @@
+.w-color-interactive {
+    display: flex;
+    justify-content: center;
+}
+
+.w-color-alpha-pointer {
+    transform: translate(1px, 0);
+}
+
+.w-color-alpha-fill {
+    aspect-ratio: 1;
+    width: 1.1em !important;
+    height: unset !important;
+}

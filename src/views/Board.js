@@ -83,11 +83,11 @@ const Board = (props) => {
 
   const onDeleteClick = () => {
     ConfirmationAlert({
-      title: "Are you sure you want to delete this board?",
+      title: "Delete this board?",
       text: "You won't be able to revert this!",
       timer: 10000,
-      acceptButtonText: "Yes, delete the board",
-      cancelButtonText: "No, keep the board",
+      acceptButtonText: "Yes, delete board",
+      cancelButtonText: "No, keep board",
 
       acceptPopup: true,
       acceptedTitle: "Deleted",

@@ -19,19 +19,23 @@ export const PinBoardItem = (props) => {
     })
 
     let displayColor = state.backgroundColor
+    let contrastColor = getContrastingColor(rgbaToHsva({
+        r: displayColor[0],
+        g: displayColor[1],
+        b: displayColor[2]
+    }))
 
     return (
-        <NavLink to={`/Boards/${state.id}`} className="PinBoardItem"
+        <NavLink 
+            to={`/Boards/${state.id}`}
+            className="PinBoardItem"
+            invert={contrastColor === "#fff" ? "true" : "false"}
             style={{
                 backgroundColor: `rgb(${displayColor.join()})`,
-                color: `${getContrastingColor(rgbaToHsva({
-                    r: displayColor[0],
-                    g: displayColor[1],
-                    b: displayColor[2]
-                }))}`,
-                border: `0.1em solid black`
+                color: `${contrastColor}`
+            }}
 
-            }}>
+        >
 
             <p>
                 {state.title}
@@ -42,14 +46,10 @@ export const PinBoardItem = (props) => {
 
 export const PinBoardItemButton = (props) => {
     return (
-        <button className="PinBoardItem PinBoardItemButton" type="button" onClick={props.onClick}
-            style={{
-                border: `0.1em solid black`
-            }}
-        >
+        <div className="PinBoardItem PinBoardItemButton" onClick={props.onClick} >
             <p>
                 + Board
             </p>
-        </button>
+        </div>
     );
 }

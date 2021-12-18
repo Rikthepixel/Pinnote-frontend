@@ -69,69 +69,89 @@ export const loadBoard = (dispatch, id) => {
         if (typeof(id) != 'number') {
             return;
         }
-        
-        hub.connection
-            .start()
-            .then(() => {
-                hub.connection
-                    .invoke("Subscribe", id)
-                    .then((response) => {
-                        if (response.error) {
-                            reject(response.error);
-                            return;
+
+        let subscribe = () => {
+            hub.connection
+                .invoke("Subscribe", id)
+                .then((response) => {
+                    if (response.error) {
+                        reject(response.error);
+                        return;
+                    }
+                    
+                    hub.connection.off();
+                    hub.connection.onclose((err) => {
+                        if (err) {
+                            console.error(err);
                         }
-                        
-                        hub.connection.off();
-                        hub.connection.onclose((err) => {
-                            if (err) {
-                                console.error(err);
-                            }
-                        });
+                    });
 
-                        hub.connection.on("BoardUpdated", (response) => {
-                            delete response.data.notes;
+                    hub.connection.on("BoardUpdated", (response) => {
+                        delete response.data.notes;
 
-                            dispatch({
-                                type: "UPDATE_BOARD",
-                                payload: boardDTOtoBoard(response.data),
-                            });
-                        });
-
-                        hub.connection.on("NoteAdded", (response) => {
-                            dispatch({
-                                type: "CREATE_BOARD_NOTE",
-                                payload: noteDTOtoNote(response.data),
-                            });
-                        });
-
-                        hub.connection.on("NoteUpdated", (response) => {
-                            dispatch({
-                                type: "UPDATE_BOARD_NOTE",
-                                payload: noteDTOtoNote(response.data),
-                            });
-                        });
-
-                        hub.connection.on("NoteRemoved", (response) => {
-                            dispatch({
-                                type: "REMOVE_BOARD_NOTE",
-                                payload: {
-                                    noteId: response.data.id,
-                                },
-                            });
-                        });
-
-                        let parsedBoard = boardDTOtoBoard(response.data);
                         dispatch({
-                            type: "SUBSCRIBED_TO_BOARD",
+                            type: "UPDATE_BOARD",
+                            payload: boardDTOtoBoard(response.data),
+                        });
+                    });
+
+                    hub.connection.on("NoteAdded", (response) => {
+                        dispatch({
+                            type: "CREATE_BOARD_NOTE",
+                            payload: noteDTOtoNote(response.data),
+                        });
+                    });
+
+                    hub.connection.on("NoteUpdated", (response) => {
+                        dispatch({
+                            type: "UPDATE_BOARD_NOTE",
+                            payload: noteDTOtoNote(response.data),
+                        });
+                    });
+
+                    hub.connection.on("NoteRemoved", (response) => {
+                        dispatch({
+                            type: "REMOVE_BOARD_NOTE",
                             payload: {
-                                board: parsedBoard,
+                                noteId: response.data.id,
                             },
                         });
-                        resolve(parsedBoard);
-                    })
-                    .catch((err) => reject(err));
-            })
-            .catch((err) => reject(err));
+                    });
+
+                    let parsedBoard = boardDTOtoBoard(response.data);
+                    dispatch({
+                        type: "SUBSCRIBED_TO_BOARD",
+                        payload: {
+                            board: parsedBoard,
+                        },
+                    });
+                    resolve(parsedBoard);
+                })
+                .catch((err) => reject(err));
+        }
+
+        let connectAndSubscribe = () => {
+            hub.connection
+                .start()
+                .then(subscribe)
+                .catch((err) => reject(err));
+        }
+        
+        if (hub.connection.state == "Connected") {
+            hub.connection.invoke("UnSubscribe")
+                .then(() => {
+                    if (hub.connection != "Connected") {
+                        connectAndSubscribe();
+                    } else {
+                        subscribe();
+                    }
+                })
+        } else {
+            hub.connection
+                .start()
+                .then(subscribe)
+                .catch((err) => reject(err));
+        }
     });
 };
 
@@ -167,15 +187,18 @@ export const fetchMyWorkspaces = (dispatch) => {
         })
 }
 
-export const createBoard = (dispatch, workspaceId, title = "new board") => {
+export const createBoard = (dispatch, workspaceId, title, backgroundColor, noteColor) => {
     if (typeof(workspaceId) != 'number') {
         return;
     }
     axios.post(`${url}/api/workspaces/${workspaceId}/Boards`, {
         title: title,
-        backgroundColorR: 123,
-        backgroundColorG: 123,
-        backgroundColorB: 123,
+        backgroundColorR: backgroundColor[0],
+        backgroundColorG: backgroundColor[1],
+        backgroundColorB: backgroundColor[2],
+        defaultNoteColorR: noteColor[0],
+        defaultNoteColorG: noteColor[1],
+        defaultNoteColorB: noteColor[2],
         visibilityId: 1
     })
     .then((response) => {

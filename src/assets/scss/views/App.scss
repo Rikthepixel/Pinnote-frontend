@@ -34,6 +34,12 @@ a {
     overflow-y: auto;
 }
 
+.btn {
+    &:focus {
+        box-shadow: unset;
+    }
+}
+
 #root {
     height: 100%;
     display: flex;
