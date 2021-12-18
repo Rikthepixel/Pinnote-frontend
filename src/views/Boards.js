@@ -96,18 +96,25 @@ const Boards = (props) => {
     return (
         <div className="page-container">
             <div className="px-4 pt-4">
-                {workspaces.map((workspace, wIndex) => {
-                    console.log(workspace);
-                    return (
-                        <div key={wIndex}>
-                            <h2>{workspace.name}</h2>
-                            <div className="BoardContainer gap-3 px-2 py-3">
-                                {workspace.boards.map((board, bIndex) => <PinBoardItem key={bIndex} board={board} />)}
-                                <PinBoardItemButton onClick={() => createBoardPopup(workspace.id)} />
-                            </div>
-                        </div>
-                    )
-                })}
+                <section>
+                    <h2 className="SectionHeader">Your workspaces</h2>
+                    <div className="px-3">
+                        {workspaces.map((workspace, wIndex) => {
+                            return (
+                                <article key={wIndex} className="mb-3">
+                                    <h3 className="mx-3 m-0">{workspace.name}</h3>
+                                    <div className="BoardScrollContainer pb-3">
+                                        <div className="BoardContainer p-2 gap-3">
+                                            {workspace.boards.map((board, bIndex) => <PinBoardItem key={bIndex} board={board} />)}
+                                            <PinBoardItemButton onClick={() => createBoardPopup(workspace.id)} />
+                                        </div>
+                                    </div>
+                                </article>
+                            )
+                        })}
+                    </div>
+                </section>
+
             </div>
         </div>
     );

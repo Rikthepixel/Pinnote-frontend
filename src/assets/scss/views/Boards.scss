@@ -1,8 +1,8 @@
-﻿.BoardContainer {
-    display: flex;
-    flex-direction: row;
+﻿.BoardScrollContainer {
     overflow: auto;
     width: 100%;
+
+    display: flex;
 
     scrollbar-width: thin;
     scroll-behavior: smooth;
@@ -22,4 +22,15 @@
             background: #555;
         }
     }
+}
+
+.SectionHeader {
+    color: var(--bs-gray-600)
+}
+
+.BoardContainer {
+    background-color: var(--bs-gray-200);
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
 }

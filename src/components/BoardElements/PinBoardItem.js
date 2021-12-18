@@ -36,11 +36,9 @@ export const PinBoardItem = (props) => {
 
 export const PinBoardItemButton = (props) => {
     return (
-        <div className="PinBoardItemBase text-white justify-content-start" onClick={props.onClick}>
-            <div className="w-50 h-75 d-flex justify-content-center align-items-center bg-primary PinBoardItemRadius PinBoardItemShadows">
-                <img className="PlusIcon me-2" src={PlusIcon}/>
-                <p className="p-0 m-0">Board</p>
-            </div>
+        <div className="PinBoardItemBase text-white bg-primary PinBoardItemRadius PinBoardItemShadows" onClick={props.onClick}>
+            <img className="PlusIcon me-2" src={PlusIcon} />
+            <p className="p-0 m-0">Board</p>
         </div>
     );
 };
