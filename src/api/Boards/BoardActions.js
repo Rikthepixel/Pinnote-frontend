@@ -4,9 +4,11 @@ import axios from "axios";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
-const boardHubConnection = new HubConnectionBuilder()
-    .withUrl(`${url}/boardHub`)
-    .build();
+const hub = {
+    connection: new HubConnectionBuilder()
+        .withUrl(`${url}/boardHub`)
+        .build(),
+}
 
 const noteDTOtoNote = (dto) => {
     let backgroundColor = [
@@ -68,10 +70,10 @@ export const loadBoard = (dispatch, id) => {
             return;
         }
         
-        boardHubConnection
+        hub.connection
             .start()
             .then(() => {
-                boardHubConnection
+                hub.connection
                     .invoke("Subscribe", id)
                     .then((response) => {
                         if (response.error) {
@@ -79,8 +81,14 @@ export const loadBoard = (dispatch, id) => {
                             return;
                         }
                         
-                        boardHubConnection.off();
-                        boardHubConnection.on("BoardUpdated", (response) => {
+                        hub.connection.off();
+                        hub.connection.onclose((err) => {
+                            if (err) {
+                                console.error(err);
+                            }
+                        });
+
+                        hub.connection.on("BoardUpdated", (response) => {
                             delete response.data.notes;
 
                             dispatch({
@@ -89,21 +97,21 @@ export const loadBoard = (dispatch, id) => {
                             });
                         });
 
-                        boardHubConnection.on("NoteAdded", (response) => {
+                        hub.connection.on("NoteAdded", (response) => {
                             dispatch({
                                 type: "CREATE_BOARD_NOTE",
                                 payload: noteDTOtoNote(response.data),
                             });
                         });
 
-                        boardHubConnection.on("NoteUpdated", (response) => {
+                        hub.connection.on("NoteUpdated", (response) => {
                             dispatch({
                                 type: "UPDATE_BOARD_NOTE",
                                 payload: noteDTOtoNote(response.data),
                             });
                         });
 
-                        boardHubConnection.on("NoteRemoved", (response) => {
+                        hub.connection.on("NoteRemoved", (response) => {
                             dispatch({
                                 type: "REMOVE_BOARD_NOTE",
                                 payload: {
@@ -128,9 +136,11 @@ export const loadBoard = (dispatch, id) => {
 };
 
 export const unloadBoard = (dispatch) => {
-    boardHubConnection.send("UnSubscribe");
-    boardHubConnection.off();
-    boardHubConnection.stop();
+    if (hub.connection.state == "Connected") {
+        hub.connection.send("UnSubscribe");
+        hub.connection.stop();
+    }
+    hub.connection.off();
 
     dispatch({
         type: "UNSUBSCRIBED_FROM_BOARD",
@@ -211,7 +221,7 @@ export const setBoardTitle = (newTitle) => {
         return errors;
     }
 
-    boardHubConnection
+    hub.connection
         .invoke("SetBoardTitle", {
             title: newTitle,
         })
@@ -229,7 +239,7 @@ export const setBoardNoteColor = (colorR, colorG, colorB) => {
     if (Object.keys(errors).length > 0) {
         return errors;
     }
-    boardHubConnection
+    hub.connection
         .invoke("SetBoardNoteColor", {
             DefaultBackgroundColorR: colorR,
             DefaultBackgroundColorG: colorG,
@@ -252,7 +262,7 @@ export const setBoardColor = (colorR, colorG, colorB) => {
     if (Object.keys(errors).length > 0) {
         return errors;
     }
-    boardHubConnection
+    hub.connection
         .invoke("SetBoardColor", {
             backgroundColorR: colorR,
             backgroundColorG: colorG,
@@ -269,7 +279,7 @@ export const setBoardColor = (colorR, colorG, colorB) => {
 }
 
 export const createPinNote = (positionX, positionY) => {
-    boardHubConnection
+    hub.connection
         .invoke("CreateNote", {
             positionX: positionX,
             positionY: positionY,
@@ -283,7 +293,7 @@ export const createPinNote = (positionX, positionY) => {
 };
 
 export const deletePinNote = (noteId) => {
-    boardHubConnection
+    hub.connection
         .invoke("DeleteNote", noteId)
         .then((response) => {
             //console.log(response);
@@ -313,7 +323,7 @@ export const setNotePosition = (dispatch, noteId, positionX, positionY) => {
         },
     });
 
-    boardHubConnection
+    hub.connection
         .invoke("SetNotePosition", {
             id: noteId,
             positionX: positionX,
@@ -334,7 +344,7 @@ export const setNoteColor = (noteId, colorR, colorG, colorB) => {
         return errors;
     }
 
-    boardHubConnection
+    hub.connection
         .invoke("SetNoteColor", {
             id: noteId,
             backgroundColorR: colorR,
@@ -359,7 +369,7 @@ export const setNoteText = (noteId, text) => {
         return errors;
     }
 
-    boardHubConnection
+    hub.connection
         .invoke("SetNoteText", {
             id: noteId,
             text: text,
@@ -379,7 +389,7 @@ export const setNoteTitle = (noteId, title) => {
         return errors;
     }
 
-    boardHubConnection
+    hub.connection
         .invoke("SetNoteTitle", {
             id: noteId,
             title: title,
