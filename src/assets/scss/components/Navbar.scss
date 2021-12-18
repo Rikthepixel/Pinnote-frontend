@@ -24,34 +24,28 @@
     }
 }
 
-.RightNav {
-    align-items: flex-end !important;
-}
-
-.LeftNav {
-    align-items: flex-start !important;
-}
-
 .NavMenu {
     width: 100%;
+
+    gap: 1em;
 
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: row;
-    flex-flow: column;
+    flex-wrap: nowrap;
 
     padding: 0px 3.5em 0px 3.5em;
 }
 
 .NavLink {
-    background-image: linear-gradient(90deg, var(--bs-dark), var(--bs-secondary), var(--bs-dark));
+    background-image: linear-gradient(90deg, var(--bs-dark), var(--bs-dark));
     background-size: 0% 3px;
     background-repeat: no-repeat;
     background-position: center bottom;
     background-color: var(--bs-gray-100);
     color: var(--bs-primary);
-    border-radius: 12.5% / 50%;
+    border-radius: 999em;
     padding: 0.75em 3.5em;
     font-weight: bold;
     transition: background-size 0.25s ease-out;

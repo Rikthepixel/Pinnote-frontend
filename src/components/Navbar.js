@@ -11,20 +11,23 @@ const Navbar = () => {
     
     return (
         <nav className="Navbar">
-            <div className="NavMenu LeftNav">
+            <div className="NavMenu justify-content-start">
                 <NavLink className="NavLink" to="/Boards">
                     Boards
-                    </NavLink>
+                </NavLink>
+                <NavLink className="NavLink" to="/Workspaces">
+                    Workspaces
+                </NavLink>
             </div>
 
             <NavLink to="/Boards">
                 <img className="NavImage" src={logo} alt="Pinnote" />
             </NavLink>
 
-            <div className="NavMenu RightNav">
+            <div className="NavMenu justify-content-end">
                 <NavLink className="NavLink" to="/Login">
                     Login
-                    </NavLink>
+                </NavLink>
             </div>
         </nav>
     );

@@ -1,49 +1,43 @@
-.PinBoardItem {
+.PinBoardItemBase {
     overflow: hidden;
     aspect-ratio: 2/1;
-    height: 6.5rem;
-    border-radius: 2em;
+    min-width: 15em;
+    width: 15em;
     display: flex;
     justify-content: center;
     align-items: center;
 
-    --bgcol:  rgba(0, 0, 0, 0.1);
-    --shadSet: 0 0 0.1em 0.2em;
-
-    box-shadow: 0 0 0 0 var(--bgcol) inset, var(--shadSet) var(--bgcol);
-    &[invert=false] {
-        box-shadow: 0 0 0 0 var(--bgcol) inset, var(--shadSet) var(--bgcol);
-    }
-    &[invert=true] {
-        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.5) inset, var(--shadSet) rgba(0, 0, 0, 0.5);
-    }
-
-    transition: box-shadow 0.3s ease-in-out;
-
-    &:hover {
-        box-shadow: var(--shadSet) var(--bgcol) inset;
-        &[invert=false] {
-            box-shadow: var(--shadSet) var(--bgcol) inset;
-        }
-        &[invert=true] {
-            box-shadow: var(--shadSet) rgba(255, 255, 255, 0.5) inset;
-        }
-    }
-
-    & > p {
-        //color: var(--bs-gray-100);
-        margin: 0;
+    & p {
         font-weight: 600;
         font-size: 1.3em;
         word-wrap: break-word;
         word-break: break-word;
         text-align: center;
     }
+
+    & .PlusIcon {
+        object-fit: contain;
+        height: 25%;
+        filter: invert(100%);
+    }
 }
 
-.PinBoardItemButton {
-    background-color: var(--bs-gray-400);
-    & > p {
-        color: var(--bs-black);
+.PinBoardItemRadius {
+    border-radius: 2em;
+}
+
+.PinBoardItemShadows {
+    transition: box-shadow 0.3s ease-in-out;
+    --bgShad: 0 0 0.1em 0.05em rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 0 transparent inset, var(--bgShad);
+
+    &:hover {
+        box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.1) inset, var(--bgShad);
+        &[invert=false] {
+            box-shadow: 0 0 0 100vmax  rgba(0, 0, 0, 0.1) inset, var(--bgShad);
+        }
+        &[invert=true] {
+            box-shadow: 0 0 0 100vmax  rgba(255, 255, 255, 0.1) inset, var(--bgShad);
+        }
     }
 }

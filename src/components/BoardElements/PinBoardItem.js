@@ -1,55 +1,46 @@
-import React, { } from 'react';
-import { useSelector } from 'react-redux';
+import React from "react";
 import { NavLink } from "react-router-dom";
-import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
+import { Button } from "react-bootstrap";
+import { getContrastingColor, rgbaToHsva } from "@uiw/color-convert";
+import { PlusIcon } from "../../assets/img/icons";
+
 //Styling
-import "../../assets/scss/components/BoardElements/PinBoardItem.scss"
+import "../../assets/scss/components/BoardElements/PinBoardItem.scss";
 
 export const PinBoardItem = (props) => {
-    const state = useSelector(state => {
-        let board = null;
-        state.boards.boards.every((_board) => {
-            if (props.boardId == _board.id) {
-                board = _board;
-                return false;
-            }
-            return true;
-        })
-        return board
-    })
+    const state = props.board;
 
-    let displayColor = state.backgroundColor
-    let contrastColor = getContrastingColor(rgbaToHsva({
-        r: displayColor[0],
-        g: displayColor[1],
-        b: displayColor[2]
-    }))
+    let displayColor = state.backgroundColor;
+    let contrastColor = getContrastingColor(
+        rgbaToHsva({
+            r: displayColor[0],
+            g: displayColor[1],
+            b: displayColor[2],
+        })
+    );
 
     return (
-        <NavLink 
+        <NavLink
             to={`/Boards/${state.id}`}
-            className="PinBoardItem"
+            className="PinBoardItemBase PinBoardItemShadows PinBoardItemRadius"
             invert={contrastColor === "#fff" ? "true" : "false"}
             style={{
                 backgroundColor: `rgb(${displayColor.join()})`,
-                color: `${contrastColor}`
+                color: `${contrastColor}`,
             }}
-
         >
-
-            <p>
-                {state.title}
-            </p>
+            <p className="p-2 m-0">{state.title}</p>
         </NavLink>
     );
-}
+};
 
 export const PinBoardItemButton = (props) => {
     return (
-        <div className="PinBoardItem PinBoardItemButton" onClick={props.onClick} >
-            <p>
-                + Board
-            </p>
+        <div className="PinBoardItemBase text-white justify-content-start" onClick={props.onClick}>
+            <div className="w-50 h-75 d-flex justify-content-center align-items-center bg-primary PinBoardItemRadius PinBoardItemShadows">
+                <img className="PlusIcon me-2" src={PlusIcon}/>
+                <p className="p-0 m-0">Board</p>
+            </div>
         </div>
     );
-}
+};

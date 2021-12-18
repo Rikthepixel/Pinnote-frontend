@@ -10,22 +10,25 @@ import {
 import "../assets/scss/views/App.scss";
 
 //Import Routes
-import {routes} from "./routes";
+import { routes } from "./routes";
 
 //Components
 import Navbar from "../components/Navbar";
 
 export default function MainRoute() {
-  const RouteComponents = [];
-  for (let [key, value] of Object.entries(routes)) {
+  const RouteComponents = Object.keys(routes).map((key, index) => {
+    const value = routes[key];
+
     if (!value.component) {
       console.error("No component set for route");
     }
 
-    RouteComponents.push(<Route key={key} exact={value.exact} path={value.path}>
+    return (
+      <Route key={key} exact={value.exact} path={value.path}>
         <value.component />
-    </Route>);
-  }
+      </Route>
+    )
+  });
 
   return (
     <Router>
@@ -33,7 +36,7 @@ export default function MainRoute() {
       <div id="content-container">
         <Switch>
           {RouteComponents}
-          <Redirect to="/" />
+          <Redirect to="/Boards" />
         </Switch>
       </div>
     </Router>

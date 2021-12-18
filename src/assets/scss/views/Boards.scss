@@ -1,9 +1,25 @@
-﻿.BoardGrid {
+﻿.BoardContainer {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    flex-wrap: wrap;
+    flex-direction: row;
+    overflow: auto;
+    width: 100%;
 
-    gap: 1em;
-    margin: 1%;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+        height: 0.5em;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #888;
+
+        &:hover {
+            background: #555;
+        }
+    }
 }

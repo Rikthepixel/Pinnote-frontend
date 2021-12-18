@@ -1,5 +1,6 @@
 import boardSchema, { validateBoard, validateNote } from "./BoardValidators";
 import { HubConnectionBuilder } from "@microsoft/signalr";
+import { noteDTOtoNote, boardDTOtoBoard } from "../DtoHelpers";
 import axios from "axios";
 
 const url = process.env.REACT_APP_BACKEND_URL;
@@ -9,59 +10,6 @@ const hub = {
         .withUrl(`${url}/boardHub`)
         .build(),
 }
-
-const noteDTOtoNote = (dto) => {
-    let backgroundColor = [
-        dto.backgroundColorR,
-        dto.backgroundColorG,
-        dto.backgroundColorB,
-    ];
-
-    delete dto.backgroundColorR;
-    delete dto.backgroundColorG;
-    delete dto.backgroundColorB;
-
-    return {
-        ...dto,
-        noteId: dto.id,
-        backgroundColor: backgroundColor,
-    };
-};
-
-const boardDTOtoBoard = (dto) => {
-    
-    let backgroundColor = [
-        dto.backgroundColorR,
-        dto.backgroundColorG,
-        dto.backgroundColorB,
-    ];
-    
-    let defaultBackgroundColor = [
-        dto.defaultBackgroundColorR,
-        dto.defaultBackgroundColorG,
-        dto.defaultBackgroundColorB,
-    ];
-
-    delete dto.backgroundColorR;
-    delete dto.backgroundColorG;
-    delete dto.backgroundColorB;
-    delete dto.defaultBackgroundColorR;
-    delete dto.defaultBackgroundColorG;
-    delete dto.defaultBackgroundColorB;
-
-    if (dto.notes != null) {
-        dto.notes = dto.notes.map((noteDTO) => noteDTOtoNote(noteDTO))
-    }
-
-    let newBoard = {
-        ...dto,
-        boardId: dto.id,
-        backgroundColor: backgroundColor,
-        defaultNoteBackgroundColor: defaultBackgroundColor,
-    };
-
-    return newBoard;
-};
 
 export const loadBoard = (dispatch, id) => {
     return new Promise((resolve, reject) => {
@@ -165,51 +113,6 @@ export const unloadBoard = (dispatch) => {
     dispatch({
         type: "UNSUBSCRIBED_FROM_BOARD",
     });
-};
-
-export const fetchMyWorkspaces = (dispatch) => {
-    axios.get(`${url}/api/workspaces/`)
-        .then((response) => {
-            let allBoards = []
-            response.data.forEach((workspace) => {
-                workspace.boards.forEach((board) => {
-                    allBoards.push(boardDTOtoBoard(board));
-                })
-            })
-
-            dispatch({
-                type: "BOARDS_FETCHED",
-                payload: allBoards
-            });
-        })
-        .catch((err) => {
-            console.error(err);
-        })
-}
-
-export const createBoard = (dispatch, workspaceId, title, backgroundColor, noteColor) => {
-    if (typeof(workspaceId) != 'number') {
-        return;
-    }
-    axios.post(`${url}/api/workspaces/${workspaceId}/Boards`, {
-        title: title,
-        backgroundColorR: backgroundColor[0],
-        backgroundColorG: backgroundColor[1],
-        backgroundColorB: backgroundColor[2],
-        defaultNoteColorR: noteColor[0],
-        defaultNoteColorG: noteColor[1],
-        defaultNoteColorB: noteColor[2],
-        visibilityId: 1
-    })
-    .then((response) => {
-        dispatch({
-            type: "CREATE_BOARD",
-            payload: boardDTOtoBoard(response.data),
-        });
-    })
-    .catch((err) => {
-        console.error(err);
-    })
 };
 
 export const deleteBoard = (dispatch, boardId) => {
