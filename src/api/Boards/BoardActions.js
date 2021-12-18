@@ -27,11 +27,13 @@ const noteDTOtoNote = (dto) => {
 };
 
 const boardDTOtoBoard = (dto) => {
+    
     let backgroundColor = [
         dto.backgroundColorR,
         dto.backgroundColorG,
         dto.backgroundColorB,
     ];
+    
     let defaultBackgroundColor = [
         dto.defaultBackgroundColorR,
         dto.defaultBackgroundColorG,
@@ -45,16 +47,16 @@ const boardDTOtoBoard = (dto) => {
     delete dto.defaultBackgroundColorG;
     delete dto.defaultBackgroundColorB;
 
+    if (dto.notes != null) {
+        dto.notes = dto.notes.map((noteDTO) => noteDTOtoNote(noteDTO))
+    }
+
     let newBoard = {
         ...dto,
         boardId: dto.id,
         backgroundColor: backgroundColor,
-        defaultNoteBackgroundColor: defaultBackgroundColor
+        defaultNoteBackgroundColor: defaultBackgroundColor,
     };
-
-    if (dto.notes) {
-        newBoard.notes = dto.notes.map((noteDTO) => noteDTOtoNote(noteDTO));
-    }
 
     return newBoard;
 };
@@ -65,8 +67,6 @@ export const loadBoard = (dispatch, id) => {
         if (typeof(id) != 'number') {
             return;
         }
-
-        console.log(id);
         
         boardHubConnection
             .start()
@@ -78,9 +78,7 @@ export const loadBoard = (dispatch, id) => {
                             reject(response.error);
                             return;
                         }
-
-                        let timestampBuffer = []
-
+                        
                         boardHubConnection.off();
                         boardHubConnection.on("BoardUpdated", (response) => {
                             delete response.data.notes;
@@ -155,7 +153,7 @@ export const fetchMyWorkspaces = (dispatch) => {
             });
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
         })
 }
 

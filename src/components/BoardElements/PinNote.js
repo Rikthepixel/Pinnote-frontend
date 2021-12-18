@@ -57,8 +57,10 @@ const PinNote = (props) => {
 
 
   const updateTitle = (title = "", validate) => {
-    let errors = {}
-    title = title.trim()
+    let errors = {};
+    if (title == null) { title = "" }
+    title = title.trim();
+    
     if (validate) {
       errors = validateNote({ title: title })
     } else {
@@ -75,8 +77,8 @@ const PinNote = (props) => {
     SingleFormAlert({
       title: "Change note title",
       text: "What do you want to change the note title to?",
-      inputPlaceholder: state.title,
-      inputValue: state.title,
+      inputPlaceholder: stateRef.current.title || "",
+      inputValue: stateRef.current.title || "",
       acceptButtonText: "Confirm",
       cancelButtonText: "Cancel",
       validate: value => {

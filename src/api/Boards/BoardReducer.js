@@ -39,9 +39,6 @@ const BoardReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case "SUBSCRIBED_TO_BOARD":
-            console.log(Object.assign({}, state, {
-                board: payload.board
-            }));
             return Object.assign({}, state, {
                 board: payload.board
             })

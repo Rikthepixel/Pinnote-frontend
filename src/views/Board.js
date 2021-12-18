@@ -114,8 +114,8 @@ const Board = (props) => {
     SingleFormAlert({
       title: "Change board title",
       text: "What do you want to change the board title to?",
-      inputPlaceholder: state.title,
-      inputValue: state.title,
+      inputPlaceholder: stateRef.current.title || "",
+      inputValue: stateRef.current.title || "",
       acceptButtonText: "Confirm",
       cancelButtonText: "Cancel",
       validate: (value) => {
