@@ -1,11 +1,11 @@
-import React, { Fragment, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { Tabs, Tab } from "react-bootstrap";
+import { Tabs, Tab, FormControl, Button } from "react-bootstrap";
 
 import { PinBoardItem, PinBoardItemButton } from "../components/BoardElements";
 
-import { BoardIcon, CogIcon, UserIcon } from "../assets/img/icons";
+import { BoardIcon, CogIcon, UserIcon, PlusIcon, UsersIcon } from "../assets/img/icons";
 import { fetchWorkspace, createBoardInWorkspacePopup } from "../api";
 
 import "../assets/scss/views/Workspace.scss";
@@ -17,6 +17,7 @@ const Workspace = (props) => {
         (root) =>
             root.workspaces.workspace || {
                 boards: [],
+                users: []
             }
     );
 
@@ -45,22 +46,28 @@ const Workspace = (props) => {
                         </div>
                     )}
                 >
-                    <h2 className="ps-2 section-header">
-                        <img className="me-2" src={BoardIcon} />
-                        Your boards
-                    </h2>
+                    <header className="d-flex align-items-center justify-content-between mb-3">
+                        <h2 className="ps-2 section-header">
+                            <img className="me-2" src={BoardIcon} />
+                            Boards
+                        </h2>
+                        <div className="d-flex gap-1">
+                            <FormControl
+                                placeholder="Filter by name"
+                            />
+                            <Button className="text-nowrap d-flex align-items-center justify-content-center">
+                                <img className="img-invert h-1-0em me-1" src={PlusIcon} />
+                                Board
+                            </Button>
+                        </div>
+                    </header>
                     <div className="w-100 d-flex flex-wrap gap-3">
                         {workspace.boards.map((board, bIndex) => (
                             <PinBoardItem key={`${board.id}-${bIndex}`} board={board} />
                         ))}
-                        <PinBoardItemButton
-                            onClick={() =>
-                                createBoardInWorkspacePopup(dispatch, workspace.id)
-                            }
-                        />
                     </div>
                 </Tab>
-                <Tab 
+                <Tab
                     eventKey="members"
                     title={(
                         <div className="d-flex flex-row justify-content-center align-items-center">
@@ -69,9 +76,40 @@ const Workspace = (props) => {
                         </div>
                     )}
                 >
-
+                    <header className="d-flex align-items-center justify-content-between mb-3">
+                        <h2 className="ps-2 section-header">
+                            <img className="me-2" src={UsersIcon} />
+                            Members
+                        </h2>
+                        <div className="d-flex gap-1">
+                            <FormControl
+                                placeholder="Filter by name"
+                            />
+                            <Button className="text-nowrap d-flex align-items-center justify-content-center">
+                                <img className="img-invert h-1-0em me-1" src={PlusIcon} />
+                                Member
+                            </Button>
+                        </div>
+                    </header>
+                    <article className="d-flex flex-column gap-2 mt-4">
+                        {workspace.users.map((user, index) => (
+                            <div
+                                key={index}
+                                className="UserItem"
+                                style={{ backgroundColor: index % 2 == 0 ? "var(--bs-gray-200)" : "var(--bs-gray-300)" }}
+                            >
+                                <div className="NameDetails">
+                                    <b>{user.username}</b>
+                                    <div>{user.email}</div>
+                                </div>
+                                <Button variant="danger">
+                                    Remove
+                                </Button>
+                            </div>
+                        ))}
+                    </article>
                 </Tab>
-                <Tab 
+                <Tab
                     eventKey="settings"
                     title={(
                         <div className="d-flex flex-row justify-content-center align-items-center">
@@ -79,6 +117,17 @@ const Workspace = (props) => {
                             Settings
                         </div>
                     )}>
+                    <header className="d-flex align-items-center justify-content-between mb-3">
+                        <h2 className="ps-2 section-header">
+                            <img className="me-2" src={CogIcon} />
+                            Settings
+                        </h2>
+                        <div className="d-flex gap-1">
+                            <FormControl
+                                placeholder="Filter by name"
+                            />
+                        </div>
+                    </header>
 
                 </Tab>
             </Tabs>

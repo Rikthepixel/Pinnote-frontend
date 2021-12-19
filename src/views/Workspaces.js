@@ -2,8 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 
-import { PinBoardItem, PinBoardItemButton } from "../components/BoardElements";
-import { createBoardInWorkspacePopup, fetchMyWorkspaces } from "../api";
+import { fetchMyWorkspaces } from "../api";
 
 import {
     FolderIcon,
@@ -13,7 +12,7 @@ import {
     UserTieIcon
 } from "../assets/img/icons";
 
-import "../assets/scss/views/Boards.scss";
+import "../assets/scss/views/Workspaces.scss";
 
 const Boards = (props) => {
     document.title = "Pinnote - Boards";

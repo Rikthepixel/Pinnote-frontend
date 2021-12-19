@@ -28,6 +28,8 @@ a {
 }
 
 .section-header {
+    display: flex;
+    align-items: center;
     color: var(--bs-gray-600);
 
     img {
