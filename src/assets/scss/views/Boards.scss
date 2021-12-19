@@ -1,10 +1,13 @@
 ﻿.BoardScrollContainer {
+    
+    background-color: var(--bs-gray-200);
     overflow: auto;
     width: 100%;
 
     display: flex;
 
     scrollbar-width: thin;
+    scrollbar-color: var(--bs-gray-400) transparent;
     scroll-behavior: smooth;
 
     &::-webkit-scrollbar {
@@ -12,25 +15,31 @@
     }
 
     &::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: transparent;
     }
 
     &::-webkit-scrollbar-thumb {
-        background: #888;
+        background: var(--bs-gray-400);
 
         &:hover {
-            background: #555;
+            background: var(--bs-gray-600);
         }
     }
 }
 
 .SectionHeader {
-    color: var(--bs-gray-600)
+    color: var(--bs-gray-600);
+
+    img {
+        height: 0.9em;
+        filter: invert(0.4);
+        object-fit: contain;
+    }
 }
 
 .BoardContainer {
-    background-color: var(--bs-gray-200);
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
+    overflow: hidden;
+    border-radius: 2em;
 }

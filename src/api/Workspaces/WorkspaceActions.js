@@ -32,7 +32,7 @@ export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundC
     })
     .then((response) => {
         dispatch({
-            type: "CREATE_BOARD",
+            type: "CREATE_BOARD_IN_WORKSPACE",
             payload: boardDTOtoBoard(response.data),
         });
     })

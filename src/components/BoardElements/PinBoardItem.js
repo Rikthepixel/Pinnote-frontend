@@ -36,7 +36,7 @@ export const PinBoardItem = (props) => {
 
 export const PinBoardItemButton = (props) => {
     return (
-        <div className="PinBoardItemBase text-white bg-primary PinBoardItemRadius PinBoardItemShadows" onClick={props.onClick}>
+        <div className="PinBoardItemBase text-white PinBoardItemRadius PinBoardItemShadows" onClick={props.onClick}>
             <img className="PlusIcon me-2" src={PlusIcon} />
             <p className="p-0 m-0">Board</p>
         </div>

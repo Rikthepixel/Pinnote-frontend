@@ -5,6 +5,7 @@ import MoreIcon from "./MoreIcon.svg";
 import NoteIcon from "./NoteIcon.svg";
 import TrashIcon from "./TrashIcon.svg";
 import PlusIcon from "./PlusIcon.svg";
+import FolderIcon from "./FolderIcon.svg"
 
 export {
     BrushIcon,
@@ -14,4 +15,5 @@ export {
     NoteIcon,
     TrashIcon,
     PlusIcon,
+    FolderIcon
 };

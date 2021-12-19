@@ -7,6 +7,10 @@ import { PinBoardItem, PinBoardItemButton } from "../components/BoardElements";
 import { createBoardInWorkspace, fetchMyWorkspaces } from "../api";
 import { boardSchema } from "../api/Boards/BoardValidators";
 
+import {
+    FolderIcon
+} from "../assets/img/icons";
+
 import "../assets/scss/views/Boards.scss";
 
 const prefabBackgroundColors = [
@@ -84,6 +88,7 @@ const Boards = (props) => {
             ]
         }).then((result) => {
             if (result.confirmed) {
+                console.log(workspaceId);
                 createBoardInWorkspace(dispatch, workspaceId, result.values.Title, result.values.BackgroundColor, result.values.DefaultNoteColor);
             }
         })
@@ -97,14 +102,17 @@ const Boards = (props) => {
         <div className="page-container">
             <div className="px-4 pt-4">
                 <section>
-                    <h2 className="SectionHeader">Your workspaces</h2>
+                    <h2 className="SectionHeader">
+                        <img className="me-2" src={FolderIcon} />
+                        Your workspaces
+                    </h2>
                     <div className="px-3">
                         {workspaces.map((workspace, wIndex) => {
                             return (
                                 <article key={wIndex} className="mb-3">
                                     <h3 className="mx-3 m-0">{workspace.name}</h3>
-                                    <div className="BoardScrollContainer pb-3">
-                                        <div className="BoardContainer p-2 gap-3">
+                                    <div className="BoardContainer">
+                                        <div className="BoardScrollContainer p-2 gap-3">
                                             {workspace.boards.map((board, bIndex) => <PinBoardItem key={bIndex} board={board} />)}
                                             <PinBoardItemButton onClick={() => createBoardPopup(workspace.id)} />
                                         </div>
