@@ -12,12 +12,12 @@ const Navbar = () => {
     return (
         <nav className="Navbar">
             <div className="NavMenu justify-content-start">
-                <NavLink className="NavLink" to="/Boards">
-                    Boards
+                <NavLink className="NavLink" to="/">
+                    Workspaces
                 </NavLink>
             </div>
 
-            <NavLink to="/Boards">
+            <NavLink to="/">
                 <img className="NavImage" src={logo} alt="Pinnote" />
             </NavLink>
 

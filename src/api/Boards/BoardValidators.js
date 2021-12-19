@@ -47,4 +47,10 @@ export const validateNote = (object) => {
     return errors  
 }
 
+export const createBoardSchema = yup.object().shape({
+    Title: boardSchema.fields.title,
+    BackgroundColor: boardSchema.fields.backgroundColor,
+    DefaultNoteColor: boardSchema.fields.defaultNoteColor
+})
+
 export default boardSchema;

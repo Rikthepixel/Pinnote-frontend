@@ -37,7 +37,7 @@ export default function MainRoute() {
         <div className="page-container">
           <Switch>
             {RouteComponents}
-            <Redirect to="/Boards" />
+            <Redirect to="/" />
           </Switch>
         </div>
       </main>

@@ -27,6 +27,16 @@ a {
     }
 }
 
+.section-header {
+    color: var(--bs-gray-600);
+
+    img {
+        height: 0.9em;
+        filter: invert(0.4);
+        object-fit: contain;
+    }
+}
+
 #content-container,
 .page-container {
     display: flex;
@@ -93,5 +103,29 @@ a {
     
     .min-w-#{$size} {
         min-width: $percentage
+    }
+
+    .h-#{$size} {
+        height: $percentage !important
+    }
+
+    .max-h-#{$size} {
+        max-height: $percentage !important
+    }
+    
+    .min-h-#{$size} {
+        min-height: $percentage !important
+    }
+}
+
+@for $i from 0 through 10 {
+    @for $j from 0 through 3 {
+        .w-#{$i}-#{$j}em {
+            width: $i + ($j * 0.25) + em
+        }
+    
+        .h-#{$i}-#{$j}em {
+            height: $i + ($j * 0.25) + em
+        }
     }
 }

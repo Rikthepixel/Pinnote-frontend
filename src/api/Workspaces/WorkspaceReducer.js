@@ -16,20 +16,38 @@ const WorkspaceReducer = (state = initialState, action) => {
     }
 
     switch (action.type) {
-        case "WORKSPACES_FETCHED":
-            
+        case "WORKSPACES_FETCHED":   
             return {
                 ...state,
                 workspaces: action.payload
             };
 
-        case "CREATE_BOARD_IN_WORKSPACE":
-            workspace.boards.push(action.payload)
-            state.workspaces[workspaceIndex] = {
-                ...workspace
-            };
+        case "WORKSPACE_FETCHED":
+            return {
+                ...state,
+                workspace: action.payload
+            }
 
-            console.log(workspace);
+        case "CREATE_BOARD_IN_WORKSPACE":
+            if (workspace) {
+                workspace.boards.push(action.payload)
+                state.workspaces[workspaceIndex] = {
+                    ...workspace
+                };
+            }
+            
+            if (state.workspace.boards) {
+                state.workspace.boards.push(action.payload)
+                state.workspace = {
+                    ...state.workspace,
+                    boards: [
+                        ...state.workspace.boards
+                    ]
+                }
+            }
+
+            console.log(state);
+
             return {
                 ...state,
                 workspaces: [

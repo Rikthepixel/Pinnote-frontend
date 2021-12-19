@@ -8,6 +8,10 @@ import PlusIcon from "./PlusIcon.svg";
 import FolderIcon from "./FolderIcon.svg";
 import BoardIcon from "./BoardIcon.svg";
 import ArrowRightIcon from "./ArrowRightIcon.svg";
+import CogIcon from "./CogIcon.svg";
+import UserIcon from "./UserIcon.svg";
+import UsersIcon from "./UsersIcon.svg";
+import UserTieIcon from "./UserTieIcon.svg";
 
 export {
     BrushIcon,
@@ -19,5 +23,9 @@ export {
     PlusIcon,
     FolderIcon,
     BoardIcon,
-    ArrowRightIcon
+    ArrowRightIcon,
+    UserIcon,
+    CogIcon,
+    UsersIcon,
+    UserTieIcon
 };

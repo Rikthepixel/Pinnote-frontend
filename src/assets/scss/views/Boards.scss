@@ -1,51 +1,50 @@
-﻿.BoardScrollContainer {
+﻿.WorkspaceItem {
+
+    display: flex;
+    justify-content: space-between;
+
     
     background-color: var(--bs-gray-200);
-    overflow: auto;
-    width: 100%;
-
-    display: flex;
-}
-
-.SectionHeader {
-    color: var(--bs-gray-600);
-
-    img {
-        height: 0.9em;
-        filter: invert(0.4);
-        object-fit: contain;
-    }
-}
-
-.BoardContainer {
-    display: flex;
-    flex-direction: row;
-    overflow: hidden;
+    padding: 1.5rem;
     border-radius: 2em;
-}
-
-.WorkspaceLink {
-
-    border-radius: 0.25em;
-    padding: 0.25em;
-    background-color: transparent;
-    transition: background-color 0.3s ease-in-out;
 
     &:hover {
 
-        background-color: lightgray;
-
-        img {
+        .LinkArrow {
             margin-right: 0.5rem;
             filter: invert(0.3);
         }
     }
 
-    img {
-        height: 1em;
+    .LinkArrow {
+        height: 2em;
         object-fit: contain;
 
         margin-right: 1rem; 
         transition: margin-right 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+}
+
+.WorkspaceDetails {
+
+    & section {
+        display: flex;
+        flex-direction: column;
+        color: black !important;
+        &:hover {
+            color: var(--bs-gray-700) !important;
+        }
+
+        & > div {
+            display: flex;
+            align-items: center;
+            gap: 0.5em;
+
+            & > img {
+                width: 1.25em;
+                height: 1.25em;
+                object-fit: contain;
+            }
+        }
     }
 }
