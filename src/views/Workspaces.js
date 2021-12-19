@@ -21,7 +21,10 @@ const Boards = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        fetchMyWorkspaces(dispatch);
+        fetchMyWorkspaces(dispatch)
+            .catch((err) => {
+                console.log(err);
+            });
     }, []);
 
     return (
@@ -33,7 +36,6 @@ const Boards = (props) => {
                 </h2>
                 <div className="px-4">
                     {workspaces.map((workspace, wIndex) => {
-                        console.log(workspace);
                         return (
                             <NavLink
                                 key={`${workspace.id}-${wIndex}`}

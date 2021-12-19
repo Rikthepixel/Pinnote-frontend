@@ -49,7 +49,15 @@ const Board = (props) => {
   stateRef.current = state;
 
   useEffect(() => {
-    loadBoard(dispatch, boardId);
+    if (parseInt(boardId)) {
+      loadBoard(dispatch, parseInt(boardId))
+        .catch(() => {
+          setRedirect('/workspaces');
+        });
+    } else {
+      setRedirect('/workspaces');
+    }
+
 
     return () => {
       unloadBoard(dispatch);
@@ -177,116 +185,116 @@ const Board = (props) => {
 
   document.title = `Pinnote - ${state.title || "Board"}`;
   return (
-    
-      <div className="flex-grow-1 overflow-hidden position-relative">
-        <aside className="pinBoard-Menu" ref={menuDiv}>
-          <div className="d-flex w-100 p-2">
-            <div className="d-flex align-items-center justify-content-center w-100">
-              <label className="d-inline-flex align-items-center fs-4">
-                Board settings
-              </label>
-            </div>
-            <Button className="bg-transparent border-0" onClick={toggleMenu}>
-              <img alt="X" src={CloseIcon} className="text-black" />
-            </Button>
-          </div>
 
-          <div className="pinBoard-Menu-Content p-3">
-            <Button
+    <div className="flex-grow-1 overflow-hidden position-relative">
+      <aside className="pinBoard-Menu" ref={menuDiv}>
+        <div className="d-flex w-100 p-2">
+          <div className="d-flex align-items-center justify-content-center w-100">
+            <label className="d-inline-flex align-items-center fs-4">
+              Board settings
+            </label>
+          </div>
+          <Button className="bg-transparent border-0" onClick={toggleMenu}>
+            <img alt="X" src={CloseIcon} className="text-black" />
+          </Button>
+        </div>
+
+        <div className="pinBoard-Menu-Content p-3">
+          <Button
+            variant="primary"
+            className="w-100"
+            onClick={onTitleChangeClick}
+          >
+            <div className="d-flex align-items-center justify-content-center">
+              <img
+                className="me-1"
+                src={EditIcon}
+                style={{
+                  filter: "invert(100%)",
+                  aspectRatio: "1",
+                  height: "1.2rem",
+                }}
+              />
+              Change title
+            </div>
+          </Button>
+
+          {state.backgroundColor && (
+            <ColorSelectorButton
               variant="primary"
               className="w-100"
-              onClick={onTitleChangeClick}
-            >
-              <div className="d-flex align-items-center justify-content-center">
-                <img
-                  className="me-1"
-                  src={EditIcon}
-                  style={{
-                    filter: "invert(100%)",
-                    aspectRatio: "1",
-                    height: "1.2rem",
-                  }}
-                />
-                Change title
-              </div>
-            </Button>
+              text="Background color"
+              icon={BrushIcon}
+              color={state.backgroundColor}
+              onMount={(setDisplayColor) =>
+                (setDisplaySelectorBackgroundColor.current = setDisplayColor)
+              }
+              onCancel={(_, setDisplayColor) => {
+                setDisplayColor(state.backgroundColor);
+                setDraftBackgroundColor(null);
+              }}
+              onChange={(color) => setDraftBackgroundColor(color)}
+              onSave={(color) => {
+                setDraftBackgroundColor(color);
+                setBoardColor(color[0], color[1], color[2]);
+              }}
+            />
+          )}
 
-            {state.backgroundColor && (
-              <ColorSelectorButton
-                variant="primary"
-                className="w-100"
-                text="Background color"
-                icon={BrushIcon}
-                color={state.backgroundColor}
-                onMount={(setDisplayColor) =>
-                  (setDisplaySelectorBackgroundColor.current = setDisplayColor)
-                }
-                onCancel={(_, setDisplayColor) => {
-                  setDisplayColor(state.backgroundColor);
-                  setDraftBackgroundColor(null);
-                }}
-                onChange={(color) => setDraftBackgroundColor(color)}
-                onSave={(color) => {
-                  setDraftBackgroundColor(color);
-                  setBoardColor(color[0], color[1], color[2]);
+          {state.defaultNoteBackgroundColor && (
+            <ColorSelectorButton
+              variant="primary"
+              className="w-100"
+              text="Note color"
+              icon={NoteIcon}
+              color={state.defaultNoteBackgroundColor}
+              onMount={(setDisplayColor) =>
+              (setDisplaySelectorDefaultBackgroundColor.current =
+                setDisplayColor)
+              }
+              onCancel={(color, setDisplayColor) =>
+                setDisplayColor(state.defaultNoteBackgroundColor)
+              }
+              onSave={(color) =>
+                setBoardNoteColor(color[0], color[1], color[2])
+              }
+            />
+          )}
+
+          <Button variant="danger" className="w-100" onClick={onDeleteClick}>
+            <div className="d-flex align-items-center justify-content-center">
+              <img
+                className="me-1"
+                src={TrashIcon}
+                style={{
+                  filter: "invert(100%)",
+                  aspectRatio: "1",
+                  height: "1.2rem",
                 }}
               />
-            )}
-
-            {state.defaultNoteBackgroundColor && (
-              <ColorSelectorButton
-                variant="primary"
-                className="w-100"
-                text="Note color"
-                icon={NoteIcon}
-                color={state.defaultNoteBackgroundColor}
-                onMount={(setDisplayColor) =>
-                (setDisplaySelectorDefaultBackgroundColor.current =
-                  setDisplayColor)
-                }
-                onCancel={(color, setDisplayColor) =>
-                  setDisplayColor(state.defaultNoteBackgroundColor)
-                }
-                onSave={(color) =>
-                  setBoardNoteColor(color[0], color[1], color[2])
-                }
-              />
-            )}
-
-            <Button variant="danger" className="w-100" onClick={onDeleteClick}>
-              <div className="d-flex align-items-center justify-content-center">
-                <img
-                  className="me-1"
-                  src={TrashIcon}
-                  style={{
-                    filter: "invert(100%)",
-                    aspectRatio: "1",
-                    height: "1.2rem",
-                  }}
-                />
-                Delete board
-              </div>
-            </Button>
-          </div>
-        </aside>
-        <article
-          className="pinBoard-Main-Container page-container"
-          style={{ backgroundColor: `rgb(${displayColor.join()})` }}
-        >
-          <PinNoteToolbar>
-            <div className="me-auto pinBoard-Toolbar-Title">{state.title}</div>
-            <Button className="d-flex align-items-center" ref={newNoteButton}>
-              <img className="BoardButtonImage me-1 img-invert" alt="+" src={PlusIcon} />
-              Note
-            </Button>
-            <Button onClick={toggleMenu}>
-              <img src={MoreIcon} alt="..." className="me-1 img-invert" />
-              Menu
-            </Button>
-          </PinNoteToolbar>
-          <PinBoard newNoteButton={newNoteButton} />
-        </article>
-      </div>
+              Delete board
+            </div>
+          </Button>
+        </div>
+      </aside>
+      <article
+        className="pinBoard-Main-Container page-container"
+        style={{ backgroundColor: `rgb(${displayColor.join()})` }}
+      >
+        <PinNoteToolbar>
+          <div className="me-auto pinBoard-Toolbar-Title">{state.title}</div>
+          <Button className="d-flex align-items-center" ref={newNoteButton}>
+            <img className="BoardButtonImage me-1 img-invert" alt="+" src={PlusIcon} />
+            Note
+          </Button>
+          <Button onClick={toggleMenu}>
+            <img src={MoreIcon} alt="..." className="me-1 img-invert" />
+            Menu
+          </Button>
+        </PinNoteToolbar>
+        <PinBoard newNoteButton={newNoteButton} />
+      </article>
+    </div>
   );
 };
 

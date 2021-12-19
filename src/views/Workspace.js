@@ -26,14 +26,13 @@ const Workspace = (props) => {
     const [redirect, setRedirect] = useState("");
 
     useEffect(() => {
-        let intWorkspaceId = parseInt(workspaceId)
-        if (intWorkspaceId) {
-            fetchWorkspace(dispatch, intWorkspaceId)
+        if (parseInt(workspaceId)) {
+            fetchWorkspace(dispatch, parseInt(workspaceId))
                 .catch(() => {
-                    setRedirect("/")
+                    setRedirect("/workspaces")
                 });
         } else {
-            setRedirect("/");
+            setRedirect("/workspaces");
         }
     }, []);
 
