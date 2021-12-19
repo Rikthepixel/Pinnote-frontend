@@ -119,7 +119,7 @@ const Board = (props) => {
             if (response.error) {
               return;
             }
-            setRedirect("/boards");
+            setRedirect(`/workspaces/${stateRef.current.workspaceId}`);
           })
           .catch((err) => {
             console.error(err);

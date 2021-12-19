@@ -55,7 +55,10 @@ const Workspace = (props) => {
                             <FormControl
                                 placeholder="Filter by name"
                             />
-                            <Button className="text-nowrap d-flex align-items-center justify-content-center">
+                            <Button 
+                                className="text-nowrap d-flex align-items-center justify-content-center"
+                                onClick={() => createBoardInWorkspacePopup(dispatch, workspace.id)}
+                            >
                                 <img className="img-invert h-1-0em me-1" src={PlusIcon} />
                                 Board
                             </Button>
