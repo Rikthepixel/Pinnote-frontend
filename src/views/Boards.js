@@ -1,5 +1,6 @@
 ﻿import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom";
 import { MultiFormAlert } from "../utils/Alerts";
 import * as yup from "yup";
 
@@ -8,7 +9,9 @@ import { createBoardInWorkspace, fetchMyWorkspaces } from "../api";
 import { boardSchema } from "../api/Boards/BoardValidators";
 
 import {
-    FolderIcon
+    FolderIcon,
+    BoardIcon,
+    ArrowRightIcon
 } from "../assets/img/icons";
 
 import "../assets/scss/views/Boards.scss";
@@ -99,31 +102,49 @@ const Boards = (props) => {
     }, []);
 
     return (
-        <div className="page-container">
-            <div className="px-4 pt-4">
-                <section>
-                    <h2 className="SectionHeader">
-                        <img className="me-2" src={FolderIcon} />
-                        Your workspaces
-                    </h2>
-                    <div className="px-3">
-                        {workspaces.map((workspace, wIndex) => {
-                            return (
-                                <article key={wIndex} className="mb-3">
-                                    <h3 className="mx-3 m-0">{workspace.name}</h3>
-                                    <div className="BoardContainer">
-                                        <div className="BoardScrollContainer p-2 gap-3">
-                                            {workspace.boards.map((board, bIndex) => <PinBoardItem key={bIndex} board={board} />)}
-                                            <PinBoardItemButton onClick={() => createBoardPopup(workspace.id)} />
-                                        </div>
+        <div className="w-100 h-100 d-flex flex-row px-4 pt-4">
+            <aside className="h-100 w-20 ps-4 pt-4 d-flex flex-column">
+                <h2 className="fs-5 SectionHeader">
+                    <img className="me-1" src={FolderIcon} />
+                    Your workspaces
+                </h2>
+                <nav className="w-100 h-100 d-flex flex-column gap-1">
+                    {workspaces.map((workspace, index) => {
+                        return (
+                            <NavLink
+                                key={`${workspaces.id}-${index}`}
+                                to={`/workspaces/${workspace.id}`}
+                                className="WorkspaceLink d-flex justify-content-between align-items-center text-break"
+                            >
+                                <b>
+                                    {workspace.name}
+                                </b>
+                                <img src={ArrowRightIcon} />
+                            </NavLink>)
+                    })}
+                </nav>
+            </aside>
+            <section className="px-4 pt-4 w-80">
+                <h2 className="ps-2 SectionHeader">
+                    <img className="me-2" src={BoardIcon} />
+                    Your boards
+                </h2>
+                <div className="px-4">
+                    {workspaces.map((workspace, wIndex) => {
+                        return (
+                            <article key={`${workspace.id}-${wIndex}`} className="mb-3">
+                                <h3 className="mx-3 m-0">{workspace.name}</h3>
+                                <div className="BoardContainer">
+                                    <div className="BoardScrollContainer scrollbar-thin p-2 gap-3">
+                                        {workspace.boards.map((board, bIndex) => <PinBoardItem key={`${board.id}-${bIndex}`} board={board} />)}
+                                        <PinBoardItemButton onClick={() => createBoardPopup(workspace.id)} />
                                     </div>
-                                </article>
-                            )
-                        })}
-                    </div>
-                </section>
-
-            </div>
+                                </div>
+                            </article>
+                        )
+                    })}
+                </div>
+            </section>
         </div>
     );
 };

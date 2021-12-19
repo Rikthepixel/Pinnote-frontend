@@ -1,6 +1,7 @@
 //Imports
 import Boards from "../views/Boards";
 import Board from "../views/Board";
+import Workspace from "../views/Workspace";
 
 //Routes
 export const routes = {
@@ -21,4 +22,10 @@ export const routes = {
         path: "/Boards/:boardId",
         exact: true
     },
+
+    Workspaces: {
+        component: Workspace,
+        path: "/Workspaces/:workspaceId",
+        exact: true
+    }
 }

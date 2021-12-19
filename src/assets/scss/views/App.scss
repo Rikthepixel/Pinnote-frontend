@@ -1,6 +1,7 @@
 ﻿@import "~bootstrap/scss/bootstrap";
 
-body, html {
+body,
+html {
     margin: 0;
     height: 100% !important;
 }
@@ -26,7 +27,8 @@ a {
     }
 }
 
-#content-container, .page-container {
+#content-container,
+.page-container {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -46,10 +48,50 @@ a {
     flex-direction: column;
 }
 
-.popup-content, .popup-arrow {
+.popup-content,
+.popup-arrow {
     color: var(--bs-primary)
 }
 
 .img-invert {
     filter: invert(1);
+}
+
+.scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: lightgray transparent;
+    scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+        height: 0.5em;
+        width: 0.5em;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: lightgray;
+
+        &:hover {
+            background: gray;
+        }
+    }
+}
+
+@for $i from 1 through 20 {
+    $size: $i * 5;
+    $percentage: percentage($size / 100);
+    .w-#{$size} {
+        width: $percentage
+    }
+
+    .max-w-#{$size} {
+        max-width: $percentage
+    }
+    
+    .min-w-#{$size} {
+        min-width: $percentage
+    }
 }

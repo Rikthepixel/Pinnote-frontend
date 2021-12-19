@@ -33,12 +33,14 @@ export default function MainRoute() {
   return (
     <Router>
       <Navbar />
-      <div id="content-container">
-        <Switch>
-          {RouteComponents}
-          <Redirect to="/Boards" />
-        </Switch>
-      </div>
+      <main id="content-container">
+        <div className="page-container">
+          <Switch>
+            {RouteComponents}
+            <Redirect to="/Boards" />
+          </Switch>
+        </div>
+      </main>
     </Router>
   );
 }
