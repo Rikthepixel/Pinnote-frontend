@@ -93,8 +93,9 @@ export const loadBoard = (dispatch, id) => {
                     } else {
                         subscribe();
                     }
-                })
-        } else {
+                });
+
+        } else if (hub.connection.state == "Disconnected") {
             hub.connection
                 .start()
                 .then(subscribe)

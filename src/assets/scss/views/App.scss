@@ -49,3 +49,7 @@ a {
 .popup-content, .popup-arrow {
     color: var(--bs-primary)
 }
+
+.img-invert {
+    filter: invert(1);
+}

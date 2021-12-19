@@ -6,7 +6,14 @@ import { Button } from "react-bootstrap";
 import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
-import { deleteBoard, loadBoard, unloadBoard, setBoardTitle, setBoardColor, setBoardNoteColor } from "../api";
+import {
+  deleteBoard,
+  loadBoard,
+  unloadBoard,
+  setBoardTitle,
+  setBoardColor,
+  setBoardNoteColor,
+} from "../api";
 import { ConfirmationAlert, SingleFormAlert } from "../utils/Alerts";
 import { validateBoard } from "../api/Boards/BoardValidators";
 
@@ -17,6 +24,7 @@ import {
   BrushIcon,
   NoteIcon,
   EditIcon,
+  PlusIcon
 } from "../assets/img/icons";
 
 import "../assets/scss/views/Board.scss";
@@ -46,21 +54,31 @@ const Board = (props) => {
 
     return () => {
       unloadBoard(dispatch);
-    }
+    };
   }, []);
 
   useEffect(() => {
-    if (typeof(setDisplaySelectorDefaultBackgroundColor.current) == 'function' && stateRef.current.defaultNoteBackgroundColor != null){
-      setDisplaySelectorDefaultBackgroundColor.current(stateRef.current.defaultNoteBackgroundColor);
+    if (
+      typeof setDisplaySelectorDefaultBackgroundColor.current == "function" &&
+      stateRef.current.defaultNoteBackgroundColor != null
+    ) {
+      setDisplaySelectorDefaultBackgroundColor.current(
+        stateRef.current.defaultNoteBackgroundColor
+      );
     }
-  }, [state.defaultNoteBackgroundColor])
+  }, [state.defaultNoteBackgroundColor]);
 
   useEffect(() => {
-    if (typeof(setDisplaySelectorBackgroundColor.current) == 'function' && stateRef.current.backgroundColor != null){
+    if (
+      typeof setDisplaySelectorBackgroundColor.current == "function" &&
+      stateRef.current.backgroundColor != null
+    ) {
       setDraftBackgroundColor(null);
-      setDisplaySelectorBackgroundColor.current(stateRef.current.backgroundColor);
+      setDisplaySelectorBackgroundColor.current(
+        stateRef.current.backgroundColor
+      );
     }
-  }, [state.backgroundColor])
+  }, [state.backgroundColor]);
 
   const toggleMenu = () => {
     menuDiv.current.setAttribute(
@@ -100,11 +118,13 @@ const Board = (props) => {
       if (result) {
         deleteBoard(dispatch, parseInt(boardId))
           .then((response) => {
-            if (response.error) { return }
+            if (response.error) {
+              return;
+            }
             setRedirect("/boards");
           })
           .catch((err) => {
-            console.error(err)
+            console.error(err);
           });
       }
     });
@@ -189,7 +209,9 @@ const Board = (props) => {
               text="Background color"
               icon={BrushIcon}
               color={state.backgroundColor}
-              onMount={(setDisplayColor) => setDisplaySelectorBackgroundColor.current = setDisplayColor}
+              onMount={(setDisplayColor) =>
+                (setDisplaySelectorBackgroundColor.current = setDisplayColor)
+              }
               onCancel={(_, setDisplayColor) => {
                 setDisplayColor(state.backgroundColor);
                 setDraftBackgroundColor(null);
@@ -209,9 +231,16 @@ const Board = (props) => {
               text="Note color"
               icon={NoteIcon}
               color={state.defaultNoteBackgroundColor}
-              onMount={(setDisplayColor) => setDisplaySelectorDefaultBackgroundColor.current = setDisplayColor}
-              onCancel={(color, setDisplayColor) => setDisplayColor(state.defaultNoteBackgroundColor)}
-              onSave={(color) => setBoardNoteColor(color[0], color[1], color[2])}
+              onMount={(setDisplayColor) =>
+              (setDisplaySelectorDefaultBackgroundColor.current =
+                setDisplayColor)
+              }
+              onCancel={(color, setDisplayColor) =>
+                setDisplayColor(state.defaultNoteBackgroundColor)
+              }
+              onSave={(color) =>
+                setBoardNoteColor(color[0], color[1], color[2])
+              }
             />
           )}
 
@@ -237,16 +266,12 @@ const Board = (props) => {
       >
         <PinNoteToolbar>
           <div className="me-auto pinBoard-Toolbar-Title">{state.title}</div>
-          <Button ref={newNoteButton}>+ Note</Button>
+          <Button className="d-flex align-items-center" ref={newNoteButton}>
+            <img className="BoardButtonImage me-1 img-invert" alt="+" src={PlusIcon} />
+            Note
+          </Button>
           <Button onClick={toggleMenu}>
-            <img
-              src={MoreIcon}
-              alt="..."
-              className="me-1"
-              style={{
-                filter: "invert(100%)",
-              }}
-            />
+            <img src={MoreIcon} alt="..." className="me-1 img-invert" />
             Menu
           </Button>
         </PinNoteToolbar>
