@@ -6,7 +6,7 @@ import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
 
 import MakeWriteable from "../MakeWriteable";
 
-import { deletePinNote, setNoteColor, setNotePosition, setNoteText, setNoteTitle, setMovingNote } from "../../api";
+import { deletePinNote, setNoteColor, setNotePosition, setNoteText, setNoteTitle } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
 import { MoreIcon, BrushIcon, TrashIcon, EditIcon } from "../../assets/img/icons";
@@ -46,7 +46,7 @@ const PinNote = (props) => {
   const state = useSelector(state => {
     let note = {};
     ((state.boards.board || {}).notes || []).every((_note) => {
-      if (_note.id == props.noteId) {
+      if (parseInt(_note.id) === parseInt(props.noteId)) {
         note = _note
         return false;
       }
@@ -61,7 +61,7 @@ const PinNote = (props) => {
     let errors = {};
     if (title == null) { title = "" }
     title = title.trim();
-    
+
     if (validate) {
       errors = validateNote({ title: title })
     } else {
@@ -72,7 +72,7 @@ const PinNote = (props) => {
 
   useEffect(() => {
     setTitleText.current(stateRef.current.title);
-  }, [state.title])
+  }, [stateRef.current.title])
 
   const onTitleChangeClick = () => {
     FormAlert({
@@ -215,6 +215,7 @@ const PinNote = (props) => {
                 <div className="d-flex align-items-center justify-content-center">
                   <img
                     className="me-1"
+                    alt=""
                     src={EditIcon}
                     style={{
                       filter: "invert(100%)",
@@ -233,7 +234,7 @@ const PinNote = (props) => {
                 icon={BrushIcon}
                 color={state.backgroundColor}
                 onOpen={(setColor) => { setColorSelectorDisplay.current = setColor }}
-                onCancel={(_, setDisplayColor) => { 
+                onCancel={(_, setDisplayColor) => {
                   setDisplayColor(state.backgroundColor);
                   setDraftBackgroundColor(null);
                 }}
@@ -250,7 +251,7 @@ const PinNote = (props) => {
                 onClick={() => deletePinNote(props.noteId)}
               >
                 <img
-                  className="me-1" src={TrashIcon}
+                  className="me-1" src={TrashIcon} alt=""
                   style={{ filter: "invert(100%)", aspectRatio: "1", height: "1.2rem" }}
                 />
                 Delete note
@@ -261,7 +262,7 @@ const PinNote = (props) => {
           <button className="pinNote-Header-Action">
             <img
               src={MoreIcon} alt="..."
-              style={{filter: contrastColor == "#fff" && "invert(100%)" }}
+              style={{ filter: contrastColor === "#fff" && "invert(100%)" }}
             />
           </button>
         </OverlayTrigger>

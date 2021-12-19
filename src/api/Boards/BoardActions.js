@@ -1,4 +1,4 @@
-import boardSchema, { validateBoard, validateNote } from "./BoardValidators";
+import { validateBoard, validateNote } from "./BoardValidators";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { noteDTOtoNote, boardDTOtoBoard } from "../DtoHelpers";
 import axios from "axios";
@@ -85,17 +85,17 @@ export const loadBoard = (dispatch, id) => {
                 .catch((err) => reject(err));
         }
         
-        if (hub.connection.state == "Connected") {
+        if (hub.connection.state === "Connected") {
             hub.connection.invoke("UnSubscribe")
                 .then(() => {
-                    if (hub.connection != "Connected") {
+                    if (hub.connection !== "Connected") {
                         connectAndSubscribe();
                     } else {
                         subscribe();
                     }
                 });
 
-        } else if (hub.connection.state == "Disconnected") {
+        } else if (hub.connection.state === "Disconnected") {
             hub.connection
                 .start()
                 .then(subscribe)
@@ -105,7 +105,7 @@ export const loadBoard = (dispatch, id) => {
 };
 
 export const unloadBoard = (dispatch) => {
-    if (hub.connection.state == "Connected") {
+    if (hub.connection.state === "Connected") {
         hub.connection.send("UnSubscribe");
         hub.connection.stop();
     }

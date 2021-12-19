@@ -11,7 +11,7 @@ export const routes = {
         exact: true
     },
 
-    Workspaces: {
+    Home: {
         component: Workspaces,
         path: "/" ,
         exact: true 

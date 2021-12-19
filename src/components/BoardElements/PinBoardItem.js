@@ -1,8 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Button } from "react-bootstrap";
 import { getContrastingColor, rgbaToHsva } from "@uiw/color-convert";
-import { PlusIcon } from "../../assets/img/icons";
 
 //Styling
 import "../../assets/scss/components/BoardElements/PinBoardItem.scss";
@@ -31,14 +29,5 @@ export const PinBoardItem = (props) => {
         >
             <p className="p-2 m-0">{state.title}</p>
         </NavLink>
-    );
-};
-
-export const PinBoardItemButton = (props) => {
-    return (
-        <div className="PinBoardItemBase text-white PinBoardItemRadius PinBoardItemShadows" onClick={props.onClick}>
-            <img className="PlusIcon me-2" src={PlusIcon} />
-            <p className="p-0 m-0">Board</p>
-        </div>
     );
 };

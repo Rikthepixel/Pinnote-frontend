@@ -4,38 +4,21 @@ const initialState = {
 };
 
 const getBoardById = (state, id) => {
-    if (!id) { return [null, null]}
-    let board, index;
-    state.boards.every((_board, _index) => {
-        if (_board.id == id) {
-            
-            index = _index;
-            board = _board;
-            return false;
-        }
-        return true;
-    });
-    return [board, index]
+    if (!id) { return [null, null] };
+    let index = state.boards.findIndex(_board => _board.id === id);
+    return [state.boards[index], index];
 }
 
 const getNoteById = (state, id) => {
-    if (!id) { return [null, null]}
-    let note, index;
-    state.board.notes.every((_note, _index) => {
-        if (_note.id != id) {
-            return true;
-        }
-        note = _note;
-        index = _index;
-        return false;
-    })
-    return [note, index]
+    if (!id) { return [null, null] };
+    let index = state.board.notes.findIndex(_note => _note.id === id);
+    return [state.board.notes[index], index];
 }
 
 const BoardReducer = (state = initialState, action) => {
     let payload = action.payload || {};
-    let [board, boardIndex] = getBoardById(state, payload.boardId);
-    let [note, noteIndex] = getNoteById(state, payload.noteId);
+    let [board, boardIndex] = getBoardById(state, parseInt(payload.boardId));
+    let [note, noteIndex] = getNoteById(state, parseInt(payload.noteId));
 
     switch (action.type) {
         case "SUBSCRIBED_TO_BOARD":
@@ -71,7 +54,7 @@ const BoardReducer = (state = initialState, action) => {
                 })
             }
 
-            if (state.board.id == payload.boardId) {
+            if (parseInt(state.board.id) === parseInt(payload.boardId)) {
                 state.board = null;
                 state = Object.assign({}, state)
             }
@@ -91,7 +74,7 @@ const BoardReducer = (state = initialState, action) => {
             board = state.board
 
             //This fixes note duplication glitch because client NoteAdded occationally fires multiple tines
-            if (typeof(note) == "object") {
+            if (typeof(note) === "object") {
                 return state;
             }
 

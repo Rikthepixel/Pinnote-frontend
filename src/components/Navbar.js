@@ -1,4 +1,4 @@
-﻿import React, { } from 'react';
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 //Images
@@ -30,4 +30,4 @@ const Navbar = () => {
     );
 }
 
-export default Navbar
+export default Navbar;

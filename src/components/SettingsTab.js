@@ -7,7 +7,7 @@ const SettingsTab = (props) => {
         <Fragment>
             <header className="d-flex align-items-center justify-content-between mb-3">
                 <h2 className="ps-2 section-header">
-                    <img className="me-2" src={CogIcon} />
+                    <img className="me-2" alt="" src={CogIcon} />
                     Settings
                 </h2>
                 <div className="d-flex gap-1">
