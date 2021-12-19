@@ -1,4 +1,6 @@
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Redirect, useParams } from "react-router-dom";
 import { Tabs, Tab, FormControl, Button } from "react-bootstrap";
 
 import BoardTab from "../components/BoardTab";
@@ -21,9 +23,23 @@ const Workspace = (props) => {
             }
     );
 
+    const [redirect, setRedirect] = useState("");
+
     useEffect(() => {
+        let intWorkspaceId = parseInt(workspaceId)
+        if (intWorkspaceId) {
+            fetchWorkspace(dispatch, intWorkspaceId)
+                .catch(() => {
+                    setRedirect("/")
+                });
+        } else {
+            setRedirect("/");
+        }
     }, []);
 
+    if (redirect) {
+        return <Redirect to={redirect} />
+    }
 
     document.title = `Pinnote - ${workspace.name || "Workspace"}`;
     return (

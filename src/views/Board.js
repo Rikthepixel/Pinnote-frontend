@@ -36,6 +36,7 @@ const Board = (props) => {
   const newNoteButton = useRef();
   const setDisplaySelectorBackgroundColor = useRef();
   const setDisplaySelectorDefaultBackgroundColor = useRef();
+  const workspaceIdRef = useRef();
   const stateRef = useRef();
 
   const [redirect, setRedirect] = useState("");
@@ -54,6 +55,12 @@ const Board = (props) => {
       unloadBoard(dispatch);
     };
   }, []);
+
+  useEffect(() => {
+    if (state.workspaceId) {
+      workspaceIdRef.current = state.workspaceId
+    }
+  }, [state.workspaceId]);
 
   useEffect(() => {
     if (
@@ -119,7 +126,7 @@ const Board = (props) => {
             if (response.error) {
               return;
             }
-            setRedirect(`/workspaces/${stateRef.current.workspaceId}`);
+            setRedirect(`/workspaces/${workspaceIdRef.current}`);
           })
           .catch((err) => {
             console.error(err);
@@ -127,6 +134,8 @@ const Board = (props) => {
       }
     });
   };
+
+  console.log(stateRef.current);
 
   const onTitleChangeClick = () => {
     SingleFormAlert({
