@@ -58,9 +58,10 @@ const BoardReducer = (state = initialState, action) => {
         case "CREATE_BOARD":
             state.boards.push(payload);
 
-            return Object.assign({}, state, {
+            return {
+                ...state,
                 boards: [...state.boards]
-            });
+            }
 
         case "REMOVE_BOARD":
             if (board != null){
@@ -78,10 +79,13 @@ const BoardReducer = (state = initialState, action) => {
             return state;
 
         case "UPDATE_BOARD":
-            return Object.assign({}, state, {
-                board: Object.assign({}, state.board, payload)
-            });
-
+            return {
+                ...state,
+                board: {
+                    ...state.board,
+                    ...payload
+                }
+            }
         case "CREATE_BOARD_NOTE":
             if (!state.board) { return state }
             board = state.board
@@ -92,11 +96,13 @@ const BoardReducer = (state = initialState, action) => {
             }
 
             board.notes.push(payload);
-            return Object.assign({}, state, {
-                board: Object.assign({}, board, {
+            return {
+                ...state,
+                board: {
+                    ...board,
                     notes: [...board.notes]
-                })
-            });
+                }
+            }
 
         case "REMOVE_BOARD_NOTE":
             if (!state.board) { return state }
@@ -104,11 +110,13 @@ const BoardReducer = (state = initialState, action) => {
             if (!note) { return state }
             board.notes.splice(noteIndex, 1)
 
-            return Object.assign({}, state, {
-                board: Object.assign({}, board, {
+            return {
+                ...state,
+                board: {
+                    ...board,
                     notes: [...board.notes]
-                })
-            });
+                }
+            }
 
         case "UPDATE_BOARD_NOTE":
             if (!state.board) { return state; }
@@ -116,11 +124,13 @@ const BoardReducer = (state = initialState, action) => {
             if (!note) { return state; }
             
             board.notes[noteIndex] = Object.assign({}, note, payload);
-            return Object.assign({}, state, {
-                board: Object.assign({}, board, {
+            return {
+                ...state,
+                board: {
+                    ...board,
                     notes: [...board.notes]
-                })
-            });
+                }
+            }
 
         case "UPDATE_BOARD_NOTE_POSITION":
             if (!state.board) { return state; }
@@ -131,11 +141,13 @@ const BoardReducer = (state = initialState, action) => {
                 positionX: payload.positionX,
                 positionY: payload.positionY
             });
-            return Object.assign({}, state, {
-                board: Object.assign({}, board, {
+            return {
+                ...state,
+                board: {
+                    ...board,
                     notes: [...board.notes]
-                })
-            });
+                }
+            }
 
         default:
             return state;

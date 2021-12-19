@@ -330,7 +330,7 @@ export const setNoteTitle = (noteId, title) => {
     });
     if (Object.keys(errors).length > 0) {
         return errors;
-    }
+    };
 
     hub.connection
         .invoke("SetNoteTitle", {

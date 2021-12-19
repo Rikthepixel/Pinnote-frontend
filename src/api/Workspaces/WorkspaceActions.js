@@ -1,5 +1,5 @@
 import { workspaceDTOtoWorkspace, boardDTOtoBoard } from "../DtoHelpers";
-import { MultiFormAlert } from "../../utils/Alerts";
+import { FormAlert } from "../../utils/Alerts";
 import { createBoardSchema } from "../Boards/BoardValidators";
 import axios from "axios";
 
@@ -90,7 +90,7 @@ export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundC
 
 
 export const createBoardInWorkspacePopup = (dispatch, workspaceId) => {
-    MultiFormAlert({
+    FormAlert({
         validator: createBoardSchema,
         title: "Create a board",
 

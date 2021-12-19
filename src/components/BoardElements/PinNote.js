@@ -65,7 +65,7 @@ const PinNote = (props) => {
     if (validate) {
       errors = validateNote({ title: title })
     } else {
-      errors = setNoteTitle(props.noteId, { title: title });
+      errors = setNoteTitle(props.noteId, title);
     }
     return errors.title || []
   }
@@ -96,7 +96,6 @@ const PinNote = (props) => {
         updateTitle(result.values.title);
         return
       }
-      updateTitle(stateRef.current.title);
     })
   }
 

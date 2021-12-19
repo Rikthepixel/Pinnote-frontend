@@ -17,7 +17,6 @@ import {
 import { ConfirmationAlert, FormAlert } from "../utils/Alerts";
 import { validateBoard, boardSchema } from "../api/Boards/BoardValidators";
 import * as yup from "yup";
-velopment
 
 import {
   MoreIcon,
@@ -102,18 +101,6 @@ const Board = (props) => {
     );
   };
 
-  const updateBoardTitle = (title = "", validate) => {
-    let errors;
-    title = title.trim();
-
-    if (validate) {
-      errors = validateBoard({ title: title });
-    } else {
-      errors = setBoardTitle(title);
-    }
-    return errors.title || [];
-  };
-
   const onDeleteClick = () => {
     ConfirmationAlert({
       title: "Delete this board?",
@@ -145,8 +132,6 @@ const Board = (props) => {
     });
   };
 
-  console.log(stateRef.current);
-
   const onTitleChangeClick = () => {
     FormAlert({
       title: "Change board title",
@@ -165,12 +150,10 @@ const Board = (props) => {
       acceptButtonText: "Confirm",
       cancelButtonText: "Cancel",
     }).then((result) => {
-      console.log(result);
       if (result.confirmed) {
-        updateBoardTitle(result.values.title);
+        setBoardTitle(result.values.title);
         return;
       }
-      updateBoardTitle(state.title);
     });
   };
 
