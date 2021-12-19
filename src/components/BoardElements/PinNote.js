@@ -11,7 +11,8 @@ import ColorSelectorButton from "../ColorSelectorButton";
 
 import { MoreIcon, BrushIcon, TrashIcon, EditIcon } from "../../assets/img/icons";
 import { noteSchema, validateNote } from "../../api/Boards/BoardValidators";
-import { SingleFormAlert } from "../../utils/Alerts";
+import * as yup from "yup";
+import { FormAlert } from "../../utils/Alerts";
 //Styling
 import "../../assets/scss/components/BoardElements/PinNote.scss";
 
@@ -74,28 +75,25 @@ const PinNote = (props) => {
   }, [state.title])
 
   const onTitleChangeClick = () => {
-    SingleFormAlert({
+    FormAlert({
       title: "Change note title",
       text: "What do you want to change the note title to?",
-      inputPlaceholder: stateRef.current.title || "",
-      inputValue: stateRef.current.title || "",
+      validator: yup.object().shape({
+        title: noteSchema.fields.title
+      }),
+      inputs: [
+        {
+          name: "title",
+          type: "text",
+          value: stateRef.current.title,
+          placeholder: stateRef.current.title,
+        }
+      ],
       acceptButtonText: "Confirm",
       cancelButtonText: "Cancel",
-      validate: value => {
-        let result = { isValid: true, value: value, error: "" }
-        let errors = updateTitle(value, true)
-        if (errors.length != 0) {
-          result.isValid = false
-          result.error = errors[0]
-          if (value.length > 100) {
-            result.value = value.substring(0, 100)
-          }
-        }
-        return result;
-      },
     }).then(result => {
       if (result.confirmed) {
-        updateTitle(result.value);
+        updateTitle(result.values.title);
         return
       }
       updateTitle(stateRef.current.title);

@@ -7,8 +7,9 @@ import { PinBoard, PinNoteToolbar } from "../components/BoardElements";
 import ColorSelectorButton from "../components/ColorSelectorButton";
 
 import { deleteBoard, loadBoard, unloadBoard, setBoardTitle, setBoardColor, setBoardNoteColor } from "../api";
-import { ConfirmationAlert, SingleFormAlert } from "../utils/Alerts";
-import { validateBoard } from "../api/Boards/BoardValidators";
+import { ConfirmationAlert, FormAlert } from "../utils/Alerts";
+import { validateBoard, boardSchema } from "../api/Boards/BoardValidators";
+import * as yup from "yup";
 
 import {
   MoreIcon,
@@ -111,29 +112,26 @@ const Board = (props) => {
   };
 
   const onTitleChangeClick = () => {
-    SingleFormAlert({
+    FormAlert({
       title: "Change board title",
       text: "What do you want to change the board title to?",
-      inputPlaceholder: stateRef.current.title || "",
-      inputValue: stateRef.current.title || "",
+      validator: yup.object().shape({
+        title: boardSchema.fields.title
+      }),
+      inputs: [
+        {
+          name: 'title',
+          type: 'text',
+          value: stateRef.current.title,
+          placeholder: stateRef.current.title,
+        }
+      ],
       acceptButtonText: "Confirm",
       cancelButtonText: "Cancel",
-      validate: (value) => {
-        let result = { isValid: true, value: value, error: "" };
-        let errors = updateBoardTitle(value, true);
-        if (errors.length != 0) {
-          result.isValid = false;
-          result.error = errors[0];
-
-          if (value.length > 30) {
-            result.value = value.substring(0, 30);
-          }
-        }
-        return result;
-      },
     }).then((result) => {
+      console.log(result);
       if (result.confirmed) {
-        updateBoardTitle(result.value);
+        updateBoardTitle(result.values.title);
         return;
       }
       updateBoardTitle(state.title);

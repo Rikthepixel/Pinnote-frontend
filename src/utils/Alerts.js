@@ -57,86 +57,6 @@ export const ConfirmationAlert = (config) => {
     })
 }
 
-export const SingleFormAlert = (config) => {
-    return new Promise((resolve) => {
-        Swal.fire({
-            ...defaults,
-            title: config.title,
-            text: config.text,
-            timer: config.timer,
-
-            icon: 'question',
-
-            showCancelButton: true,
-            confirmButtonText: config.acceptButtonText,
-            cancelButtonText: config.cancelButtonText,
-            input: config.inputType || 'text',
-            inputAttributes: config.inputAttributes || {
-                autocapitalize: 'off'
-            },
-            inputValue: config.inputValue,
-            didOpen: () => {
-                const input = Swal.getInput()
-                input.oninput = () => {
-                    let value = input.value;
-                    if (typeof (config.validate) != 'function') {
-                        return value;
-                    }
-
-                    let validationResult = config.validate(value)
-                    if (validationResult.isValid == true) {
-                        Swal.resetValidationMessage();
-                        return validationResult.value || value;
-                    }
-
-                    input.value = validationResult.value
-                    Swal.showValidationMessage(validationResult.error);
-                }
-            },
-            inputPlaceholder: config.inputPlaceholder,
-            preConfirm: (value) => {
-                if (typeof (config.validate) != 'function') {
-                    return value
-                }
-
-                let validationResult = config.validate(value)
-                if (validationResult.isValid == true) {
-                    return validationResult.value || value
-                }
-                Swal.showValidationMessage(validationResult.error)
-            }
-        }).then((result) => {
-            let returnValue = {
-                confirmed: null,
-                value: result.value
-            }
-            if (result.isConfirmed) {
-                returnValue.confirmed = true
-                if (config.acceptPopup) {
-                    Swal.fire({
-                        ...defaults,
-                        title: config.acceptedTitle,
-                        text: config.acceptedText,
-                        icon: 'success',
-                    })
-                }
-            } else if (result.isDismissed) {
-                returnValue.confirmed = false
-                if (config.cancelPopup) {
-                    Swal.fire({
-                        ...defaults,
-                        title: config.cancelledTitle,
-                        text: config.cancelledText,
-                        icon: 'error',
-                    })
-                }
-            }
-
-            resolve(returnValue)
-        })
-    })
-}
-
 const ErrorBlock = (props) => {
     return (
         <ErrorMessage name={props.name} render={(msg) => {
@@ -215,7 +135,7 @@ const multiFormCustom = {
     }
 }
 
-export const MultiFormAlert = (config) => {
+export const FormAlert = (config) => {
 
     if (typeof (config.inputs) != "object") {
         return;

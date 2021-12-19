@@ -1,6 +1,6 @@
 ﻿import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { MultiFormAlert } from "../utils/Alerts";
+import { FormAlert } from "../utils/Alerts";
 import * as yup from "yup";
 
 import { PinBoardItem, PinBoardItemButton } from "../components/BoardElements";
@@ -47,7 +47,7 @@ const Boards = (props) => {
                 })}
                 <PinBoardItemButton
                     onClick={() => {
-                        MultiFormAlert({
+                        FormAlert({
                             validator: (yup.object().shape({
                                 Title: boardSchema.fields.title,
                                 BackgroundColor: boardSchema.fields.backgroundColor,
