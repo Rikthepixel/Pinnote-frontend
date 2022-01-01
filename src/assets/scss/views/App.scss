@@ -94,7 +94,7 @@ a {
 
 @for $i from 1 through 20 {
     $size: $i * 5;
-    $percentage: percentage($size / 100);
+    $percentage: percentage(calc($size / 100));
     .w-#{$size} {
         width: $percentage
     }
