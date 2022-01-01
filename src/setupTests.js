@@ -3,3 +3,7 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 import '@testing-library/jest-dom';
+
+if ("test" == process.env.NODE_ENV) {
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}

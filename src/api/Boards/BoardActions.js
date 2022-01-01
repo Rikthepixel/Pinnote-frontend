@@ -1,7 +1,7 @@
 import { validateBoard, validateNote } from "./BoardValidators";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { noteDTOtoNote, boardDTOtoBoard } from "../DtoHelpers";
-import axios from "axios";
+import superagent from "superagent";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -118,13 +118,13 @@ export const unloadBoard = (dispatch) => {
 
 export const getBoardsByWorkspaceId = (dispatch, id) => {
     return new Promise((resolve, reject) => {
-        axios.get(`${url}/api/workspaces/${id}/boards`)
+        superagent.get(`${url}/api/workspaces/${id}/boards`)
         .then((response) => {
             dispatch({
                 type: "BOARDS_FETCHED",
-                payload: response.data.map(boardDto => boardDTOtoBoard(boardDto))
+                payload: response.body.map(boardDto => boardDTOtoBoard(boardDto))
             });
-            resolve(response.data);
+            resolve(response.body);
         })
         .catch((err) => {
             reject(err);
@@ -138,7 +138,7 @@ export const deleteBoard = (dispatch, boardId) => {
             return;
         }
 
-        axios.delete(`${url}/api/boards/${boardId}`)
+        superagent.delete(`${url}/api/boards/${boardId}`)
             .then((response) => {
                 if (response.error) { reject(response.error)}
                 dispatch({
