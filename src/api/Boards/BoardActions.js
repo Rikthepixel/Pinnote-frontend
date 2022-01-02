@@ -164,13 +164,19 @@ export const setBoardTitle = (newTitle) => {
         return errors;
     }
 
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
     hub.connection
-        .invoke("SetBoardTitle", {
-            title: newTitle,
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+    .invoke("SetBoardTitle", {
+        title: newTitle,
+    })
+    .catch((err) => {
+        console.error(err);
+    });
 
     return {};
 }
@@ -182,6 +188,13 @@ export const setBoardNoteColor = (colorR, colorG, colorB) => {
     if (Object.keys(errors).length > 0) {
         return errors;
     }
+
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
     hub.connection
         .invoke("SetBoardNoteColor", {
             DefaultBackgroundColorR: colorR,
@@ -205,6 +218,13 @@ export const setBoardColor = (colorR, colorG, colorB) => {
     if (Object.keys(errors).length > 0) {
         return errors;
     }
+
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
     hub.connection
         .invoke("SetBoardColor", {
             backgroundColorR: colorR,
@@ -222,6 +242,12 @@ export const setBoardColor = (colorR, colorG, colorB) => {
 }
 
 export const createPinNote = (positionX, positionY) => {
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
     hub.connection
         .invoke("CreateNote", {
             positionX: positionX,
@@ -236,6 +262,12 @@ export const createPinNote = (positionX, positionY) => {
 };
 
 export const deletePinNote = (noteId) => {
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
     hub.connection
         .invoke("DeleteNote", noteId)
         .then((response) => {
@@ -266,6 +298,12 @@ export const setNotePosition = (dispatch, noteId, positionX, positionY) => {
         },
     });
 
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
     hub.connection
         .invoke("SetNotePosition", {
             id: noteId,
@@ -285,6 +323,12 @@ export const setNoteColor = (noteId, colorR, colorG, colorB) => {
     });
     if (Object.keys(errors).length > 0) {
         return errors;
+    }
+
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
     }
 
     hub.connection
@@ -312,6 +356,12 @@ export const setNoteText = (noteId, text) => {
         return errors;
     }
 
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
     hub.connection
         .invoke("SetNoteText", {
             id: noteId,
@@ -331,6 +381,12 @@ export const setNoteTitle = (noteId, title) => {
     if (Object.keys(errors).length > 0) {
         return errors;
     };
+
+    if (hub.connection.state !== "Connected") {
+        return {
+            connection: "You are not connected"
+        }
+    }
 
     hub.connection
         .invoke("SetNoteTitle", {
