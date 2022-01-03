@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { Field, Formik, Form as FormikForm } from "formik";
-import ErrorBlock from "../components/ErrorBlock";
+import { useDispatch } from "react-redux";
+import ErrorBlock from "../../components/ErrorBlock";
 
 import * as yup from "yup";
-import { UserIcon } from "../assets/img/icons";
-import { loginSchema } from "../api/Authentication/AuthenticationValidators";
+import { UserIcon } from "../../assets/img/icons";
+import { loginSchema } from "../../api/Authentication/AuthenticationValidators";
+import { useAuth } from "../../utils/useAuth";
+import { login } from "../../api";
 
 const Login = (props) => {
+
+    const [user] = useAuth();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        console.log(user);
+    }, [user])
+
     return (
         <div className="w-100 h-100 d-flex flex-row justify-content-center px-4 pt-4">
             <article className="px-4 pt-4 w-80">
@@ -23,9 +34,7 @@ const Login = (props) => {
                             password: ""
                         }}
                         validationSchema={loginSchema}
-                        onSubmit={(values) => {
-
-                        }}
+                        onSubmit={values => login(dispatch, values.email, values.password)}
                     >
                         {() => (
                             <FormikForm className="mt-1 w-50">

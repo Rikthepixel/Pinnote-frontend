@@ -9,4 +9,5 @@ let rootReducer = combineReducers({
 
 export * from './Boards/BoardActions';
 export * from './Workspaces/WorkspaceActions';
+export * from './Authentication/AuthenticationActions';
 export default rootReducer;

@@ -2,7 +2,7 @@
 import Board from "../views/Board";
 import Workspaces from "../views/Workspaces";
 import Workspace from "../views/Workspace";
-import Login from "../views/Login";
+import Login from "../views/Authentication/Login";
 
 //Routes
 export const routes = {
