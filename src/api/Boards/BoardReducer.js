@@ -1,6 +1,6 @@
 const initialState = {
     boards: [],
-    board: null
+    board: {}
 };
 
 const getBoardById = (state, id) => {
@@ -55,7 +55,9 @@ const BoardReducer = (state = initialState, action) => {
             }
 
             if (parseInt(state.board.id) === parseInt(payload.boardId)) {
-                state.board = null;
+                state.board = {
+                    state: "removed"
+                };
                 state = Object.assign({}, state)
             }
 

@@ -49,16 +49,26 @@ const Board = (props) => {
   });
   stateRef.current = state;
 
+  const redirectToWorkspace = () => {
+    if (workspaceIdRef.current) {
+      setRedirect(`/workspaces/${workspaceIdRef.current}`)
+    } else {
+      setRedirect("/workspaces")
+    }
+  }
+
   useEffect(() => {
     if (parseInt(boardId)) {
+      console.log("boardId");
       loadBoard(dispatch, parseInt(boardId))
-        .catch(() => {
-          setRedirect('/workspaces');
+        .catch((err) => {
+          console.log(err);
+          redirectToWorkspace();
         });
     } else {
-      setRedirect('/workspaces');
+      console.log("No board Id");
+      redirectToWorkspace();
     }
-
 
     return () => {
       unloadBoard(dispatch);
@@ -72,8 +82,14 @@ const Board = (props) => {
   }, [state.workspaceId]);
 
   useEffect(() => {
+    if (state.state === "removed") {
+      redirectToWorkspace();
+    }
+  }, [state.state])
+
+  useEffect(() => {
     if (
-      typeof(setDisplaySelectorDefaultBackgroundColor.current) === "function" &&
+      typeof (setDisplaySelectorDefaultBackgroundColor.current) === "function" &&
       stateRef.current.defaultNoteBackgroundColor != null
     ) {
       setDisplaySelectorDefaultBackgroundColor.current(
@@ -84,7 +100,7 @@ const Board = (props) => {
 
   useEffect(() => {
     if (
-      typeof(setDisplaySelectorBackgroundColor.current) === "function" &&
+      typeof (setDisplaySelectorBackgroundColor.current) === "function" &&
       stateRef.current.backgroundColor != null
     ) {
       setDraftBackgroundColor(null);
@@ -123,7 +139,7 @@ const Board = (props) => {
             if (response.error) {
               return;
             }
-            setRedirect(`/workspaces/${workspaceIdRef.current}`);
+            redirectToWorkspace();
           })
           .catch((err) => {
             console.error(err);

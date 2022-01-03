@@ -5,112 +5,161 @@ import superagent from "superagent";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
-const hub = {
-    connection: new HubConnectionBuilder()
+const connections = {
+    boardHub: new HubConnectionBuilder()
         .withUrl(`${url}/boardHub`)
         .build(),
+
+    noteHub: new HubConnectionBuilder()
+        .withUrl(`${url}/noteHub`)
+        .build(),
+
+    IsConnected: function () {
+        return (this.noteHub.state === "Connected" && this.boardHub.state === "Connected")
+    },
+
+    Connect: function () {
+
+        return new Promise((resolve, reject) => {
+
+            const tryConnectBoth = () => {
+                let hubsThatWillConnect = []
+                if (this.boardHub.state === "Disconnected") {
+                    hubsThatWillConnect.push(this.boardHub.start());
+                }
+                if (this.noteHub.state === "Disconnected") {
+                    hubsThatWillConnect.push(this.noteHub.start());
+                }
+                return Promise.all(hubsThatWillConnect)
+            }
+
+            if (this.IsConnected()) {
+                Promise.all([
+                    this.boardHub.invoke("UnSubscribe"),
+                    this.noteHub.invoke("UnSubscribe") //TODO: remove once user authentication is added
+                ]).then(() => {
+                        if (!this.IsConnected()) {
+                            tryConnectBoth()
+                                .then(resolve)
+                                .catch(reject);
+                        } else {
+                            resolve();
+                        }
+                    });
+                
+
+            } else {
+                tryConnectBoth()
+                    .then(resolve)
+                    .catch(reject)
+            }
+        })
+    },
+
+    Disconnect: function () {
+        if (this.boardHub.state === "Connected") {
+            this.boardHub.send("UnSubscribe");
+            this.boardHub.stop();
+        }
+        if (this.noteHub.state === "Connected") {
+            //TODO: remove once user authentication is added
+            this.noteHub.send("UnSubscribe");
+            this.noteHub.stop();
+        }
+
+        this.boardHub.off();
+        this.noteHub.off();
+    }
 }
 
 export const loadBoard = (dispatch, id) => {
     return new Promise((resolve, reject) => {
         id = parseInt(id);
-        if (typeof(id) != 'number') {
+        if (typeof (id) != 'number') {
             return;
         }
 
-        let subscribe = () => {
-            hub.connection
-                .invoke("Subscribe", id)
-                .then((response) => {
-                    if (response.error) {
-                        reject(response.error);
-                        return;
-                    }
-                    
-                    hub.connection.off();
-                    hub.connection.onclose((err) => {
-                        if (err) {
-                            console.error(err);
+        connections.Connect()
+            .then(() => {
+                Promise.all([
+                    connections.boardHub.invoke("Subscribe", id),
+                    connections.noteHub.invoke("Subscribe", id) //TODO: remove once user authentication is added
+                ])
+                    .then((response) => {
+                        if (response.error) {
+                            //console.log(response.error);
+                            reject(response.error);
+                            return;
                         }
-                    });
 
-                    hub.connection.on("BoardUpdated", (response) => {
-                        delete response.data.notes;
+                        connections.boardHub.off();
+                        connections.noteHub.off();
 
-                        dispatch({
-                            type: "UPDATE_BOARD",
-                            payload: boardDTOtoBoard(response.data),
+                        const onClose = (err) => {
+                            if (err) { console.error(err); }
+                            connections.Disconnect();
+                        }
+                        connections.boardHub.onclose(onClose);
+                        connections.noteHub.onclose(onClose);
+
+                        connections.boardHub.on("BoardUpdated", response => {
+                            delete response.data.notes;
+
+                            dispatch({
+                                type: "UPDATE_BOARD",
+                                payload: boardDTOtoBoard(response.data),
+                            });
                         });
-                    });
 
-                    hub.connection.on("NoteAdded", (response) => {
-                        dispatch({
-                            type: "CREATE_BOARD_NOTE",
-                            payload: noteDTOtoNote(response.data),
+                        connections.boardHub.on("BoardRemoved", response => {
+                            dispatch({
+                                type: "REMOVE_BOARD",
+                                payload: {
+                                    boardId: response.data,
+                                },
+                            });
+                        })
+
+                        connections.noteHub.on("NoteAdded", response => {
+                            dispatch({
+                                type: "CREATE_BOARD_NOTE",
+                                payload: noteDTOtoNote(response.data),
+                            });
                         });
-                    });
 
-                    hub.connection.on("NoteUpdated", (response) => {
-                        dispatch({
-                            type: "UPDATE_BOARD_NOTE",
-                            payload: noteDTOtoNote(response.data),
+                        connections.noteHub.on("NoteUpdated", response => {
+                            dispatch({
+                                type: "UPDATE_BOARD_NOTE",
+                                payload: noteDTOtoNote(response.data),
+                            });
                         });
-                    });
 
-                    hub.connection.on("NoteRemoved", (response) => {
+                        connections.noteHub.on("NoteRemoved", response => {
+                            dispatch({
+                                type: "REMOVE_BOARD_NOTE",
+                                payload: {
+                                    noteId: response.data.id,
+                                },
+                            });
+                        });
+
+                        let parsedBoard = boardDTOtoBoard(response[1].data);
                         dispatch({
-                            type: "REMOVE_BOARD_NOTE",
+                            type: "SUBSCRIBED_TO_BOARD",
                             payload: {
-                                noteId: response.data.id,
+                                board: parsedBoard,
                             },
                         });
-                    });
-
-                    let parsedBoard = boardDTOtoBoard(response.data);
-                    dispatch({
-                        type: "SUBSCRIBED_TO_BOARD",
-                        payload: {
-                            board: parsedBoard,
-                        },
-                    });
-                    resolve(parsedBoard);
-                })
-                .catch((err) => reject(err));
-        }
-
-        let connectAndSubscribe = () => {
-            hub.connection
-                .start()
-                .then(subscribe)
-                .catch((err) => reject(err));
-        }
-        
-        if (hub.connection.state === "Connected") {
-            hub.connection.invoke("UnSubscribe")
-                .then(() => {
-                    if (hub.connection !== "Connected") {
-                        connectAndSubscribe();
-                    } else {
-                        subscribe();
-                    }
-                });
-
-        } else if (hub.connection.state === "Disconnected") {
-            hub.connection
-                .start()
-                .then(subscribe)
-                .catch((err) => reject(err));
-        }
+                        resolve(parsedBoard);
+                    })
+                    .catch((err) => reject(err));
+            })
+            .catch(reject);
     });
 };
 
 export const unloadBoard = (dispatch) => {
-    if (hub.connection.state === "Connected") {
-        hub.connection.send("UnSubscribe");
-        hub.connection.stop();
-    }
-    hub.connection.off();
-
+    connections.Disconnect();
     dispatch({
         type: "UNSUBSCRIBED_FROM_BOARD",
     });
@@ -119,28 +168,28 @@ export const unloadBoard = (dispatch) => {
 export const getBoardsByWorkspaceId = (dispatch, id) => {
     return new Promise((resolve, reject) => {
         superagent.get(`${url}/api/workspaces/${id}/boards`)
-        .then((response) => {
-            dispatch({
-                type: "BOARDS_FETCHED",
-                payload: response.body.map(boardDto => boardDTOtoBoard(boardDto))
-            });
-            resolve(response.body);
-        })
-        .catch((err) => {
-            reject(err);
-        })
+            .then(response => {
+                dispatch({
+                    type: "BOARDS_FETCHED",
+                    payload: response.body.map(boardDto => boardDTOtoBoard(boardDto))
+                });
+                resolve(response.body);
+            })
+            .catch(err => {
+                reject(err);
+            })
     })
 }
 
 export const deleteBoard = (dispatch, boardId) => {
     return new Promise((resolve, reject) => {
-        if (typeof(boardId) != 'number') {
+        if (typeof (boardId) != 'number') {
             return;
         }
 
         superagent.delete(`${url}/api/boards/${boardId}`)
-            .then((response) => {
-                if (response.error) { reject(response.error)}
+            .then(response => {
+                if (response.error) { reject(response.error) }
                 dispatch({
                     type: "REMOVE_BOARD",
                     payload: {
@@ -150,9 +199,9 @@ export const deleteBoard = (dispatch, boardId) => {
 
                 resolve(response);
             })
-            .catch((err) => {
+            .catch(err => {
                 reject(err)
-            }); 
+            });
     });
 };
 
@@ -164,19 +213,18 @@ export const setBoardTitle = (newTitle) => {
         return errors;
     }
 
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
-
-    hub.connection
-    .invoke("SetBoardTitle", {
-        title: newTitle,
-    })
-    .catch((err) => {
-        console.error(err);
-    });
+    connections.boardHub
+        .invoke("SetBoardTitle", {
+            title: newTitle,
+        })
+        .catch((err) => {
+            console.error(err);
+        });
 
     return {};
 }
@@ -189,22 +237,21 @@ export const setBoardNoteColor = (colorR, colorG, colorB) => {
         return errors;
     }
 
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
-
-    hub.connection
+    connections.boardHub
         .invoke("SetBoardNoteColor", {
             DefaultBackgroundColorR: colorR,
             DefaultBackgroundColorG: colorG,
             DefaultBackgroundColorB: colorB,
         })
-        .then((response) => {
+        .then(response => {
             //console.log(response);
         })
-        .catch((err) => {
+        .catch(err => {
             console.error(err);
         });
 
@@ -219,22 +266,22 @@ export const setBoardColor = (colorR, colorG, colorB) => {
         return errors;
     }
 
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
 
-    hub.connection
+    connections.boardHub
         .invoke("SetBoardColor", {
             backgroundColorR: colorR,
             backgroundColorG: colorG,
             backgroundColorB: colorB,
         })
-        .then((response) => {
+        .then(response => {
             //console.log(response);
         })
-        .catch((err) => {
+        .catch(err => {
             console.error(err);
         });
 
@@ -242,38 +289,38 @@ export const setBoardColor = (colorR, colorG, colorB) => {
 }
 
 export const createPinNote = (positionX, positionY) => {
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
 
-    hub.connection
+    connections.noteHub
         .invoke("CreateNote", {
             positionX: positionX,
             positionY: positionY,
         })
-        .then((response) => {
+        .then(response => {
             //console.log(response);
         })
-        .catch((err) => {
+        .catch(err => {
             console.error(err);
         });
 };
 
 export const deletePinNote = (noteId) => {
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
 
-    hub.connection
+    connections.noteHub
         .invoke("DeleteNote", noteId)
-        .then((response) => {
+        .then(response => {
             //console.log(response);
         })
-        .catch((err) => {
+        .catch(err => {
             console.error(err);
         });
 };
@@ -298,19 +345,22 @@ export const setNotePosition = (dispatch, noteId, positionX, positionY) => {
         },
     });
 
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
 
-    hub.connection
+    connections.noteHub
         .invoke("SetNotePosition", {
             id: noteId,
             positionX: positionX,
             positionY: positionY,
         })
-        .catch((err) => {
+        .then(response => {
+            //console.log(response);
+        })
+        .catch(err => {
             console.error(err);
         });
 
@@ -325,13 +375,13 @@ export const setNoteColor = (noteId, colorR, colorG, colorB) => {
         return errors;
     }
 
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
 
-    hub.connection
+    connections.noteHub
         .invoke("SetNoteColor", {
             id: noteId,
             backgroundColorR: colorR,
@@ -356,13 +406,13 @@ export const setNoteText = (noteId, text) => {
         return errors;
     }
 
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
 
-    hub.connection
+    connections.noteHub
         .invoke("SetNoteText", {
             id: noteId,
             text: text,
@@ -382,13 +432,13 @@ export const setNoteTitle = (noteId, title) => {
         return errors;
     };
 
-    if (hub.connection.state !== "Connected") {
+    if (!connections.IsConnected()) {
         return {
             connection: "You are not connected"
         }
     }
 
-    hub.connection
+    connections.noteHub
         .invoke("SetNoteTitle", {
             id: noteId,
             title: title,
