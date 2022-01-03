@@ -1,7 +1,7 @@
 import { workspaceDTOtoWorkspace, boardDTOtoBoard } from "../DtoHelpers";
 import { FormAlert } from "../../utils/Alerts";
 import { createBoardSchema } from "../Boards/BoardValidators";
-import axios from "axios";
+import superagent from "superagent";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 const prefabBackgroundColors = [
@@ -27,35 +27,29 @@ const prefabNoteColors = [
 
 export const fetchMyWorkspaces = (dispatch) => {
     return new Promise((resolve, reject) => {
-        axios.get(`${url}/api/workspaces/`)
+        superagent.get(`${url}/api/workspaces/`)
             .then((response) => {
-                const boards = response.data.map(workspaceDto => workspaceDTOtoWorkspace(workspaceDto));
+                const boards = response.body.map(workspaceDto => workspaceDTOtoWorkspace(workspaceDto));
                 dispatch({
                     type: "WORKSPACES_FETCHED",
                     payload: boards
                 });
                 resolve(boards);
-            })
-            .catch((err) => {
-                reject(err);
-            })
+            }, reject);
     })
 }
 
 
 export const fetchWorkspace = (dispatch, id) => {
     return new Promise((resolve, reject) => {
-        axios.get(`${url}/api/workspaces/${id}`)
+        superagent.get(`${url}/api/workspaces/${id}`)
             .then((response) => {
                 dispatch({
                     type: "WORKSPACE_FETCHED",
-                    payload: workspaceDTOtoWorkspace(response.data)
+                    payload: workspaceDTOtoWorkspace(response.body)
                 });
-                resolve(response.data);
-            })
-            .catch((err) => {
-                reject(err);
-            })
+                resolve(response.body);
+            }, reject);
     })
 }
 
@@ -64,27 +58,25 @@ export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundC
         if (typeof (workspaceId) != 'number') {
             return;
         }
-        axios.post(`${url}/api/workspaces/${workspaceId}/Boards`, {
-            title: title,
-            backgroundColorR: backgroundColor[0],
-            backgroundColorG: backgroundColor[1],
-            backgroundColorB: backgroundColor[2],
-            defaultNoteColorR: noteColor[0],
-            defaultNoteColorG: noteColor[1],
-            defaultNoteColorB: noteColor[2],
-            visibilityId: 1
-        })
+        superagent.post(`${url}/api/workspaces/${workspaceId}/Boards`)
+            .send({
+                title: title,
+                backgroundColorR: backgroundColor[0],
+                backgroundColorG: backgroundColor[1],
+                backgroundColorB: backgroundColor[2],
+                defaultNoteColorR: noteColor[0],
+                defaultNoteColorG: noteColor[1],
+                defaultNoteColorB: noteColor[2],
+                visibilityId: 1
+            })
             .then((response) => {
-                const board = boardDTOtoBoard(response.data);
+                const board = boardDTOtoBoard(response.body);
                 dispatch({
                     type: "CREATE_BOARD_IN_WORKSPACE",
                     payload: board,
                 });
                 resolve(board);
-            })
-            .catch((err) => {
-                reject(err)
-            })
+            }, reject);
     })
 };
 
@@ -134,5 +126,32 @@ export const createBoardInWorkspacePopup = (dispatch, workspaceId) => {
         if (result.confirmed) {
             createBoardInWorkspace(dispatch, workspaceId, result.values.Title, result.values.BackgroundColor, result.values.DefaultNoteColor);
         }
+    })
+}
+
+export const setWorkspaceName = (dispatch, workspaceId, newName) => {
+    return new Promise((resolve, reject) => {
+        if (typeof (workspaceId) != 'number') {
+            return;
+        }
+        superagent.patch(`${url}/api/workspaces/${workspaceId}/name`)
+            .send({
+                name: newName
+            })
+            .then(response => {
+                console.log(response);
+                if (response.error) { reject(response.error) }
+                dispatch({
+                    type: "UPDATE_WORKSPACE",
+                    payload: {
+                        workspaceId: workspaceId,
+                        changes: {
+                            name: newName
+                        }
+                    },
+                });
+
+                resolve(response);
+            }, reject)
     })
 }

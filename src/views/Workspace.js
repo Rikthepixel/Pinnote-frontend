@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect, useParams } from "react-router-dom";
-import { Tabs, Tab, FormControl, Button } from "react-bootstrap";
+import { Tabs, Tab } from "react-bootstrap";
 
 import BoardTab from "../components/BoardTab";
 import MembersTab from "../components/MembersTab";
@@ -22,6 +22,8 @@ const Workspace = (props) => {
                 users: []
             }
     );
+    const stateRef = useRef(workspace);
+    stateRef.current = workspace;
 
     const [redirect, setRedirect] = useState("");
 
@@ -34,7 +36,7 @@ const Workspace = (props) => {
         } else {
             setRedirect("/workspaces");
         }
-    }, []);
+    }, [workspaceId, dispatch]);
 
     if (redirect) {
         return <Redirect to={redirect} />
@@ -54,7 +56,7 @@ const Workspace = (props) => {
                     eventKey="boards"
                     title={(
                         <div className="d-flex flex-row justify-content-center align-items-center">
-                            <img className="me-1 h-1-1em" src={BoardIcon} />
+                            <img className="me-1 h-1-1em" alt="" src={BoardIcon} />
                             Boards
                         </div>
                     )}
@@ -68,7 +70,7 @@ const Workspace = (props) => {
                     eventKey="members"
                     title={(
                         <div className="d-flex flex-row justify-content-center align-items-center">
-                            <img className="me-1 h-1-1em" src={UsersIcon} />
+                            <img className="me-1 h-1-1em" alt="" src={UsersIcon} />
                             Members
                         </div>
                     )}
@@ -82,12 +84,13 @@ const Workspace = (props) => {
                     eventKey="settings"
                     title={(
                         <div className="d-flex flex-row justify-content-center align-items-center">
-                            <img className="me-1 h-1-1em" src={CogIcon} />
+                            <img className="me-1 h-1-1em" alt="" src={CogIcon} />
                             Settings
                         </div>
                     )}>
-                    <SettingsTab 
+                    <SettingsTab
                         workspaceId={workspace.id}
+                        workspace={workspace}
                     />
                 </Tab>
             </Tabs>

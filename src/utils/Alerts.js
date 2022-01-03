@@ -8,7 +8,6 @@ import ColorSelector from '../components/ColorSelector';
 import ColorSelectorButton from '../components/ColorSelectorButton';
 
 import "./Alerts.css";
-import { array } from 'yup/lib/locale';
 
 
 const Swal = withReactContent(sweetalert2);
@@ -148,7 +147,6 @@ export const FormAlert = (config) => {
         input.placeholder = input.placeholder || ""
         input.name = input.name || `${input.type}-${input.value}-${input.placeholder}-${Math.ceil(Math.random() * 1000)}`;
         initialValues[input.name] = input.value
-        input.children = input.children
         return input
     })
 

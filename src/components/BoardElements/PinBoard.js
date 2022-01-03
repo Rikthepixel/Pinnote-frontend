@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import PinNote from "./PinNote";
 import { createPinNote } from "../../api";
@@ -10,7 +10,6 @@ import "../../assets/scss/components/BoardElements/PinBoard.scss";
 export const PinBoard = (props) => {
   const NoteButton = props.newNoteButton
   const boardRef = useRef();
-  const dispatch = useDispatch();
 
   const Notes = useSelector(state => {
     return (state.boards.board || {}).notes || []

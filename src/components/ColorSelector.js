@@ -11,7 +11,7 @@ const ColorSelector = (props) => {
     let originalColor = props.color;
     let open = props.open;
 
-    if (typeof (open) != 'boolean') {
+    if (typeof(open) !== 'boolean') {
         open = true;
     }
 
@@ -31,9 +31,9 @@ const ColorSelector = (props) => {
 
     const setColor = (color) => {
         if (
-            RGBA.r == color[1] &&
-            RGBA.g == color[2] &&
-            RGBA.b == color[3]
+            RGBA.r === color[1] &&
+            RGBA.g === color[2] &&
+            RGBA.b === color[3]
         ) {
             return
         }
@@ -78,7 +78,7 @@ const ColorSelector = (props) => {
     const onCancel = () => {
         let newColor = hsvaToRgba(HSVA)
         closeSelector()
-        if (typeof (props.onCancel) == "function") {
+        if (typeof (props.onCancel) === "function") {
             props.onCancel(originalColor, [
                 newColor.r,
                 newColor.g,
@@ -88,7 +88,7 @@ const ColorSelector = (props) => {
     }
 
     return (
-        <div ref={parentDiv} className={`${open ? "" : "d-none"} ${props.className}`} >
+        <div ref={parentDiv} className={`${!open && "d-none"} ${props.className}`} >
             <div className='d-flex gap-3 flex-column justify-content-center align-items-center' style={{
                 backgroundColor: "var(--bs-info)",
                 padding: "0.5em",
@@ -136,7 +136,7 @@ const ColorSelector = (props) => {
                                 setHSVA(newHSVA)
                                 let rgba = hsvaToRgba(newHSVA)
 
-                                if (typeof (props.onChange) == "function") {
+                                if (typeof (props.onChange) === "function") {
                                     props.onChange([
                                         rgba.r,
                                         rgba.g,
@@ -158,7 +158,7 @@ const ColorSelector = (props) => {
                                         setHSVA(newHSVA)
                                         let rgba = hsvaToRgba(newHSVA)
 
-                                        if (typeof (props.onChange) == "function") {
+                                        if (typeof (props.onChange) === "function") {
                                             props.onChange([
                                                 rgba.r,
                                                 rgba.g,
@@ -181,7 +181,7 @@ const ColorSelector = (props) => {
                                         setHSVA(newHSVA)
                                         let rgba = hsvaToRgba(newHSVA)
 
-                                        if (typeof (props.onChange) == "function") {
+                                        if (typeof (props.onChange) === "function") {
                                             props.onChange([
                                                 rgba.r,
                                                 rgba.g,

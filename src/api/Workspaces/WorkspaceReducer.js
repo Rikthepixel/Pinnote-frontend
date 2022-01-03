@@ -5,39 +5,59 @@ const initialState = {
 }
 
 const getWorkspaceById = (state, workspaceId) => {
-    const workspaceIndex = state.workspaces.findIndex(value => value.id == workspaceId);
+    const workspaceIndex = state.workspaces.findIndex(value => value.id === workspaceId);
     return [state.workspaces[workspaceIndex], workspaceIndex]
 }
 
 const WorkspaceReducer = (state = initialState, action) => {
-    let [workspace, workspaceIndex] = [null, null];
-    if (typeof(action.payload) === "object") {
-        [workspace, workspaceIndex] = getWorkspaceById(state, action.payload.workspaceId)
-    }
+    let payload = action.payload || {}
+    let [workspace, workspaceIndex] = getWorkspaceById(state, parseInt(payload.workspaceId))
 
     switch (action.type) {
         case "WORKSPACES_FETCHED":   
             return {
                 ...state,
-                workspaces: action.payload
+                workspaces: payload
             };
 
         case "WORKSPACE_FETCHED":
             return {
                 ...state,
-                workspace: action.payload
+                workspace: payload
+            }
+
+        case "UPDATE_WORKSPACE":
+            if (workspace) {
+                state.workspaces[workspaceIndex] = {
+                    ...workspace,
+                    ...payload.changes
+                }
+            }
+            
+            if (state.workspace.id === parseInt(payload.workspaceId)) {
+                state.workspace = {
+                    ...state.workspace,
+                    ...payload.changes
+                }
+            }
+            
+            return {
+                ...state,
+                workspaces: [
+                    ...state.workspaces
+                ]
             }
 
         case "CREATE_BOARD_IN_WORKSPACE":
             if (workspace) {
-                workspace.boards.push(action.payload)
+                workspace.boards.push(payload)
                 state.workspaces[workspaceIndex] = {
                     ...workspace
                 };
             }
             
             if (state.workspace.boards) {
-                state.workspace.boards.push(action.payload)
+                state.workspace.boards.push(payload)
                 state.workspace = {
                     ...state.workspace,
                     boards: [
@@ -45,8 +65,6 @@ const WorkspaceReducer = (state = initialState, action) => {
                     ]
                 }
             }
-
-            console.log(state);
 
             return {
                 ...state,

@@ -12,7 +12,7 @@ const ColorSelectorButton = (props) => {
 
     const setColor = (color) => {
         setDisplayColor(color);
-        if (typeof(setWheelColor.current) == 'function') {
+        if (typeof(setWheelColor.current) === 'function') {
             setWheelColor.current(color)
         }
     }
@@ -23,7 +23,7 @@ const ColorSelectorButton = (props) => {
 
     const toggleSelector = () => {
         setShow(!shown)
-        if (!shown == false) {
+        if (!shown === false) {
             onCancel()
         } else {
             onOpen()
@@ -35,13 +35,13 @@ const ColorSelectorButton = (props) => {
     }
 
     const onOpen = () => {
-        if (typeof (props.onOpen) == "function") {
+        if (typeof (props.onOpen) === "function") {
             props.onOpen(setColor)
         }
     }
 
     const onMount = () => {
-        if (typeof (props.onMount) == "function") {
+        if (typeof (props.onMount) === "function") {
             props.onMount(setColor)
         }
     }
@@ -51,21 +51,21 @@ const ColorSelectorButton = (props) => {
             setColor(initialColor);
         }
         
-        if (typeof (props.onCancel) == "function") {
+        if (typeof (props.onCancel) === "function") {
             props.onCancel(initialColor, setColor)
         }
     }
 
     const onSave = (newColor, oldColor) => {
         setDisplayColor(newColor);
-        if (typeof (props.onSave) == "function") {
+        if (typeof (props.onSave) === "function") {
             props.onSave(newColor, setColor)
         }
     }
 
     const onChange = (newColor) => {
         setDisplayColor(newColor);
-        if (typeof (props.onChange) == "function") {
+        if (typeof (props.onChange) === "function") {
             props.onChange(newColor, setColor)
         }
     }

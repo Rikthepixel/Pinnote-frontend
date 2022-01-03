@@ -15,7 +15,7 @@ import { routes } from "./routes";
 //Components
 import Navbar from "../components/Navbar";
 
-export default function MainRoute() {
+const MainRoute = () => {
   const RouteComponents = Object.keys(routes).map((key, index) => {
     const value = routes[key];
 
@@ -44,3 +44,5 @@ export default function MainRoute() {
     </Router>
   );
 }
+
+export default MainRoute;

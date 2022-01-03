@@ -4,25 +4,25 @@ const MakeWriteable = (props) => {
     const divRef = props.parentRef;
     const editClassNames = props.editClassName
     const editStyle = props.editStyle;
-    const onEventType = props.onEvent != "dblclick" && props.onEvent != "click" ? "dblclick" : props.onEvent
+    const onEventType = props.onEvent !== "dblclick" && props.onEvent !== "click" ? "dblclick" : props.onEvent
 
     useEffect(() => {
+        const div = divRef.current;
+
         let setText = (newText = "") => {
-            divRef.current.textContent = newText
+            div.textContent = newText
         }
 
-        if (typeof(props.onMount) == "function"){
+        if (typeof(props.onMount) === "function"){
             props.onMount(setText);
         }
 
-        let text = props.text || divRef.current.textContent
+        let text = props.text || div.textContent
         if (text) {
             setText(text)
         }
 
         let onEventFunc = function(e) {
-            let div = divRef.current;
-            
             div.contentEditable = "true";
             div.focus();
         
@@ -85,8 +85,12 @@ const MakeWriteable = (props) => {
             div.addEventListener("keydown", onKeyDown);
             div.addEventListener("input", onInput)
         }
-        divRef.current.addEventListener(onEventType, onEventFunc)
-    }, []);
+        div.addEventListener(onEventType, onEventFunc)
+
+        return () => {
+            div.removeEventListener(onEventType, onEventFunc)
+        }
+    }, [divRef, editClassNames, editStyle, onEventType, props]);
 
     return "";
 }

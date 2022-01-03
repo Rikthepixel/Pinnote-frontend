@@ -15,7 +15,7 @@ import {
   setBoardNoteColor,
 } from "../api";
 import { ConfirmationAlert, FormAlert } from "../utils/Alerts";
-import { validateBoard, boardSchema } from "../api/Boards/BoardValidators";
+import { boardSchema } from "../api/Boards/BoardValidators";
 import * as yup from "yup";
 
 import {
@@ -49,21 +49,31 @@ const Board = (props) => {
   });
   stateRef.current = state;
 
+  const redirectToWorkspace = () => {
+    if (workspaceIdRef.current) {
+      setRedirect(`/workspaces/${workspaceIdRef.current}`)
+    } else {
+      setRedirect("/workspaces")
+    }
+  }
+
   useEffect(() => {
     if (parseInt(boardId)) {
+      console.log("boardId");
       loadBoard(dispatch, parseInt(boardId))
-        .catch(() => {
-          setRedirect('/workspaces');
+        .catch((err) => {
+          console.log(err);
+          redirectToWorkspace();
         });
     } else {
-      setRedirect('/workspaces');
+      console.log("No board Id");
+      redirectToWorkspace();
     }
-
 
     return () => {
       unloadBoard(dispatch);
     };
-  }, []);
+  }, [boardId, dispatch]);
 
   useEffect(() => {
     if (state.workspaceId) {
@@ -72,8 +82,14 @@ const Board = (props) => {
   }, [state.workspaceId]);
 
   useEffect(() => {
+    if (state.state === "removed") {
+      redirectToWorkspace();
+    }
+  }, [state.state])
+
+  useEffect(() => {
     if (
-      typeof setDisplaySelectorDefaultBackgroundColor.current == "function" &&
+      typeof (setDisplaySelectorDefaultBackgroundColor.current) === "function" &&
       stateRef.current.defaultNoteBackgroundColor != null
     ) {
       setDisplaySelectorDefaultBackgroundColor.current(
@@ -84,7 +100,7 @@ const Board = (props) => {
 
   useEffect(() => {
     if (
-      typeof setDisplaySelectorBackgroundColor.current == "function" &&
+      typeof (setDisplaySelectorBackgroundColor.current) === "function" &&
       stateRef.current.backgroundColor != null
     ) {
       setDraftBackgroundColor(null);
@@ -123,7 +139,7 @@ const Board = (props) => {
             if (response.error) {
               return;
             }
-            setRedirect(`/workspaces/${workspaceIdRef.current}`);
+            redirectToWorkspace();
           })
           .catch((err) => {
             console.error(err);
@@ -191,6 +207,7 @@ const Board = (props) => {
               <img
                 className="me-1"
                 src={EditIcon}
+                alt=""
                 style={{
                   filter: "invert(100%)",
                   aspectRatio: "1",
@@ -248,6 +265,7 @@ const Board = (props) => {
               <img
                 className="me-1"
                 src={TrashIcon}
+                alt=""
                 style={{
                   filter: "invert(100%)",
                   aspectRatio: "1",

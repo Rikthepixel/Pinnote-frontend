@@ -1,4 +1,4 @@
-﻿import React, { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 
@@ -25,13 +25,13 @@ const Boards = (props) => {
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
+    }, [dispatch]);
 
     return (
         <div className="w-100 h-100 d-flex flex-row justify-content-center px-4 pt-4">
             <section className="px-4 pt-4 w-80">
                 <h2 className="ps-2 section-header">
-                    <img className="me-2" src={FolderIcon} />
+                    <img className="me-2" alt="" src={FolderIcon} />
                     Your workspaces
                 </h2>
                 <div className="px-4">
@@ -46,24 +46,24 @@ const Boards = (props) => {
                                     <h2 className="mx-3 m-0">{workspace.name}</h2>
                                     <section className="ms-2 px-4">
                                         <div>
-                                            <img src={UserTieIcon} />
+                                            <img alt="" src={UserTieIcon} />
                                             <b> Owner: </b>
                                             <span> {workspace.owner.username} </span>
                                         </div>
                                         <div >
-                                            <img src={UsersIcon} />
+                                            <img alt="" src={UsersIcon} />
                                             <b>  Users: </b>
                                             <span> {workspace.users.length} </span>
                                         </div>
                                         <div>
-                                            <img src={BoardIcon} />
+                                            <img alt="" src={BoardIcon} />
                                             <b> Boards: </b>
                                             <span> {workspace.boards.length} </span>
                                         </div>
                                         
                                     </section>
                                 </div>
-                                <img className="LinkArrow" src={ArrowRightIcon} />
+                                <img className="LinkArrow" alt="" src={ArrowRightIcon} />
                             </NavLink>
                         )
                     })}
