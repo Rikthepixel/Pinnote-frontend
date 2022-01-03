@@ -2,6 +2,7 @@
 import Board from "../views/Board";
 import Workspaces from "../views/Workspaces";
 import Workspace from "../views/Workspace";
+import Login from "../views/Login";
 
 //Routes
 export const routes = {
@@ -28,4 +29,10 @@ export const routes = {
         path: "/Boards/:boardId",
         exact: true
     },
+
+    Logout: {
+        component: Login,
+        path: "/Login",
+        exact: true
+    }
 }
