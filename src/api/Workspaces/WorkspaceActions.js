@@ -35,10 +35,7 @@ export const fetchMyWorkspaces = (dispatch) => {
                     payload: boards
                 });
                 resolve(boards);
-            })
-            .catch((err) => {
-                reject(err);
-            })
+            }, reject);
     })
 }
 
@@ -52,10 +49,7 @@ export const fetchWorkspace = (dispatch, id) => {
                     payload: workspaceDTOtoWorkspace(response.body)
                 });
                 resolve(response.body);
-            })
-            .catch((err) => {
-                reject(err);
-            })
+            }, reject);
     })
 }
 
@@ -64,16 +58,17 @@ export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundC
         if (typeof (workspaceId) != 'number') {
             return;
         }
-        superagent.post(`${url}/api/workspaces/${workspaceId}/Boards`, {
-            title: title,
-            backgroundColorR: backgroundColor[0],
-            backgroundColorG: backgroundColor[1],
-            backgroundColorB: backgroundColor[2],
-            defaultNoteColorR: noteColor[0],
-            defaultNoteColorG: noteColor[1],
-            defaultNoteColorB: noteColor[2],
-            visibilityId: 1
-        })
+        superagent.post(`${url}/api/workspaces/${workspaceId}/Boards`)
+            .send({
+                title: title,
+                backgroundColorR: backgroundColor[0],
+                backgroundColorG: backgroundColor[1],
+                backgroundColorB: backgroundColor[2],
+                defaultNoteColorR: noteColor[0],
+                defaultNoteColorG: noteColor[1],
+                defaultNoteColorB: noteColor[2],
+                visibilityId: 1
+            })
             .then((response) => {
                 const board = boardDTOtoBoard(response.body);
                 dispatch({
@@ -81,10 +76,7 @@ export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundC
                     payload: board,
                 });
                 resolve(board);
-            })
-            .catch((err) => {
-                reject(err)
-            })
+            }, reject);
     })
 };
 
@@ -134,5 +126,32 @@ export const createBoardInWorkspacePopup = (dispatch, workspaceId) => {
         if (result.confirmed) {
             createBoardInWorkspace(dispatch, workspaceId, result.values.Title, result.values.BackgroundColor, result.values.DefaultNoteColor);
         }
+    })
+}
+
+export const setWorkspaceName = (dispatch, workspaceId, newName) => {
+    return new Promise((resolve, reject) => {
+        if (typeof (workspaceId) != 'number') {
+            return;
+        }
+        superagent.patch(`${url}/api/workspaces/${workspaceId}/name`)
+            .send({
+                name: newName
+            })
+            .then(response => {
+                console.log(response);
+                if (response.error) { reject(response.error) }
+                dispatch({
+                    type: "UPDATE_WORKSPACE",
+                    payload: {
+                        workspaceId: workspaceId,
+                        changes: {
+                            name: newName
+                        }
+                    },
+                });
+
+                resolve(response);
+            }, reject)
     })
 }

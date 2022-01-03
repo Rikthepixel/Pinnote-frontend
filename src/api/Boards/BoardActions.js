@@ -174,10 +174,7 @@ export const getBoardsByWorkspaceId = (dispatch, id) => {
                     payload: response.body.map(boardDto => boardDTOtoBoard(boardDto))
                 });
                 resolve(response.body);
-            })
-            .catch(err => {
-                reject(err);
-            })
+            }, reject);
     })
 }
 
@@ -198,10 +195,7 @@ export const deleteBoard = (dispatch, boardId) => {
                 });
 
                 resolve(response);
-            })
-            .catch(err => {
-                reject(err)
-            });
+            }, reject);
     });
 };
 

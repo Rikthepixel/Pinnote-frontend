@@ -26,6 +26,28 @@ const WorkspaceReducer = (state = initialState, action) => {
                 workspace: payload
             }
 
+        case "UPDATE_WORKSPACE":
+            if (workspace) {
+                state.workspaces[workspaceIndex] = {
+                    ...workspace,
+                    ...payload.changes
+                }
+            }
+            
+            if (state.workspace.id === parseInt(payload.workspaceId)) {
+                state.workspace = {
+                    ...state.workspace,
+                    ...payload.changes
+                }
+            }
+            
+            return {
+                ...state,
+                workspaces: [
+                    ...state.workspaces
+                ]
+            }
+
         case "CREATE_BOARD_IN_WORKSPACE":
             if (workspace) {
                 workspace.boards.push(payload)

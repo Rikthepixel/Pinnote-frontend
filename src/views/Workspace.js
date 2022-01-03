@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect, useParams } from "react-router-dom";
 import { Tabs, Tab } from "react-bootstrap";
@@ -22,6 +22,8 @@ const Workspace = (props) => {
                 users: []
             }
     );
+    const stateRef = useRef(workspace);
+    stateRef.current = workspace;
 
     const [redirect, setRedirect] = useState("");
 
@@ -86,8 +88,9 @@ const Workspace = (props) => {
                             Settings
                         </div>
                     )}>
-                    <SettingsTab 
+                    <SettingsTab
                         workspaceId={workspace.id}
+                        workspace={workspace}
                     />
                 </Tab>
             </Tabs>
