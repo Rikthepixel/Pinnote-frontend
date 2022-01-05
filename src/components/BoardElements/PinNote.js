@@ -128,7 +128,11 @@ const PinNote = (props) => {
           }, {
             x: state.positionX,
             y: state.positionY
-          }, state.width, state.height, setOffset)
+          },
+            state.width || 200,
+            state.height || 200,
+            setOffset
+          )
         }
 
         setNotePosition(
