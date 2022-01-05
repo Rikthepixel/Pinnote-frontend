@@ -29,6 +29,7 @@ import {
 } from "../assets/img/icons";
 
 import "../assets/scss/views/Board.scss";
+import { useAuth } from "../utils/useAuth";
 
 const Board = (props) => {
   const { boardId } = useParams();
@@ -42,6 +43,7 @@ const Board = (props) => {
 
   const [redirect, setRedirect] = useState("");
   const [draftBackgroundColor, setDraftBackgroundColor] = useState();
+  const [user, isAuthLoaded] = useAuth();
 
   const dispatch = useDispatch();
   const state = useSelector((state) => {
@@ -50,6 +52,7 @@ const Board = (props) => {
   stateRef.current = state;
 
   const redirectToWorkspace = () => {
+    console.log("Set redirect");
     if (workspaceIdRef.current) {
       setRedirect(`/workspaces/${workspaceIdRef.current}`)
     } else {
@@ -58,10 +61,13 @@ const Board = (props) => {
   }
 
   useEffect(() => {
+    console.log('A');
+    if (!isAuthLoaded) { return }
     if (parseInt(boardId)) {
       console.log("boardId");
       loadBoard(dispatch, parseInt(boardId))
         .catch((err) => {
+          console.log("Catch");
           console.log(err);
           redirectToWorkspace();
         });
@@ -73,7 +79,7 @@ const Board = (props) => {
     return () => {
       unloadBoard(dispatch);
     };
-  }, [boardId, dispatch]);
+  }, [boardId, dispatch, isAuthLoaded]);
 
   useEffect(() => {
     if (state.workspaceId) {

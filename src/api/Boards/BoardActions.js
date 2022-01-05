@@ -2,16 +2,25 @@ import { validateBoard, validateNote } from "./BoardValidators";
 import { HubConnectionBuilder } from "@microsoft/signalr";
 import { noteDTOtoNote, boardDTOtoBoard } from "../DtoHelpers";
 import superagent from "superagent";
+import { getToken } from "..";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
 const connections = {
     boardHub: new HubConnectionBuilder()
-        .withUrl(`${url}/boardHub`)
+        .withUrl(`${url}/hubs/board`, {
+            accessTokenFactory: () => {
+                return getToken();
+            }
+        })
         .build(),
 
     noteHub: new HubConnectionBuilder()
-        .withUrl(`${url}/noteHub`)
+        .withUrl(`${url}/hubs/note`, {
+            accessTokenFactory: () => {
+                return getToken();
+            }
+        })
         .build(),
 
     IsConnected: function () {
@@ -38,15 +47,15 @@ const connections = {
                     this.boardHub.invoke("UnSubscribe"),
                     this.noteHub.invoke("UnSubscribe") //TODO: remove once user authentication is added
                 ]).then(() => {
-                        if (!this.IsConnected()) {
-                            tryConnectBoth()
-                                .then(resolve)
-                                .catch(reject);
-                        } else {
-                            resolve();
-                        }
-                    });
-                
+                    if (!this.IsConnected()) {
+                        tryConnectBoth()
+                            .then(resolve)
+                            .catch(reject);
+                    } else {
+                        resolve();
+                    }
+                });
+
 
             } else {
                 tryConnectBoth()
@@ -167,14 +176,17 @@ export const unloadBoard = (dispatch) => {
 
 export const getBoardsByWorkspaceId = (dispatch, id) => {
     return new Promise((resolve, reject) => {
-        superagent.get(`${url}/api/workspaces/${id}/boards`)
-            .then(response => {
-                dispatch({
-                    type: "BOARDS_FETCHED",
-                    payload: response.body.map(boardDto => boardDTOtoBoard(boardDto))
-                });
-                resolve(response.body);
-            }, reject);
+        getToken(token => {
+            superagent.get(`${url}/api/workspaces/${id}/boards`)
+                .set("Authentication", token)
+                .then(response => {
+                    dispatch({
+                        type: "BOARDS_FETCHED",
+                        payload: response.body.map(boardDto => boardDTOtoBoard(boardDto))
+                    });
+                    resolve(response.body);
+                }, reject);
+        });
     })
 }
 
@@ -184,18 +196,21 @@ export const deleteBoard = (dispatch, boardId) => {
             return;
         }
 
-        superagent.delete(`${url}/api/boards/${boardId}`)
-            .then(response => {
-                if (response.error) { reject(response.error) }
-                dispatch({
-                    type: "REMOVE_BOARD",
-                    payload: {
-                        boardId: boardId,
-                    },
-                });
+        getToken(token => {
+            superagent.delete(`${url}/api/boards/${boardId}`)
+                .set("Authentication", token)
+                .then(response => {
+                    if (response.error) { reject(response.error) }
+                    dispatch({
+                        type: "REMOVE_BOARD",
+                        payload: {
+                            boardId: boardId,
+                        },
+                    });
 
-                resolve(response);
-            }, reject);
+                    resolve(response);
+                }, reject);
+        }).catch(reject);
     });
 };
 

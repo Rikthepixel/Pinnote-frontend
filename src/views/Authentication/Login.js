@@ -1,11 +1,9 @@
-import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, Redirect } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { Field, Formik, Form as FormikForm } from "formik";
-import { useDispatch } from "react-redux";
 import ErrorBlock from "../../components/ErrorBlock";
 
-import * as yup from "yup";
 import { UserIcon } from "../../assets/img/icons";
 import { loginSchema } from "../../api/Authentication/AuthenticationValidators";
 import { useAuth } from "../../utils/useAuth";
@@ -14,11 +12,16 @@ import { login } from "../../api";
 const Login = (props) => {
 
     const [user] = useAuth();
-    const dispatch = useDispatch();
+    const [redirect, setRedirect] = useState("")
 
-    useEffect(() => {
-        console.log(user);
-    }, [user])
+    if (redirect) {
+        return <Redirect to={redirect} />
+    }
+
+    if (user) {
+        console.log("User");
+        setRedirect("/Workspaces")
+    }
 
     return (
         <div className="w-100 h-100 d-flex flex-row justify-content-center px-4 pt-4">
@@ -34,42 +37,48 @@ const Login = (props) => {
                             password: ""
                         }}
                         validationSchema={loginSchema}
-                        onSubmit={values => login(dispatch, values.email, values.password)}
+                        onSubmit={values => login(values.email, values.password)
+                            .then(() => {
+                                //Redirect
+                            })
+                        }
                     >
-                        {() => (
-                            <FormikForm className="mt-1 w-50">
-                                <Form.Group id="email" className="mb-4">
-                                    <Form.Label>Email: </Form.Label>
-                                    <Field
-                                        name="email"
-                                        className="form-control"
-                                        type="email"
-                                        placeholder="example@company.com"
-                                    />
-                                    <ErrorBlock name="email" />
-                                </Form.Group>
-                                <Form.Group>
-                                    <Form.Group id="password" className="mb-4">
-                                        <Form.Label>
-                                            Password:
-                                        </Form.Label>
+                        {formProps => {
+                            return (
+                                <FormikForm className="mt-1 w-50">
+                                    <Form.Group id="email" className="mb-4">
+                                        <Form.Label>Email: </Form.Label>
                                         <Field
-                                            name="password"
+                                            name="email"
                                             className="form-control"
-                                            type="password"
-                                            placeholder="Password"
+                                            type="email"
+                                            placeholder="example@company.com"
                                         />
-                                        <ErrorBlock name="password" />
-                                        <Link to="/forgot-password" className="small">
-                                            Forgot password?
-                                        </Link>
+                                        <ErrorBlock name="email" />
                                     </Form.Group>
-                                </Form.Group>
-                                <Button variant="primary" type="submit" className="w-100">
-                                    Log in
-                                </Button>
-                            </FormikForm>
-                        )}
+                                    <Form.Group>
+                                        <Form.Group id="password" className="mb-4">
+                                            <Form.Label>
+                                                Password:
+                                            </Form.Label>
+                                            <Field
+                                                name="password"
+                                                className="form-control"
+                                                type="password"
+                                                placeholder="Password"
+                                            />
+                                            <ErrorBlock name="password" />
+                                            <Link to="/forgot-password" className="d-block small">
+                                                Forgot password?
+                                            </Link>
+                                        </Form.Group>
+                                    </Form.Group>
+                                    <Button variant="primary" type="submit" className="w-100" disabled={(Object.keys(formProps.errors || {}).length > 0) ? true : null}>
+                                        Log in
+                                    </Button>
+                                </FormikForm>
+                            )
+                        }}
                     </Formik>
                 </div>
             </article>

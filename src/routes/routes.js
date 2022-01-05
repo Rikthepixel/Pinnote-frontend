@@ -3,6 +3,7 @@ import Board from "../views/Board";
 import Workspaces from "../views/Workspaces";
 import Workspace from "../views/Workspace";
 import Login from "../views/Authentication/Login";
+import Register from "../views/Authentication/Register";
 
 //Routes
 export const routes = {
@@ -30,9 +31,15 @@ export const routes = {
         exact: true
     },
 
-    Logout: {
+    Login: {
         component: Login,
         path: "/Login",
+        exact: true
+    },
+
+    Register: {
+        component: Register,
+        path: "/Register",
         exact: true
     }
 }

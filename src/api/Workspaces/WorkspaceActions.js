@@ -2,6 +2,7 @@ import { workspaceDTOtoWorkspace, boardDTOtoBoard } from "../DtoHelpers";
 import { FormAlert } from "../../utils/Alerts";
 import { createBoardSchema } from "../Boards/BoardValidators";
 import superagent from "superagent";
+import { getToken } from "../Authentication/AuthenticationActions";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 const prefabBackgroundColors = [
@@ -27,7 +28,9 @@ const prefabNoteColors = [
 
 export const fetchMyWorkspaces = (dispatch) => {
     return new Promise((resolve, reject) => {
-        superagent.get(`${url}/api/workspaces/`)
+        getToken(token => {
+            superagent.get(`${url}/api/workspaces/`)
+            .set("Authentication", token)
             .then((response) => {
                 const boards = response.body.map(workspaceDto => workspaceDTOtoWorkspace(workspaceDto));
                 dispatch({
@@ -36,20 +39,24 @@ export const fetchMyWorkspaces = (dispatch) => {
                 });
                 resolve(boards);
             }, reject);
+        }).catch(reject);
     })
 }
 
 
 export const fetchWorkspace = (dispatch, id) => {
     return new Promise((resolve, reject) => {
-        superagent.get(`${url}/api/workspaces/${id}`)
+        getToken(token => {
+            superagent.get(`${url}/api/workspaces/${id}`)
+            .set("Authentication", token)
             .then((response) => {
                 dispatch({
                     type: "WORKSPACE_FETCHED",
                     payload: workspaceDTOtoWorkspace(response.body)
                 });
                 resolve(response.body);
-            }, reject);
+            }, reject)
+        }).catch(reject);
     })
 }
 
@@ -58,25 +65,29 @@ export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundC
         if (typeof (workspaceId) != 'number') {
             return;
         }
-        superagent.post(`${url}/api/workspaces/${workspaceId}/Boards`)
-            .send({
-                title: title,
-                backgroundColorR: backgroundColor[0],
-                backgroundColorG: backgroundColor[1],
-                backgroundColorB: backgroundColor[2],
-                defaultNoteColorR: noteColor[0],
-                defaultNoteColorG: noteColor[1],
-                defaultNoteColorB: noteColor[2],
-                visibilityId: 1
-            })
-            .then((response) => {
-                const board = boardDTOtoBoard(response.body);
-                dispatch({
-                    type: "CREATE_BOARD_IN_WORKSPACE",
-                    payload: board,
-                });
-                resolve(board);
-            }, reject);
+
+        getToken(token => {
+            superagent.post(`${url}/api/workspaces/${workspaceId}/Boards`)
+                .set("Authentication", token)
+                .send({
+                    title: title,
+                    backgroundColorR: backgroundColor[0],
+                    backgroundColorG: backgroundColor[1],
+                    backgroundColorB: backgroundColor[2],
+                    defaultNoteColorR: noteColor[0],
+                    defaultNoteColorG: noteColor[1],
+                    defaultNoteColorB: noteColor[2],
+                    visibilityId: 1
+                })
+                .then((response) => {
+                    const board = boardDTOtoBoard(response.body);
+                    dispatch({
+                        type: "CREATE_BOARD_IN_WORKSPACE",
+                        payload: board,
+                    });
+                    resolve(board);
+                }, reject);
+        }).catch(reject)
     })
 };
 
@@ -134,24 +145,27 @@ export const setWorkspaceName = (dispatch, workspaceId, newName) => {
         if (typeof (workspaceId) != 'number') {
             return;
         }
-        superagent.patch(`${url}/api/workspaces/${workspaceId}/name`)
-            .send({
-                name: newName
-            })
-            .then(response => {
-                console.log(response);
-                if (response.error) { reject(response.error) }
-                dispatch({
-                    type: "UPDATE_WORKSPACE",
-                    payload: {
-                        workspaceId: workspaceId,
-                        changes: {
-                            name: newName
-                        }
-                    },
-                });
+        getToken(token => {
+            superagent.patch(`${url}/api/workspaces/${workspaceId}/name`)
+                .set("Authentication", token)
+                .send({
+                    name: newName
+                })
+                .then(response => {
+                    console.log(response);
+                    if (response.error) { reject(response.error) }
+                    dispatch({
+                        type: "UPDATE_WORKSPACE",
+                        payload: {
+                            workspaceId: workspaceId,
+                            changes: {
+                                name: newName
+                            }
+                        },
+                    });
 
-                resolve(response);
-            }, reject)
+                    resolve(response);
+                }, reject)
+        })
     })
 }

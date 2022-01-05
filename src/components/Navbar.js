@@ -1,5 +1,7 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../utils/useAuth";
+import { logout } from "../api";
 
 //Images
 import logo from "../assets/img/branding/PinnoteLogo.png";
@@ -8,7 +10,8 @@ import logo from "../assets/img/branding/PinnoteLogo.png";
 import "../assets/scss/components/Navbar.scss";
 
 const Navbar = () => {
-    
+    const [user] = useAuth();
+
     return (
         <nav className="Navbar">
             <div className="NavMenu justify-content-start">
@@ -22,12 +25,18 @@ const Navbar = () => {
             </NavLink>
 
             <div className="NavMenu justify-content-end">
-                <NavLink className="NavLink" to="/Login">
-                    Login
-                </NavLink>
+                {!user ? (
+                    <NavLink className="NavLink" to="/Login">
+                        Login
+                    </NavLink>
+                ) : (
+                    <NavLink className="NavLink" to="#" onClick={logout}>
+                        Logout
+                    </NavLink>
+                )}
             </div>
         </nav>
     );
-}
+};
 
 export default Navbar;

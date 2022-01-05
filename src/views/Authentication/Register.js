@@ -1,20 +1,16 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { Field, Formik, Form as FormikForm } from "formik";
-import { useDispatch } from "react-redux";
 import ErrorBlock from "../../components/ErrorBlock";
 
-import * as yup from "yup";
 import { UserIcon } from "../../assets/img/icons";
-import { loginSchema } from "../../api/Authentication/AuthenticationValidators";
+import { registerSchema } from "../../api/Authentication/AuthenticationValidators";
 import { useAuth } from "../../utils/useAuth";
-import { login } from "../../api";
+import { register } from "../../api";
 
-const Login = (props) => {
+const Register = (props) => {
 
     const [user] = useAuth();
-    const dispatch = useDispatch();
 
     useEffect(() => {
         console.log(user);
@@ -30,16 +26,35 @@ const Login = (props) => {
                 <div className="d-flex align-items-center justify-content-center">
                     <Formik
                         initialValues={{
+                            username: "",
                             email: "",
-                            password: ""
+                            password: "",
+                            confirmPassword: ""
                         }}
-                        validationSchema={loginSchema}
-                        onSubmit={values => login(dispatch, values.email, values.password)}
+                        validationSchema={registerSchema}
+                        onSubmit={values => register(values.username, values.email, values.password)
+                            .then(() => {
+                                //Redirect
+                            }) 
+                            .catch(err => {
+                                //Display error
+                            })
+                        }
                     >
-                        {() => (
+                        {formProps => (
                             <FormikForm className="mt-1 w-50">
+                                <Form.Group id="username" className="mb-4">
+                                    <Form.Label>Username:</Form.Label>
+                                    <Field
+                                        name="username"
+                                        className="form-control"
+                                        type="text"
+                                        placeholder=""
+                                    />
+                                    <ErrorBlock name="username" />
+                                </Form.Group>
                                 <Form.Group id="email" className="mb-4">
-                                    <Form.Label>Email: </Form.Label>
+                                    <Form.Label>Email:</Form.Label>
                                     <Field
                                         name="email"
                                         className="form-control"
@@ -50,9 +65,7 @@ const Login = (props) => {
                                 </Form.Group>
                                 <Form.Group>
                                     <Form.Group id="password" className="mb-4">
-                                        <Form.Label>
-                                            Password:
-                                        </Form.Label>
+                                        <Form.Label>Password:</Form.Label>
                                         <Field
                                             name="password"
                                             className="form-control"
@@ -60,13 +73,22 @@ const Login = (props) => {
                                             placeholder="Password"
                                         />
                                         <ErrorBlock name="password" />
-                                        <Link to="/forgot-password" className="small">
-                                            Forgot password?
-                                        </Link>
                                     </Form.Group>
                                 </Form.Group>
-                                <Button variant="primary" type="submit" className="w-100">
-                                    Log in
+                                <Form.Group>
+                                    <Form.Group id="password" className="mb-4">
+                                        <Form.Label>Confirm password:</Form.Label>
+                                        <Field
+                                            name="confirmPassword"
+                                            className="form-control"
+                                            type="password"
+                                            placeholder="Repeat password"
+                                        />
+                                        <ErrorBlock name="confirmPassword" />
+                                    </Form.Group>
+                                </Form.Group>
+                                <Button variant="primary" type="submit" className="w-100" disabled={(Object.keys(formProps.errors).length > 0) ? true : null}>
+                                    Register
                                 </Button>
                             </FormikForm>
                         )}
@@ -77,4 +99,4 @@ const Login = (props) => {
     )
 }
 
-export default Login;
+export default Register;

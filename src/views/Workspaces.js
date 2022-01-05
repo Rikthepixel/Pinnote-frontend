@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useAuth } from "../utils/useAuth";
 import { NavLink } from "react-router-dom";
 
 import { fetchMyWorkspaces } from "../api";
@@ -18,14 +19,18 @@ const Boards = (props) => {
     document.title = "Pinnote - Boards";
 
     const workspaces = useSelector(root => root.workspaces.workspaces || []);
+    const [user, isAuthLoaded, getToken] = useAuth(() => {
+
+    });
     const dispatch = useDispatch();
 
     useEffect(() => {
+        if (!isAuthLoaded) { return }
         fetchMyWorkspaces(dispatch)
             .catch((err) => {
                 console.log(err);
             });
-    }, [dispatch]);
+    }, [dispatch, isAuthLoaded]);
 
     return (
         <div className="w-100 h-100 d-flex flex-row justify-content-center px-4 pt-4">
@@ -60,7 +65,7 @@ const Boards = (props) => {
                                             <b> Boards: </b>
                                             <span> {workspace.boards.length} </span>
                                         </div>
-                                        
+
                                     </section>
                                 </div>
                                 <img className="LinkArrow" alt="" src={ArrowRightIcon} />
