@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { Field, Formik, Form as FormikForm } from "formik";
 import ErrorBlock from "../../components/ErrorBlock";
@@ -93,6 +94,10 @@ const Register = (props) => {
                             </FormikForm>
                         )}
                     </Formik>
+                </div>
+                <div className="d-flex justify-content-center gap-2 mt-5">
+                    <div>Already have an account?</div>
+                    <Link to="/Login">Login here</Link>
                 </div>
             </article>
         </div>

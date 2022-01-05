@@ -21,3 +21,7 @@ export const registerSchema = yup.object().shape({
         ),
     }).required("Confirm password required")
 })
+
+export const PasswordResetSchema = yup.object().shape({
+    email: loginSchema.fields.email
+})

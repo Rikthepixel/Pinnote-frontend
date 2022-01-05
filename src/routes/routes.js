@@ -4,6 +4,7 @@ import Workspaces from "../views/Workspaces";
 import Workspace from "../views/Workspace";
 import Login from "../views/Authentication/Login";
 import Register from "../views/Authentication/Register";
+import ResetPassword from "../views/Authentication/ResetPassword";
 
 //Routes
 export const routes = {
@@ -45,6 +46,13 @@ export const routes = {
     Register: {
         component: Register,
         path: "/Register",
+        exact: true,
+        AuthenticatedRedirect: "/"
+    },
+
+    ResetPassword: {
+        component: ResetPassword,
+        path: "/PasswordReset",
         exact: true,
         AuthenticatedRedirect: "/"
     }

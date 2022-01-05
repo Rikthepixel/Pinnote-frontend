@@ -2,6 +2,7 @@ import auth from "../../utils/FirebaseAuth";
 import {
     signInWithEmailAndPassword,
     createUserWithEmailAndPassword,
+    sendPasswordResetEmail as firebaseSendPasswordResetEmail,
     signOut,
     updateProfile,
     onAuthStateChanged,
@@ -60,13 +61,13 @@ export const getToken = (onTokenRecieved) => {
     return new Promise((resolve, reject) => {
         if (state.user) {
             getIdToken(state.user)
-            .then(token => {
-                if (typeof(onTokenRecieved) === "function") {
-                    onTokenRecieved(token)
-                }
-                resolve(token)
-            })
-            .catch(reject);
+                .then(token => {
+                    if (typeof (onTokenRecieved) === "function") {
+                        onTokenRecieved(token)
+                    }
+                    resolve(token)
+                })
+                .catch(reject);
         } else {
             reject({
                 message: "User is not defined"
@@ -86,3 +87,22 @@ export const logout = (dispatch) => {
             .catch(reject);
     });
 };
+
+export const sendResetPasswordEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        firebaseSendPasswordResetEmail(auth, email)
+            .then(response => {
+                console.log(response);
+                resolve({
+                    result: true,
+                    message: ""
+                })
+            })
+            .catch(error => {
+                resolve({
+                    result: false,
+                    message: error.message
+                })
+            });
+    });
+}

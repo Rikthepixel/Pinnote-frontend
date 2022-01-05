@@ -10,16 +10,15 @@ import { useAuth } from "../../utils/useAuth";
 import { login } from "../../api";
 
 const Login = (props) => {
-
     const [user] = useAuth();
-    const [redirect, setRedirect] = useState("")
+    const [redirect, setRedirect] = useState("");
 
     if (redirect) {
-        return <Redirect to={redirect} />
+        return <Redirect to={redirect} />;
     }
 
     if (user) {
-        setRedirect("/Workspaces")
+        setRedirect("/Workspaces");
     }
 
     return (
@@ -33,16 +32,16 @@ const Login = (props) => {
                     <Formik
                         initialValues={{
                             email: "",
-                            password: ""
+                            password: "",
                         }}
                         validationSchema={loginSchema}
-                        onSubmit={values => login(values.email, values.password)
-                            .then(() => {
+                        onSubmit={(values) =>
+                            login(values.email, values.password).then(() => {
                                 //Redirect
                             })
                         }
                     >
-                        {formProps => {
+                        {(formProps) => {
                             return (
                                 <FormikForm className="mt-1 w-50">
                                     <Form.Group id="email" className="mb-4">
@@ -57,9 +56,7 @@ const Login = (props) => {
                                     </Form.Group>
                                     <Form.Group>
                                         <Form.Group id="password" className="mb-4">
-                                            <Form.Label>
-                                                Password:
-                                            </Form.Label>
+                                            <Form.Label>Password:</Form.Label>
                                             <Field
                                                 name="password"
                                                 className="form-control"
@@ -67,22 +64,35 @@ const Login = (props) => {
                                                 placeholder="Password"
                                             />
                                             <ErrorBlock name="password" />
-                                            <Link to="/forgot-password" className="d-block small">
+                                            <Link to="/PasswordReset" className="d-block small mt-1">
                                                 Forgot password?
                                             </Link>
                                         </Form.Group>
                                     </Form.Group>
-                                    <Button variant="primary" type="submit" className="w-100" disabled={(Object.keys(formProps.errors || {}).length > 0) ? true : null}>
+                                    <Button
+                                        variant="primary"
+                                        type="submit"
+                                        className="w-100"
+                                        disabled={
+                                            Object.keys(formProps.errors || {}).length > 0
+                                                ? true
+                                                : null
+                                        }
+                                    >
                                         Log in
                                     </Button>
                                 </FormikForm>
-                            )
+                            );
                         }}
                     </Formik>
                 </div>
+                <div className="d-flex justify-content-center gap-2 mt-5">
+                    <div>Don't have an account?</div>
+                    <Link to="/Register">Register here</Link>
+                </div>
             </article>
         </div>
-    )
-}
+    );
+};
 
 export default Login;
