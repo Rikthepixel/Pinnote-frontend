@@ -41,16 +41,11 @@ export const PinBoard = (props) => {
         let offsetX = 0
         let offsetY = 0
         if (Position.x - (width / 2) <= 0) {
-          console.log("True");
           offsetX = -(Position.x - width / 2)
         }
-
         if (Position.y - (height / 2) <= 0) {
-          console.log("True");
           offsetY = -(Position.y - height / 2)
         }
-
-        console.log(offsetX, offsetY);
         setOffset(offsetX, offsetY)
       }}
 
