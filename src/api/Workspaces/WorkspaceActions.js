@@ -25,19 +25,25 @@ const prefabNoteColors = [
     [192, 11, 69]
 ]
 
+export const clearWorkspaces = (dispatch) => {
+    dispatch({
+        type: "WORKSPACES_FETCHED",
+        payload: []
+    });
+}
 
 export const fetchMyWorkspaces = (dispatch) => {
     return new Promise((resolve, reject) => {
         getToken(token => {
-            superagent.get(`${url}/api/workspaces/`)
+            superagent.get(`${url}/api/users/self/workspaces`)
             .set("Authentication", token)
             .then((response) => {
-                const boards = response.body.map(workspaceDto => workspaceDTOtoWorkspace(workspaceDto));
+                const workspaces = response.body.map(workspaceDto => workspaceDTOtoWorkspace(workspaceDto));
                 dispatch({
                     type: "WORKSPACES_FETCHED",
-                    payload: boards
+                    payload: workspaces
                 });
-                resolve(boards);
+                resolve(workspaces);
             }, reject);
         }).catch(reject);
     })

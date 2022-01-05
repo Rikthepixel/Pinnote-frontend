@@ -174,6 +174,13 @@ export const unloadBoard = (dispatch) => {
     });
 };
 
+export const clearBoards = (dispatch) => {
+    dispatch({
+        type: "BOARDS_FETCHED",
+        payload: []
+    });
+}
+
 export const getBoardsByWorkspaceId = (dispatch, id) => {
     return new Promise((resolve, reject) => {
         getToken(token => {

@@ -19,7 +19,6 @@ const Login = (props) => {
     }
 
     if (user) {
-        console.log("User");
         setRedirect("/Workspaces")
     }
 

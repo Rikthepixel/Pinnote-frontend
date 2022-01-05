@@ -10,36 +10,42 @@ export const routes = {
     Workspaces: {
         component: Workspaces,
         path: "/Workspaces",
-        exact: true
+        exact: true,
+        NotAuthenticatedRedirect: "/Login"
     },
 
     Home: {
         component: Workspaces,
         path: "/" ,
-        exact: true 
+        exact: true,
+        NotAuthenticatedRedirect: "/Login"
     },
 
     Workspace: {
         component: Workspace,
         path: "/Workspaces/:workspaceId",
-        exact: true
+        exact: true,
+        NotAuthenticatedRedirect: "/Login"
     },
 
     Board: {
         component: Board,
         path: "/Boards/:boardId",
-        exact: true
+        exact: true,
+        NotAuthenticatedRedirect: "/Login"
     },
 
     Login: {
         component: Login,
         path: "/Login",
-        exact: true
+        exact: true,
+        AuthenticatedRedirect: "/"
     },
 
     Register: {
         component: Register,
         path: "/Register",
-        exact: true
+        exact: true,
+        AuthenticatedRedirect: "/"
     }
 }

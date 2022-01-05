@@ -7,6 +7,7 @@ import {
     onAuthStateChanged,
     getIdToken,
 } from "firebase/auth";
+import { clearBoards, clearWorkspaces } from "..";
 
 const state = {
     user: null,
@@ -74,10 +75,12 @@ export const getToken = (onTokenRecieved) => {
     })
 }
 
-export const logout = () => {
+export const logout = (dispatch) => {
     return new Promise((resolve, reject) => {
         signOut(auth)
             .then(() => {
+                clearWorkspaces(dispatch);
+                clearBoards(dispatch);
                 resolve();
             })
             .catch(reject);

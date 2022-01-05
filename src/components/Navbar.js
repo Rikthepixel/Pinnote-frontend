@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { useAuth } from "../utils/useAuth";
 import { logout } from "../api";
 
@@ -11,6 +12,7 @@ import "../assets/scss/components/Navbar.scss";
 
 const Navbar = () => {
     const [user] = useAuth();
+    const dispatch = useDispatch();
 
     return (
         <nav className="Navbar">
@@ -30,7 +32,7 @@ const Navbar = () => {
                         Login
                     </NavLink>
                 ) : (
-                    <NavLink className="NavLink" to="#" onClick={logout}>
+                    <NavLink className="NavLink" to="#" onClick={() => logout(dispatch)}>
                         Logout
                     </NavLink>
                 )}
