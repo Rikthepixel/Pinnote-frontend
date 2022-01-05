@@ -5,6 +5,7 @@ import Workspace from "../views/Workspace";
 import Login from "../views/Authentication/Login";
 import Register from "../views/Authentication/Register";
 import ResetPassword from "../views/Authentication/ResetPassword";
+import MySettings from "../views/MySettings";
 
 //Routes
 export const routes = {
@@ -55,5 +56,12 @@ export const routes = {
         path: "/PasswordReset",
         exact: true,
         AuthenticatedRedirect: "/"
+    },
+
+    MySettings: {
+        component: MySettings,
+        path: "/Profile",
+        exact: true,
+        NotAuthenticatedRedirect: "/Login"
     }
 }

@@ -27,6 +27,9 @@ const Navbar = () => {
             </NavLink>
 
             <div className="NavMenu justify-content-end">
+                <NavLink className="NavLink" to="/Profile">
+                    Profile
+                </NavLink>
                 {!user ? (
                     <NavLink className="NavLink" to="/Login">
                         Login
