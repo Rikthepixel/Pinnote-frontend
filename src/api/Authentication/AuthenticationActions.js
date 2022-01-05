@@ -5,8 +5,11 @@ import {
     sendPasswordResetEmail as firebaseSendPasswordResetEmail,
     signOut,
     updateProfile,
+    updateEmail as firebaseUpdateEmail,
+    updatePassword as firebaseUpdatePassword,
+    sendEmailVerification as firebaseSendEmailVerification,
     onAuthStateChanged,
-    getIdToken,
+    getIdToken
 } from "firebase/auth";
 import { clearBoards, clearWorkspaces } from "..";
 
@@ -52,7 +55,7 @@ export const setUserName = (newUsername) => {
         updateProfile(state.user, {
             displayName: newUsername,
         })
-            .then(() => resolve())
+            .then(resolve)
             .catch(reject);
     });
 };
@@ -105,4 +108,58 @@ export const sendResetPasswordEmail = (email) => {
                 })
             });
     });
+}
+
+export const updateEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        firebaseUpdateEmail(state.user, email)
+            .then(() => {
+                resolve({
+                    result: true,
+                    message: ""
+                })
+            })
+            .catch(err => {
+                resolve({
+                    result: false,
+                    message: err.message
+                })
+            })
+    })
+}
+
+export const updatePassword = (pass) => {
+    return new Promise((resolve, reject) => {
+        firebaseUpdatePassword(state.user, pass)
+            .then(() => {
+                resolve({
+                    result: true,
+                    message: ""
+                })
+            })
+            .catch(err => {
+                resolve({
+                    result: false,
+                    message: err.message
+                })
+            })
+    })
+}
+
+export const verifyEmail = () => {
+    return new Promise((resolve, reject) => {
+        firebaseSendEmailVerification(state.user)
+            .then(() => {
+                resolve({
+                    result: true,
+                    message: ""
+                })
+            })
+            .catch(err => {
+                resolve({
+                    result: false,
+                    message: err.message
+                })
+            })
+    })
 }

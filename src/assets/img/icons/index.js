@@ -12,8 +12,14 @@ import CogIcon from "./CogIcon.svg";
 import UserIcon from "./UserIcon.svg";
 import UsersIcon from "./UsersIcon.svg";
 import UserTieIcon from "./UserTieIcon.svg";
+import CheckIcon from "./CheckIcon.svg";
+import CheckIconGreen from "./CheckIconGreen.svg";
+import CloseIconRed from "./CloseIconRed.svg";
 
 export {
+    CloseIconRed,
+    CheckIconGreen,
+    CheckIcon,
     BrushIcon,
     CloseIcon,
     EditIcon,

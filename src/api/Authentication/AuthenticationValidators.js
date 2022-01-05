@@ -20,8 +20,21 @@ export const registerSchema = yup.object().shape({
             "Both passwords need to be the same"
         ),
     }).required("Confirm password required")
-})
+});
 
 export const PasswordResetSchema = yup.object().shape({
     email: loginSchema.fields.email
-})
+});
+
+export const UsernameSchema = yup.object().shape({
+    username: registerSchema.fields.username
+});
+
+export const EmailSchema = yup.object().shape({
+    email: loginSchema.fields.email
+});
+
+export const PasswordUpdateSchema = yup.object().shape({
+    password: registerSchema.fields.password,
+    confirmPassword: registerSchema.confirmPassword
+});
