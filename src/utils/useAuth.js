@@ -8,10 +8,10 @@ const AuthProvider = (props) => {
     const [loaded, setLoaded] = useState(false);
     onAuthStateChanged(FirebaseAuth,
         newUser => {
+            setUser(newUser);
             if (!loaded) {
                 setLoaded(true);
             }
-            setUser(newUser)
         },
         err => console.log(err)
     )
@@ -44,7 +44,11 @@ const AuthProvider = (props) => {
 
 export const useAuth = (onAuthenticated) => {
     const contextData = useContext(AuthContext);
+    const [hookLoaded, setHookLoaded] = useState(false);
 
+    useEffect(() => {
+        setHookLoaded(true);
+    }, [])
     useEffect(() => {
         if (contextData.loaded) {
             if (typeof(onAuthenticated) === "function") {
@@ -53,7 +57,8 @@ export const useAuth = (onAuthenticated) => {
         }
     }, [contextData.loaded])
 
-    return [contextData.user, contextData.loaded, contextData.getToken]
+
+    return [contextData.user, contextData.loaded && hookLoaded, contextData.getToken]
 }
 
 export default AuthProvider
