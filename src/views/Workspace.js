@@ -11,6 +11,7 @@ import { BoardIcon, CogIcon, UsersIcon } from "../assets/img/icons";
 import { fetchWorkspace } from "../api";
 
 import "../assets/scss/views/Workspace.scss";
+import { useAuth } from "../utils/useAuth";
 
 const Workspace = (props) => {
     const { workspaceId } = useParams();
@@ -26,17 +27,20 @@ const Workspace = (props) => {
     stateRef.current = workspace;
 
     const [redirect, setRedirect] = useState("");
+    const [user, isAuthLoaded] = useAuth();
 
     useEffect(() => {
+        if (!isAuthLoaded) { return }
         if (parseInt(workspaceId)) {
             fetchWorkspace(dispatch, parseInt(workspaceId))
-                .catch(() => {
-                    setRedirect("/workspaces")
+                .catch(err => {
+                    console.log(err);
+                    setRedirect("/Workspaces")
                 });
         } else {
-            setRedirect("/workspaces");
+            setRedirect("/Workspaces");
         }
-    }, [workspaceId, dispatch]);
+    }, [workspaceId, dispatch, isAuthLoaded]);
 
     if (redirect) {
         return <Redirect to={redirect} />
