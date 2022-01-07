@@ -50,9 +50,20 @@
     font-weight: bold;
     transition: background-size 0.25s ease-out;
 
+    position: relative;
+
+    * {
+        font-weight: bold;
+    }
+
     &.active {
         background-color: var(--bs-light);
         color: var(--bs-gray-200);
+
+        .nav-badge {
+            background-color: var(--bs-gray-100) !important;
+            color: var(--bs-primary) !important
+        }
     }
 
     &:hover {
@@ -64,6 +75,14 @@
 
     &:hover.active {
         color: var(--bs-gray-100);
+    }
+
+    .nav-badge {
+        background-color: var(--bs-secondary) !important;
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(25%, -25%);
     }
 }
 

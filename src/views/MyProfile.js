@@ -1,18 +1,27 @@
-import React, { useRef, useState } from "react";
-import { CheckIcon, CheckIconGreen, CloseIconRed, CogIcon, EditIcon } from "../assets/img/icons";
+import React, { useRef, useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { CheckIcon, CheckIconGreen, CloseIconRed, CogIcon, EditIcon, EnvelopeIcon } from "../assets/img/icons";
 import { useAuth } from "../utils/useAuth";
 import { FormAlert } from "../utils/Alerts";
 
-import "../assets/scss/views/MySettings.scss";
+import "../assets/scss/views/MyProfile.scss";
 import { Button } from "react-bootstrap";
-import { setUserName, verifyEmail, updateEmail, updatePassword } from "../api";
+import { setUserName, verifyEmail, updateEmail, updatePassword, fetchInvites } from "../api";
 import { EmailSchema, PasswordUpdateSchema, UsernameSchema } from "../api/Authentication/AuthenticationValidators";
 import Swal from "sweetalert2";
 
-const MySettings = () => {
+
+const MyProfile = () => {
     const userRef = useRef();
     const [user, isAuthLoaded] = useAuth();
     const [_, forceUpdate] = useState();
+    const dispatch = useDispatch()
+    const invites = useSelector(root => root.invites.invites)
+    console.log(invites);
+    useEffect(() => {
+        if (!isAuthLoaded) return
+        fetchInvites(dispatch);
+    }, [isAuthLoaded])
 
     userRef.current = user || {
         displayName: "Unknown",
@@ -102,7 +111,7 @@ const MySettings = () => {
                             </div>
                         </div>
                         <div className="actions">
-                            <Button variant="success" onClick={() => verifyEmail()
+                            {!userRef.current.emailVerified && <Button variant="success" onClick={() => verifyEmail()
                                 .then(resp => {
                                     if (resp.result) {
                                         Swal.fire({
@@ -128,7 +137,8 @@ const MySettings = () => {
                                 })}>
                                 <img src={CheckIcon} className="icon img-invert me-2" alt="" />
                                 Verify
-                            </Button>
+                            </Button>}
+
                             <Button
                                 onClick={() => FormAlert({
                                     title: "Change email address",
@@ -240,9 +250,31 @@ const MySettings = () => {
                         </div>
                     </div>
                 </section>
+                <h2 className="section-header d-flex align-items-center mt-4">
+                    <img className="me-2" alt="" src={EnvelopeIcon} />
+                    Invites
+                </h2>
+                <section className="">
+                    {invites.map((invite, index) => (
+                        <div key={`${invite.id} ${index}`} className="invite-item">
+                            <div>
+                                <div><b>You have been invited to: </b>{invite.workspace.name}</div>
+                                <div><b>By: </b>{invite.workspace.name}</div>
+                            </div>
+                            <div className="d-flex gap-2">
+                                <Button variant="success">
+                                    Accept
+                                </Button>
+                                <Button variant="danger">
+                                    Remove
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
+                </section>
             </article>
         </div >
     );
 };
 
-export default MySettings;
+export default MyProfile;

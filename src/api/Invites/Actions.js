@@ -1,0 +1,31 @@
+import superagent from "superagent";
+import { getToken } from "..";
+
+const url = process.env.REACT_APP_BACKEND_URL;
+
+export const clearInvites = (dispatch) => {
+    return new Promise((resolve, reject) => {
+        dispatch({
+            type: "INVITES_FETCHED",
+            payload: []
+        });
+        resolve();
+    });
+};
+
+export const fetchInvites = (dispatch) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.get(`${url}/api/users/self/invites`)
+                .set("Authentication", token)
+                .then(response => {
+                    dispatch({
+                        type: "INVITES_FETCHED",
+                        payload: response.body
+                    });
+                    resolve(response.body);
+                }, reject);
+        })
+    })
+
+};

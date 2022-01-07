@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
+import { Badge } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../utils/useAuth";
 import { logout } from "../api";
 
@@ -13,6 +14,7 @@ import "../assets/scss/components/Navbar.scss";
 const Navbar = () => {
     const [user] = useAuth();
     const dispatch = useDispatch();
+    const invites = useSelector(root => root.invites.invites)
 
     return (
         <nav className="Navbar">
@@ -27,17 +29,24 @@ const Navbar = () => {
             </NavLink>
 
             <div className="NavMenu justify-content-end">
-                <NavLink className="NavLink" to="/Profile">
-                    Profile
-                </NavLink>
                 {!user ? (
                     <NavLink className="NavLink" to="/Login">
                         Login
                     </NavLink>
                 ) : (
-                    <NavLink className="NavLink" to="#" onClick={() => logout(dispatch)}>
-                        Logout
-                    </NavLink>
+                    <Fragment>
+                        <NavLink className="NavLink" to="/Profile">
+                            <span>
+                                Profile
+                            </span>
+                            {invites.length > 0 && <Badge className="nav-badge">
+                                {invites.length}
+                            </Badge>}
+                        </NavLink>
+                        <NavLink className="NavLink" to="#" onClick={() => logout(dispatch)}>
+                            Logout
+                        </NavLink>
+                    </Fragment>
                 )}
             </div>
         </nav>

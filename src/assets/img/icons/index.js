@@ -15,6 +15,7 @@ import UserTieIcon from "./UserTieIcon.svg";
 import CheckIcon from "./CheckIcon.svg";
 import CheckIconGreen from "./CheckIconGreen.svg";
 import CloseIconRed from "./CloseIconRed.svg";
+import EnvelopeIcon from "./EnvelopeIcon.svg";
 
 export {
     CloseIconRed,
@@ -33,5 +34,6 @@ export {
     UserIcon,
     CogIcon,
     UsersIcon,
-    UserTieIcon
+    UserTieIcon,
+    EnvelopeIcon
 };
