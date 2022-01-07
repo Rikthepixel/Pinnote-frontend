@@ -6,9 +6,10 @@ import { FormAlert } from "../utils/Alerts";
 
 import "../assets/scss/views/MyProfile.scss";
 import { Button } from "react-bootstrap";
-import { setUserName, verifyEmail, updateEmail, updatePassword, fetchInvites } from "../api";
+import { setUserName, verifyEmail, updateEmail, updatePassword, fetchInvites, acceptInvite, rejectInvite } from "../api";
 import { EmailSchema, PasswordUpdateSchema, UsernameSchema } from "../api/Authentication/AuthenticationValidators";
 import Swal from "sweetalert2";
+import { ConfirmationAlert } from "../utils/Alerts";
 
 
 const MyProfile = () => {
@@ -262,11 +263,33 @@ const MyProfile = () => {
                                 <div><b>By: </b>{invite.workspace.name}</div>
                             </div>
                             <div className="d-flex gap-2">
-                                <Button variant="success">
+                                <Button variant="success"
+                                    onClick={() => ConfirmationAlert({
+                                        title: "Accept invite",
+                                        text: `Are you sure you want to join '${invite.workspace.name}'?`,
+                                        acceptButtonText: "Accept invite",
+                                        cancelButtonText: "Cancel"
+                                    }).then(response => {
+                                        if (response) {
+                                            acceptInvite(dispatch, invite.id);
+                                        }
+                                    })}
+                                >
                                     Accept
                                 </Button>
-                                <Button variant="danger">
-                                    Remove
+                                <Button variant="danger"
+                                    onClick={() => ConfirmationAlert({
+                                        title: "Reject invite",
+                                        text: `Are you sure you want to reject the invite from '${invite.workspace.name}'?`,
+                                        acceptButtonText: "Reject invite",
+                                        cancelButtonText: "Cancel"
+                                    }).then(response => {
+                                        if (response) {
+                                            rejectInvite(dispatch, invite.id);
+                                        }
+                                    })}
+                                >
+                                    Reject
                                 </Button>
                             </div>
                         </div>

@@ -9,6 +9,12 @@ const Reducer = (state = initialState, action) => {
             return {
                 invites: action.payload
             };
+        
+        case "REMOVE_INVITE":
+            return {
+                ...state,
+                invites: state.invites.filter(inv => parseInt(inv.id) !== parseInt(action.payload))
+            }
     
         default:
             return state;

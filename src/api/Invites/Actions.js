@@ -27,5 +27,36 @@ export const fetchInvites = (dispatch) => {
                 }, reject);
         })
     })
-
 };
+
+export const acceptInvite = (dispatch, id) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.post(`${url}/api/users/self/invites/${id}`)
+                .set("Authentication", token)
+                .then(response => {
+                    dispatch({
+                        type: "REMOVE_INVITE",
+                        payload: id
+                    });
+                    resolve();
+                }, reject);
+        })
+    })
+};
+
+export const rejectInvite = (dispatch, id) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.delete(`${url}/api/users/self/invite/${id}`)
+                .set("Authentication", token)
+                .then(response => {
+                    dispatch({
+                        type: "REMOVE_INVITE",
+                        payload: id
+                    });
+                    resolve();
+                }, reject);
+        })
+    })
+}

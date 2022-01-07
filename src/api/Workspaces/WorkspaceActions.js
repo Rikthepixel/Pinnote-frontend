@@ -175,3 +175,41 @@ export const setWorkspaceName = (dispatch, workspaceId, newName) => {
         })
     })
 }
+
+export const inviteUserByEmail = (dispatch, workspaceId, email) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.post(`${url}/api/workspaces/${workspaceId}/invites/email/${email}`)
+                .set("Authentication", token)
+                .then(response => {
+                    dispatch({
+                        type: "ADD_WORKSPACE_INVITE",
+                        payload: {
+                            workspaceId: workspaceId,
+                            invite: response.body
+                        }
+                    });
+                    resolve();
+                }, reject);
+        })
+    })
+}
+
+export const cancelInvite = (dispatch, workspaceId, inviteId) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.delete(`${url}/api/workspaces/${workspaceId}/invites/${inviteId}`)
+                .set("Authentication", token)
+                .then(response => {
+                    dispatch({
+                        type: "REMOVE_WORKSPACE_INVITE",
+                        payload: {
+                            workspaceId: workspaceId,
+                            inviteId: inviteId
+                        }
+                    });
+                    resolve();
+                }, reject);
+        })
+    })
+}
