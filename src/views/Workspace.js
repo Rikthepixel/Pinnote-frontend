@@ -43,6 +43,12 @@ const Workspace = (props) => {
         }
     }, [workspaceId, dispatch, isAuthLoaded]);
 
+    useEffect(() => {
+        if (workspace.removed_state) {
+            setRedirect("/Workspaces")
+        }
+    }, [workspace.removed_state])
+
     if (redirect) {
         return <Redirect to={redirect} />
     }

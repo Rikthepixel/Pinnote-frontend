@@ -154,6 +154,10 @@ const WorkspaceReducer = (state = initialState, action) => {
                         ...workspace,
                         users: [...workspace.users]
                     }
+
+                    if (workspace.users.length === 0) {
+                        state.workspaces = state.workspaces.filter(_workspace => _workspace.id !== workspace.id);
+                    }
                 }
             }
 
@@ -163,6 +167,10 @@ const WorkspaceReducer = (state = initialState, action) => {
                     state.workspace = {
                         ...state.workspace,
                         users: [...state.workspace.users]
+                    }
+
+                    if (state.workspace.users.length === 0) {
+                        state.workspace.removed_state = true
                     }
                 }
             }
