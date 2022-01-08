@@ -16,7 +16,7 @@ import {
 import "../assets/scss/views/Workspaces.scss";
 
 const Boards = (props) => {
-    document.title = "Pinnote - Boards";
+    document.title = "Pinnote - Workspaces";
 
     const workspaces = useSelector(root => root.workspaces.workspaces || []);
     const [user, isAuthLoaded, getToken] = useAuth(() => {
