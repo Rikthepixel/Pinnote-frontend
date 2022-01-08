@@ -2,11 +2,11 @@ import React, { useRef, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CheckIcon, CheckIconGreen, CloseIconRed, CogIcon, EditIcon, EnvelopeIcon } from "../assets/img/icons";
 import { useAuth } from "../utils/useAuth";
-import { FormAlert } from "../utils/Alerts";
+import { FormAlert, ToastAlerts } from "../utils/Alerts";
 
 import "../assets/scss/views/MyProfile.scss";
 import { Button } from "react-bootstrap";
-import { setUserName, verifyEmail, updateEmail, updatePassword, fetchInvites, acceptInvite, rejectInvite } from "../api";
+import { setUserName, verifyEmail, updateEmail, updatePassword, fetchInvites, acceptInvite, rejectInvite, retrieveSelf } from "../api";
 import { EmailSchema, PasswordUpdateSchema, UsernameSchema } from "../api/Authentication/AuthenticationValidators";
 import Swal from "sweetalert2";
 import { ConfirmationAlert } from "../utils/Alerts";
@@ -16,11 +16,11 @@ const MyProfile = () => {
     const userRef = useRef();
     const [user, isAuthLoaded] = useAuth();
     const [_, forceUpdate] = useState();
-    const dispatch = useDispatch()
-    const invites = useSelector(root => root.invites.invites)
-    console.log(invites);
+    const dispatch = useDispatch();
+    const invites = useSelector(root => root.invites.invites);
+
     useEffect(() => {
-        if (!isAuthLoaded) return
+        if (!isAuthLoaded) return;
         fetchInvites(dispatch);
     }, [isAuthLoaded])
 
@@ -115,23 +115,16 @@ const MyProfile = () => {
                             {!userRef.current.emailVerified && <Button variant="success" onClick={() => verifyEmail()
                                 .then(resp => {
                                     if (resp.result) {
-                                        Swal.fire({
+                                        ToastAlerts({
                                             title: 'Success!',
                                             text: `Verification email has been successfully sent to ${userRef.current.email}`,
                                             icon: 'success',
-                                            position: "top",
-                                            toast: true,
-                                            showConfirmButton: false,
-                                            timer: 5000
                                         })
                                     } else {
-                                        Swal.fire({
+                                        ToastAlerts({
                                             title: 'Error!',
                                             text: resp.message,
                                             icon: 'error',
-                                            position: "top",
-                                            toast: true,
-                                            showConfirmButton: false,
                                             timer: 4000
                                         })
                                     }
@@ -160,23 +153,16 @@ const MyProfile = () => {
                                         updateEmail(result.values.email)
                                             .then(resp => {
                                                 if (resp.result) {
-                                                    Swal.fire({
+                                                    ToastAlerts({
                                                         title: 'Success!',
                                                         text: `An email has been sent ${result.values.username}`,
                                                         icon: 'success',
-                                                        position: "top",
-                                                        toast: true,
-                                                        showConfirmButton: false,
-                                                        timer: 5000
                                                     })
                                                 } else {
-                                                    Swal.fire({
+                                                    ToastAlerts({
                                                         title: 'Error!',
                                                         text: resp.message,
                                                         icon: 'error',
-                                                        position: "top",
-                                                        toast: true,
-                                                        showConfirmButton: false,
                                                         timer: 4000
                                                     })
                                                 };
@@ -221,23 +207,16 @@ const MyProfile = () => {
                                         updatePassword(result.values.password)
                                             .then(resp => {
                                                 if (resp.result) {
-                                                    Swal.fire({
+                                                    ToastAlerts({
                                                         title: 'Success!',
                                                         text: "Password has successfully been changes",
                                                         icon: 'success',
-                                                        position: "top",
-                                                        toast: true,
-                                                        showConfirmButton: false,
-                                                        timer: 5000
                                                     })
                                                 } else {
-                                                    Swal.fire({
+                                                    ToastAlerts({
                                                         title: 'Error!',
                                                         text: resp.message,
                                                         icon: 'error',
-                                                        position: "top",
-                                                        toast: true,
-                                                        showConfirmButton: false,
                                                         timer: 4000
                                                     })
                                                 };
@@ -255,7 +234,7 @@ const MyProfile = () => {
                     <img className="me-2" alt="" src={EnvelopeIcon} />
                     Invites
                 </h2>
-                <section className="">
+                <section className="d-flex flex-column gap-2 mt-4">
                     {invites.map((invite, index) => (
                         <div key={`${invite.id} ${index}`} className="invite-item">
                             <div>

@@ -47,7 +47,7 @@ export const fetchMyWorkspaces = (dispatch) => {
             }, reject);
         }).catch(reject);
     })
-}
+};
 
 
 export const fetchWorkspace = (dispatch, id) => {
@@ -56,15 +56,21 @@ export const fetchWorkspace = (dispatch, id) => {
             superagent.get(`${url}/api/workspaces/${id}`)
             .set("Authentication", token)
             .then((response) => {
+
+                if (response.body.error) {
+                    reject(response.body.error)
+                    return;
+                }
+
                 dispatch({
                     type: "WORKSPACE_FETCHED",
-                    payload: workspaceDTOtoWorkspace(response.body)
+                    payload: workspaceDTOtoWorkspace(response.body.data)
                 });
                 resolve(response.body);
             }, reject)
         }).catch(reject);
     })
-}
+};
 
 export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundColor, noteColor) => {
     return new Promise((resolve, reject) => {
@@ -144,7 +150,7 @@ export const createBoardInWorkspacePopup = (dispatch, workspaceId) => {
             createBoardInWorkspace(dispatch, workspaceId, result.values.Title, result.values.BackgroundColor, result.values.DefaultNoteColor);
         }
     })
-}
+};
 
 export const setWorkspaceName = (dispatch, workspaceId, newName) => {
     return new Promise((resolve, reject) => {
@@ -174,7 +180,7 @@ export const setWorkspaceName = (dispatch, workspaceId, newName) => {
                 }, reject)
         })
     })
-}
+};
 
 export const inviteUserByEmail = (dispatch, workspaceId, email) => {
     return new Promise((resolve, reject) => {
@@ -182,18 +188,26 @@ export const inviteUserByEmail = (dispatch, workspaceId, email) => {
             superagent.post(`${url}/api/workspaces/${workspaceId}/invites/email/${email}`)
                 .set("Authentication", token)
                 .then(response => {
+
+                    if (response.body.error) {
+                        reject({
+                            message: response.body.error
+                        })
+                        return;
+                    }
+
                     dispatch({
                         type: "ADD_WORKSPACE_INVITE",
                         payload: {
                             workspaceId: workspaceId,
-                            invite: response.body
+                            invite: response.body.data
                         }
                     });
                     resolve();
                 }, reject);
         })
     })
-}
+};
 
 export const cancelInvite = (dispatch, workspaceId, inviteId) => {
     return new Promise((resolve, reject) => {
@@ -206,6 +220,67 @@ export const cancelInvite = (dispatch, workspaceId, inviteId) => {
                         payload: {
                             workspaceId: workspaceId,
                             inviteId: inviteId
+                        }
+                    });
+                    resolve();
+                }, reject);
+        })
+    })
+};
+
+export const removeMember = (dispatch, workspaceId, userId, candidate) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.delete(`${url}/api/workspaces/${workspaceId}/users/${userId}`)
+                .set("Authentication", token)
+                .query(candidate ? {
+                    candidate: candidate
+                } : {})
+                .then(response => {
+                    if (!response.body) return;
+                    if (response.body.error || !response.body.data) {
+                        reject({
+                            message: response.body.error
+                        })
+                        return;
+                    }
+
+                    console.log(response.body);
+
+                    dispatch({
+                        type: "REMOVE_WORKSPACE_MEMBER",
+                        payload: {
+                            workspaceId: workspaceId,
+                            userId: userId
+                        }
+                    });
+                    resolve();
+                }, reject);
+        })
+    })
+};
+
+export const transferOwnership = (dispatch, workspaceId, candidate) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.patch(`${url}/api/workspaces/${workspaceId}/owner/transfer/${candidate}`)
+                .set("Authentication", token)
+                .query({
+                    candidate: candidate
+                })
+                .then(response => {
+
+                    if (response.body.error) {
+                        reject({
+                            message: response.body.error
+                        })
+                    }
+
+                    dispatch({
+                        type: "ASSIGN_WORKSPACE_OWNER",
+                        payload: {
+                            workspaceId: workspaceId,
+                            userId: candidate
                         }
                     });
                     resolve();

@@ -8,7 +8,7 @@ import MembersTab from "../components/MembersTab";
 import SettingsTab from "../components/SettingsTab";
 
 import { BoardIcon, CogIcon, UsersIcon } from "../assets/img/icons";
-import { fetchWorkspace } from "../api";
+import { fetchWorkspace, retrieveSelf } from "../api";
 
 import "../assets/scss/views/Workspace.scss";
 import { useAuth } from "../utils/useAuth";
@@ -17,22 +17,22 @@ const Workspace = (props) => {
     const { workspaceId } = useParams();
     const dispatch = useDispatch();
     const workspace = useSelector(
-        (root) =>
-            root.workspaces.workspace || {
+        (root) => root.workspaces.workspace || {
                 boards: [],
                 users: [],
                 invitations: []
-            }
-    );
+            });
+            
     const stateRef = useRef(workspace);
     stateRef.current = workspace;
 
     const [redirect, setRedirect] = useState("");
-    const [user, isAuthLoaded] = useAuth();
+    const [_, isAuthLoaded] = useAuth();
 
     useEffect(() => {
         if (!isAuthLoaded) { return }
         if (parseInt(workspaceId)) {
+            retrieveSelf(dispatch);
             fetchWorkspace(dispatch, parseInt(workspaceId))
                 .catch(err => {
                     console.log(err);
@@ -42,7 +42,7 @@ const Workspace = (props) => {
             setRedirect("/Workspaces");
         }
     }, [workspaceId, dispatch, isAuthLoaded]);
-    
+
     if (redirect) {
         return <Redirect to={redirect} />
     }
@@ -82,6 +82,7 @@ const Workspace = (props) => {
                 >
                     <MembersTab
                         workspaceId={workspace.id}
+                        ownerId={workspace.ownerId}
                         members={workspace.users}
                         invitees={workspace.invitations}
                     />
@@ -96,6 +97,7 @@ const Workspace = (props) => {
                     )}>
                     <SettingsTab
                         workspaceId={workspace.id}
+                        ownerId={workspace.ownerId}
                         workspace={workspace}
                     />
                 </Tab>

@@ -12,6 +12,9 @@ import {
     getIdToken
 } from "firebase/auth";
 import { clearBoards, clearWorkspaces, clearInvites } from "..";
+import superagent from "superagent";
+
+const url = process.env.REACT_APP_BACKEND_URL;
 
 const state = {
     user: null,
@@ -26,6 +29,37 @@ onAuthStateChanged(
     },
     (err) => console.log(err)
 );
+
+const clearSelf = (dispatch) => {
+    dispatch({
+        type: "SELF_USER_FETCHED",
+        payload: null
+    });
+}
+
+export const retrieveSelf = (dispatch) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.get(`${url}/api/users/self`)
+            .set("Authentication", token)
+            .then((response) => {
+
+                console.log(response.body);
+
+                if (response.body.error) {
+                    reject(response.body.error)
+                    return;
+                }
+
+                dispatch({
+                    type: "SELF_USER_FETCHED",
+                    payload: response.body.data
+                });
+                resolve(response.body);
+            }, reject)
+        }).catch(reject);
+    })
+}
 
 export const login = (emailAdress, password) => {
     return new Promise((resolve, reject) => {
@@ -86,6 +120,7 @@ export const logout = (dispatch) => {
                 clearWorkspaces(dispatch);
                 clearBoards(dispatch);
                 clearInvites(dispatch);
+                clearSelf(dispatch)
                 resolve();
             })
             .catch(reject);

@@ -1,9 +1,10 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useRef } from "react";
 import { Badge } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../utils/useAuth";
-import { logout } from "../api";
+import { useInterval } from "../utils/useInterval";
+import { logout, fetchInvites } from "../api";
 
 //Images
 import logo from "../assets/img/branding/PinnoteLogo.png";
@@ -12,9 +13,21 @@ import logo from "../assets/img/branding/PinnoteLogo.png";
 import "../assets/scss/components/Navbar.scss";
 
 const Navbar = () => {
-    const [user] = useAuth();
+    const isAuthLoadedRef = useRef();
+    const [user, isAuthLoaded] = useAuth();
     const dispatch = useDispatch();
     const invites = useSelector(root => root.invites.invites)
+    isAuthLoadedRef.current = isAuthLoaded;
+
+    useInterval(() => {
+        if (!isAuthLoadedRef.current) return;
+        fetchInvites(dispatch);
+    }, 60000, true);
+
+    useEffect(() => {
+        if (!isAuthLoaded) return
+        fetchInvites(dispatch);
+    }, [isAuthLoaded])
 
     return (
         <nav className="Navbar">

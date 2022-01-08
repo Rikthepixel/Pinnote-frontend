@@ -84,7 +84,6 @@ const ErrorBlock = (props) => {
 
 const multiFormCustomFields = {
     color: (input) => {
-        console.log("color");
         return (
             <ColorSelector
                 className="w-100 overflow-hidden"
@@ -119,6 +118,17 @@ const multiFormCustomFields = {
                 }}
             />
         )
+    },
+
+    select: (input) => {
+        return (
+            <Field
+                as={input.type}
+                className="form-select"
+                name={input.name}
+                children={input.children}
+            />
+        )
     }
 }
 
@@ -138,14 +148,6 @@ const multiFormCustom = {
             </b>
         )
     },
-
-    page: (input) => {
-        return (
-            <div>
-                
-            </div>
-        )
-    }
 }
 
 export const FormAlert = (config) => {
@@ -169,7 +171,7 @@ export const FormAlert = (config) => {
     }
 
     if (typeof (config.showCancelButton) != 'boolean') {
-        config.showCancelButton = false
+        config.showCancelButton = true
     }
 
     config.acceptButtonText = config.acceptButtonText || "Confirm"

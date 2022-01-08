@@ -75,18 +75,22 @@ const WorkspaceReducer = (state = initialState, action) => {
 
         case "ADD_WORKSPACE_INVITE":
             if (typeof(workspace) === "object") {
-                workspace.invitations.push(payload.invite)
-                state.workspaces[workspaceIndex] = {
-                    ...workspace,
-                    invitations: [...workspace.invitations]
+                if (workspace.invitations) {
+                    workspace.invitations.push(payload.invite)
+                    state.workspaces[workspaceIndex] = {
+                        ...workspace,
+                        invitations: [...workspace.invitations]
+                    }
                 }
             }
 
             if (typeof(state.workspace) === "object" || Object.keys(state.workspace) > 0) {
-                state.workspace.invitations.push(payload.invite)
-                state.workspace = {
-                    ...state.workspace,
-                    invitations: [...state.workspace.invitations]
+                if (state.workspace.invitations) {
+                    state.workspace.invitations.push(payload.invite)
+                    state.workspace = {
+                        ...state.workspace,
+                        invitations: [...state.workspace.invitations]
+                    }
                 }
             }
             
@@ -96,25 +100,79 @@ const WorkspaceReducer = (state = initialState, action) => {
 
         case "REMOVE_WORKSPACE_INVITE":
             if (typeof(workspace) === "object") {
-                workspace.invitations = workspace.invitations.filter(inv => parseInt(inv.id) !== parseInt(payload.inviteId));
-                state.workspaces[workspaceIndex] = {
-                    ...workspace,
-                    invitations: [...workspace.invitations]
+                if (workspace.invitations) {
+                    workspace.invitations = workspace.invitations.filter(inv => parseInt(inv.id) !== parseInt(payload.inviteId));
+                    state.workspaces[workspaceIndex] = {
+                        ...workspace,
+                        invitations: [...workspace.invitations]
+                    }
                 }
             }
 
             if (typeof(state.workspace) === "object" || Object.keys(state.workspace) > 0) {
-                state.workspace.invitations = state.workspace.invitations.filter(inv => parseInt(inv.id) !== parseInt(payload.inviteId));
-                state.workspace = {
-                    ...state.workspace,
-                    invitations: [...state.workspace.invitations]
+                if (state.workspace.invitations) {
+                    state.workspace.invitations = state.workspace.invitations.filter(inv => parseInt(inv.id) !== parseInt(payload.inviteId));
+                    state.workspace = {
+                        ...state.workspace,
+                        invitations: [...state.workspace.invitations]
+                    }
                 }
             }
             
             return {
                 ...state
             }
-    
+
+        case "REMOVE_WORKSPACE_MEMBER":
+            if (typeof(workspace) === "object") {
+                if (workspace.users) {
+                    workspace.users = workspace.users.filter(user => parseInt(user.id) !== parseInt(payload.userId));
+                    state.workspaces[workspaceIndex] = {
+                        ...workspace,
+                        users: [...workspace.users]
+                    }
+                }
+            }
+
+            if (typeof(state.workspace) === "object" || Object.keys(state.workspace) > 0) {
+                if (state.workspace.users) {
+                    state.workspace.users = state.workspace.users.filter(user => parseInt(user.id) !== parseInt(payload.userId));
+                    state.workspace = {
+                        ...state.workspace,
+                        users: [...state.workspace.users]
+                    }
+                }
+            }
+            
+            return {
+                ...state
+            }     
+            
+        case "ASSIGN_WORKSPACE_OWNER":
+            if (typeof(workspace) === "object") {
+                if (workspace.users) {
+                    workspace.owner = workspace.users.find(user => user.id === parseInt(payload.userId));
+                    workspace.ownerId = workspace.owner.id;
+                    state.workspaces[workspaceIndex] = {
+                        ...workspace
+                    }
+                }
+            }
+
+            if (typeof(state.workspace) === "object" || Object.keys(state.workspace) > 0) {
+                if (state.workspace.users) {
+                    state.workspace.owner = state.workspace.users.find(user => user.id === parseInt(payload.userId));
+                    state.workspace.ownerId = state.workspace.owner.id;
+                    state.workspace = {
+                        ...state.workspace
+                    }
+                }
+            }
+            
+            return {
+                ...state
+            }  
+
         default:
             return state;
     }
