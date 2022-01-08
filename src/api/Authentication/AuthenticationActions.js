@@ -24,7 +24,6 @@ const state = {
 onAuthStateChanged(
     auth,
     (newUser) => {
-        console.log(newUser);
         state.user = newUser;
     },
     (err) => console.log(err)
@@ -44,10 +43,10 @@ export const retrieveSelf = (dispatch) => {
             .set("Authentication", token)
             .then((response) => {
 
-                console.log(response.body);
-
                 if (response.body.error) {
-                    reject(response.body.error)
+                    reject({
+                        message: response.body.error
+                    })
                     return;
                 }
 
@@ -131,7 +130,6 @@ export const sendResetPasswordEmail = (email) => {
     return new Promise((resolve, reject) => {
         firebaseSendPasswordResetEmail(auth, email)
             .then(response => {
-                console.log(response);
                 resolve({
                     result: true,
                     message: ""

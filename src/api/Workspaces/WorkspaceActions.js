@@ -164,7 +164,6 @@ export const setWorkspaceName = (dispatch, workspaceId, newName) => {
                     name: newName
                 })
                 .then(response => {
-                    console.log(response);
                     if (response.error) { reject(response.error) }
                     dispatch({
                         type: "UPDATE_WORKSPACE",
@@ -244,9 +243,7 @@ export const removeMember = (dispatch, workspaceId, userId, candidate) => {
                         })
                         return;
                     }
-
-                    console.log(response.body);
-
+                    
                     dispatch({
                         type: "REMOVE_WORKSPACE_MEMBER",
                         payload: {
