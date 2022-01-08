@@ -48,9 +48,12 @@ const MyProfile = () => {
                             <Button
                                 onClick={() => FormAlert({
                                     title: "Change username",
-                                    text: "What do you want to change your username to?",
                                     validator: UsernameSchema,
                                     inputs: [
+                                        {
+                                            type: "explanation",
+                                            text: "What do you want to change your username to?"
+                                        },
                                         {
                                             name: 'username',
                                             type: 'text',
@@ -136,9 +139,12 @@ const MyProfile = () => {
                             <Button
                                 onClick={() => FormAlert({
                                     title: "Change email address",
-                                    text: "What do you want to change your email address to?",
                                     validator: EmailSchema,
                                     inputs: [
+                                        {
+                                            type: "explanation",
+                                            text: "What do you want to change your email address to?"
+                                        },
                                         {
                                             name: 'email',
                                             type: 'text',
@@ -184,9 +190,12 @@ const MyProfile = () => {
                             <Button
                                 onClick={() => FormAlert({
                                     title: "Change password",
-                                    text: "What do you want to change your password to?",
                                     validator: PasswordUpdateSchema,
                                     inputs: [
+                                        {
+                                            type: "explanation",
+                                            text: "What do you want to change your password to?"
+                                        },
                                         {
                                             name: "password",
                                             type: "password",

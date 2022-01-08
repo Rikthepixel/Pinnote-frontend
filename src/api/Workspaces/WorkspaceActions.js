@@ -72,6 +72,52 @@ export const fetchWorkspace = (dispatch, id) => {
     })
 };
 
+export const createWorkspace = (dispatch, name) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.post(`${url}/api/workspaces`)
+                .set("Authentication", token)
+                .send({
+                    name: name
+                })
+                .then(response => {
+                    if (response.body.error) {
+                        reject({
+                            message: response.body.error
+                        })
+                        return;
+                    }
+
+                    dispatch({
+                        type: "WORKSPACE_CREATED",
+                        payload: {
+                            workspace: workspaceDTOtoWorkspace(response.body.data)
+                        }
+                    });
+                    resolve();
+                }, reject);
+        })
+    })
+};
+
+export const deleteWorkspace = (dispatch, workspaceId) => {
+    return new Promise((resolve, reject) => {
+        getToken(token => {
+            superagent.delete(`${url}/api/workspaces/${workspaceId}`)
+                .set("Authentication", token)
+                .then(response => {
+                    dispatch({
+                        type: "WORKSPACE_DELETED",
+                        payload: {
+                            workspaceId: workspaceId
+                        }
+                    });
+                    resolve();
+                }, reject);
+        })
+    })
+};
+
 export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundColor, noteColor) => {
     return new Promise((resolve, reject) => {
         if (typeof (workspaceId) != 'number') {

@@ -25,6 +25,29 @@ const WorkspaceReducer = (state = initialState, action) => {
                 ...state,
                 workspace: payload
             }
+        
+        case "WORKSPACE_DELETED":
+            if (workspace) {
+                state.workspaces = state.workspaces.filter(workspace => parseInt(workspace.id) !== parseInt(payload.workspaceId))
+            }
+
+            if (state.workspace) {
+                state.workspace = null;
+            }
+
+            return {
+                ...state
+            }
+
+        case "WORKSPACE_CREATED":
+            
+            state.workspaces.push(payload.workspace)
+
+            return {
+                ...state,
+                workspace: payload.workspace,
+                workspaces: [...state.workspaces]
+            }
 
         case "UPDATE_WORKSPACE":
             if (workspace) {

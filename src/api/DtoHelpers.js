@@ -52,8 +52,10 @@ export const boardDTOtoBoard = (dto) => {
 };
 
 export const workspaceDTOtoWorkspace = (dto) => {
+    
     return {
         ...dto,
+        invitations: (dto.invitations || []),
         boards: (dto.boards || []).map((boardDto) => boardDTOtoBoard(boardDto))
     }
 };

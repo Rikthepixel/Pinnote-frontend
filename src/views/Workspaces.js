@@ -1,21 +1,26 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useAuth } from "../utils/useAuth";
+import { Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { ToastAlerts, FormAlert } from "../utils/Alerts";
 
-import { fetchMyWorkspaces } from "../api";
+import { useAuth } from "../utils/useAuth";
+
+import { createWorkspace, fetchMyWorkspaces } from "../api";
+import { workspacePatchNameSchema } from "../api/Workspaces/WorkspaceValidators";
 
 import {
     FolderIcon,
     BoardIcon,
     ArrowRightIcon,
     UsersIcon,
-    UserTieIcon
+    UserTieIcon,
+    PlusIcon
 } from "../assets/img/icons";
 
 import "../assets/scss/views/Workspaces.scss";
 
-const Boards = (props) => {
+const Workspaces = (props) => {
     document.title = "Pinnote - Workspaces";
 
     const workspaces = useSelector(root => root.workspaces.workspaces || []);
@@ -35,10 +40,47 @@ const Boards = (props) => {
     return (
         <div className="w-100 h-100 d-flex flex-row justify-content-center px-4 pt-4">
             <section className="px-4 pt-4 w-80">
-                <h2 className="ps-2 section-header">
-                    <img className="me-2" alt="" src={FolderIcon} />
-                    Your workspaces
-                </h2>
+                <div className="d-flex justify-content-between">
+                    <h2 className="ps-2 section-header">
+                        <img className="me-2" alt="" src={FolderIcon} />
+                        Your workspaces
+                    </h2>
+                    <Button
+                        className="pe-2 mb-2"
+                        onClick={() => FormAlert({
+                            title: "Create a workspace",
+                            validator: workspacePatchNameSchema,
+                            inputs: [
+                                {
+                                    type: "explanation",
+                                    text: "What do you want to call your workspace?"
+                                },
+                                {
+                                    name: "name",
+                                    type: "text",
+                                    value: "",
+                                    placeholder: "name"
+                                }
+                            ],
+                            acceptButtonText: "Create workspace",
+                            cancelButtonText: "Cancel",
+                        }).then(result => {
+                            if (result.confirmed) {
+                                createWorkspace(dispatch, result.values.name)
+                                    .catch(err => {
+                                        ToastAlerts({
+                                            title: "Error!",
+                                            text: err.message,
+                                            icon: "error"
+                                        })
+                                    });
+                            }
+                        })}
+                    >
+                        <img className="img-invert h-1-0em me-1" alt="" src={PlusIcon} />
+                        Workspace
+                    </Button>
+                </div>
                 <div className="px-4">
                     {workspaces.map((workspace, wIndex) => {
                         return (
@@ -78,4 +120,4 @@ const Boards = (props) => {
     );
 };
 
-export default Boards;
+export default Workspaces;
