@@ -72,6 +72,48 @@ const WorkspaceReducer = (state = initialState, action) => {
                     ...state.workspaces
                 ]
             }
+
+        case "ADD_WORKSPACE_INVITE":
+            if (typeof(workspace) === "object") {
+                workspace.invitations.push(payload.invite)
+                state.workspaces[workspaceIndex] = {
+                    ...workspace,
+                    invitations: [...workspace.invitations]
+                }
+            }
+
+            if (typeof(state.workspace) === "object" || Object.keys(state.workspace) > 0) {
+                state.workspace.invitations.push(payload.invite)
+                state.workspace = {
+                    ...state.workspace,
+                    invitations: [...state.workspace.invitations]
+                }
+            }
+            
+            return {
+                ...state
+            }
+
+        case "REMOVE_WORKSPACE_INVITE":
+            if (typeof(workspace) === "object") {
+                workspace.invitations = workspace.invitations.filter(inv => parseInt(inv.id) !== parseInt(payload.inviteId));
+                state.workspaces[workspaceIndex] = {
+                    ...workspace,
+                    invitations: [...workspace.invitations]
+                }
+            }
+
+            if (typeof(state.workspace) === "object" || Object.keys(state.workspace) > 0) {
+                state.workspace.invitations = state.workspace.invitations.filter(inv => parseInt(inv.id) !== parseInt(payload.inviteId));
+                state.workspace = {
+                    ...state.workspace,
+                    invitations: [...state.workspace.invitations]
+                }
+            }
+            
+            return {
+                ...state
+            }
     
         default:
             return state;

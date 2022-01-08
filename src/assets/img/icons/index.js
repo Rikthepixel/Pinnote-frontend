@@ -16,6 +16,7 @@ import CheckIcon from "./CheckIcon.svg";
 import CheckIconGreen from "./CheckIconGreen.svg";
 import CloseIconRed from "./CloseIconRed.svg";
 import EnvelopeIcon from "./EnvelopeIcon.svg";
+import UserPlusIcon from "./UserPlusIcon.svg";
 
 export {
     CloseIconRed,
@@ -35,5 +36,6 @@ export {
     CogIcon,
     UsersIcon,
     UserTieIcon,
-    EnvelopeIcon
+    EnvelopeIcon,
+    UserPlusIcon
 };

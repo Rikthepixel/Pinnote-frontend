@@ -17,6 +17,20 @@ const defaults = {
     heightAuto: false,
 }
 
+export const ToastAlerts = (config) => {
+    return new Promise((resolve) => {
+        Swal.fire({
+            title: config.title,
+            text: config.text,
+            icon: config.icon,
+            position: "top",
+            toast: true,
+            showConfirmButton: false,
+            timer: config.timer || 5000
+        }).then(resolve);
+    })
+}
+
 export const ConfirmationAlert = (config) => {
     return new Promise((resolve) => {
         Swal.fire({

@@ -20,7 +20,8 @@ const Workspace = (props) => {
         (root) =>
             root.workspaces.workspace || {
                 boards: [],
-                users: []
+                users: [],
+                invitations: []
             }
     );
     const stateRef = useRef(workspace);
@@ -41,7 +42,7 @@ const Workspace = (props) => {
             setRedirect("/Workspaces");
         }
     }, [workspaceId, dispatch, isAuthLoaded]);
-
+    
     if (redirect) {
         return <Redirect to={redirect} />
     }
@@ -82,6 +83,7 @@ const Workspace = (props) => {
                     <MembersTab
                         workspaceId={workspace.id}
                         members={workspace.users}
+                        invitees={workspace.invitations}
                     />
                 </Tab>
                 <Tab
