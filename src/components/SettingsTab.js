@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "react-bootstrap";
 import { CogIcon } from "../assets/img/icons";
 
-import { setWorkspaceName, transferOwnership } from "../api";
+import { deleteWorkspace, setWorkspaceName, transferOwnership } from "../api";
 import { workspacePatchNameSchema, workspaceOwnerTransferSchema } from "../api/Workspaces/WorkspaceValidators";
-import { FormAlert } from "../utils/Alerts";
+import { ConfirmationAlert, FormAlert, ToastAlerts } from "../utils/Alerts";
 
 const SettingsTab = (props) => {
 
@@ -71,6 +71,25 @@ const SettingsTab = (props) => {
         })
     }
 
+    const onDeleteWorkspaceClicked = () => {
+        ConfirmationAlert({
+            title: "Delete workspace",
+            text: "Are you sure you want to delete this workspace, its boards and its notes?",
+            acceptButtonText: "Delete workspace",
+            cancelButtonText: "Keep workspace"
+        }).then(result => {
+            if (result) {
+                deleteWorkspace(
+                    dispatch, props.workspaceId
+                ).catch(err => ToastAlerts({
+                    title: "Error!",
+                    icon: "error",
+                    text: err.message
+                }));
+            }
+        })
+    }
+
     return (
         <Fragment>
             <header className="d-flex align-items-center justify-content-between mb-3">
@@ -91,6 +110,13 @@ const SettingsTab = (props) => {
                     onClick={onTransferOwnershipClick}
                 >
                     Transfer ownership
+                </Button>}
+                {props.ownerId === user.id && <Button
+                    variant="danger"
+                    className="w-50"
+                    onClick={onDeleteWorkspaceClicked}
+                >
+                    Delete workspace
                 </Button>}
             </article>
         </Fragment>

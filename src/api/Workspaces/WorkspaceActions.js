@@ -106,6 +106,12 @@ export const deleteWorkspace = (dispatch, workspaceId) => {
             superagent.delete(`${url}/api/workspaces/${workspaceId}`)
                 .set("Authentication", token)
                 .then(response => {
+                    if (response.body.error) {
+                        reject({
+                            message: response.body.error
+                        })
+                        return;
+                    }
                     dispatch({
                         type: "WORKSPACE_DELETED",
                         payload: {

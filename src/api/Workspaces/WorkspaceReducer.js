@@ -32,7 +32,10 @@ const WorkspaceReducer = (state = initialState, action) => {
             }
 
             if (state.workspace) {
-                state.workspace = null;
+                state.workspace = {
+                    ...state.workspace,
+                    removed_state: true
+                }
             }
 
             return {
