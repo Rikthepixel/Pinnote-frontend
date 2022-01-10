@@ -5,7 +5,7 @@ import { CogIcon } from "../assets/img/icons";
 
 import { deleteWorkspace, setWorkspaceName, transferOwnership } from "../api";
 import { workspacePatchNameSchema, workspaceOwnerTransferSchema } from "../api/Workspaces/WorkspaceValidators";
-import { ConfirmationAlert, FormAlert, ToastAlerts } from "../utils/Alerts";
+import { confirmationAlert, formAlert, toastAlerts } from "../utils/Alerts";
 
 const SettingsTab = (props) => {
 
@@ -15,7 +15,7 @@ const SettingsTab = (props) => {
     workspaceRef.current = props.workspace;
 
     const onNameChangeClick = () => {
-        FormAlert({
+        formAlert({
             title: "Change workspace name",
             text: "What do you want to change the workspace name to?",
             validator: workspacePatchNameSchema,
@@ -38,7 +38,7 @@ const SettingsTab = (props) => {
     };
 
     const onTransferOwnershipClick = () => {
-        FormAlert({
+        formAlert({
             title: "Transfer ownership",
             text: "Who do you want to assign as the new owner",
             validator: workspaceOwnerTransferSchema,
@@ -72,7 +72,7 @@ const SettingsTab = (props) => {
     }
 
     const onDeleteWorkspaceClicked = () => {
-        ConfirmationAlert({
+        confirmationAlert({
             title: "Delete workspace",
             text: "Are you sure you want to delete this workspace, its boards and its notes?",
             acceptButtonText: "Delete workspace",
@@ -81,7 +81,7 @@ const SettingsTab = (props) => {
             if (result) {
                 deleteWorkspace(
                     dispatch, props.workspaceId
-                ).catch(err => ToastAlerts({
+                ).catch(err => toastAlerts({
                     title: "Error!",
                     icon: "error",
                     text: err.message

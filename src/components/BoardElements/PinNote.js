@@ -12,7 +12,7 @@ import ColorSelectorButton from "../ColorSelectorButton";
 import { MoreIcon, BrushIcon, TrashIcon, EditIcon } from "../../assets/img/icons";
 import { noteSchema, validateNote } from "../../api/Boards/BoardValidators";
 import * as yup from "yup";
-import { FormAlert } from "../../utils/Alerts";
+import { formAlert } from "../../utils/Alerts";
 //Styling
 import "../../assets/scss/components/BoardElements/PinNote.scss";
 
@@ -43,9 +43,9 @@ const PinNote = (props) => {
   const setTitleText = useRef();
 
   const [draftBackgroundColor, setDraftBackgroundColor] = useState();
-  const state = useSelector(state => {
+  const state = useSelector(root => {
     let note = {};
-    ((state.boards.board || {}).notes || []).every((_note) => {
+    ((root.boards.board || {}).notes || []).every((_note) => {
       if (parseInt(_note.id) === parseInt(props.noteId)) {
         note = _note
         return false;
@@ -57,7 +57,7 @@ const PinNote = (props) => {
   stateRef.current = state
 
 
-  const updateTitle = (title = "", validate) => {
+  const updateTitle = (validate, title = "") => {
     let errors = {};
     if (title == null) { title = "" }
     title = title.trim();
@@ -75,7 +75,7 @@ const PinNote = (props) => {
   }, [stateRef.current.title])
 
   const onTitleChangeClick = () => {
-    FormAlert({
+    formAlert({
       title: "Change note title",
       text: "What do you want to change the note title to?",
       validator: yup.object().shape({
@@ -93,8 +93,7 @@ const PinNote = (props) => {
       cancelButtonText: "Cancel",
     }).then(result => {
       if (result.confirmed) {
-        updateTitle(result.values.title);
-        return
+        updateTitle(false, result.values.title);
       }
     })
   }
@@ -105,15 +104,15 @@ const PinNote = (props) => {
 
   const enableDrag = () => {
     HeaderRef.current.onmousedown = function (e) {
-      let Rect = NoteDiv.current.getBoundingClientRect();
-      let handleX = e.clientX - Rect.x
-      let handleY = e.clientY - Rect.y
+      const rect = NoteDiv.current.getBoundingClientRect();
+      let handleX = e.clientX - rect.x
+      let handleY = e.clientY - rect.y
       window.addEventListener("selectstart", disableSelect);
-      document.onmousemove = function (e) {
-        const state = stateRef.current
-        let Rect = NoteDiv.current.getBoundingClientRect();
-        let newPositionX = e.pageX - handleX - (Rect.x - state.positionX) - (e.pageX - e.clientX)
-        let newPositionY = e.pageY - handleY - (Rect.y - state.positionY) - (e.pageX - e.clientX)
+      document.onmousemove = function (onMoveEvent) {
+        const noteState = stateRef.current;
+        const noteRectangle = NoteDiv.current.getBoundingClientRect();
+        let newPositionX = onMoveEvent.pageX - handleX - (noteRectangle.x - noteState.positionX) - (onMoveEvent.pageX - onMoveEvent.clientX)
+        let newPositionY = onMoveEvent.pageY - handleY - (noteRectangle.y - noteState.positionY) - (onMoveEvent.pageX - onMoveEvent.clientX)
 
         let [movementOffsetX, movementOffsetY] = [0, 0];
         let setOffset = (x, y) => {
@@ -126,11 +125,11 @@ const PinNote = (props) => {
             x: newPositionX,
             y: newPositionY
           }, {
-            x: state.positionX,
-            y: state.positionY
+            x: noteState.positionX,
+            y: noteState.positionY
           },
-            state.width || 200,
-            state.height || 200,
+            noteState.width || 200,
+            noteState.height || 200,
             setOffset
           )
         }
@@ -143,7 +142,7 @@ const PinNote = (props) => {
         );
       };
 
-      document.onmouseup = function (e) {
+      document.onmouseup = function () {
         document.onmouseup = null;
         document.onmousemove = null;
         window.removeEventListener("selectstart", disableSelect);

@@ -1,5 +1,5 @@
 import { workspaceDTOtoWorkspace, boardDTOtoBoard } from "../DtoHelpers";
-import { FormAlert } from "../../utils/Alerts";
+import { formAlert } from "../../utils/Alerts";
 import { createBoardSchema } from "../Boards/BoardValidators";
 import superagent from "superagent";
 import { getToken } from "../Authentication/AuthenticationActions";
@@ -157,7 +157,7 @@ export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundC
 
 
 export const createBoardInWorkspacePopup = (dispatch, workspaceId) => {
-    FormAlert({
+    formAlert({
         validator: createBoardSchema,
         title: "Create a board",
 

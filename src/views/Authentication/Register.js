@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { Field, Formik, Form as FormikForm } from "formik";
@@ -6,7 +6,6 @@ import ErrorBlock from "../../components/ErrorBlock";
 
 import { UserIcon } from "../../assets/img/icons";
 import { registerSchema } from "../../api/Authentication/AuthenticationValidators";
-import { useAuth } from "../../utils/useAuth";
 import { register } from "../../api";
 import { toastAlerts } from "../../utils/Alerts";
 

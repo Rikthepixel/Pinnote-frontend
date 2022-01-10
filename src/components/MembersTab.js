@@ -5,7 +5,13 @@ import { cancelInvite, inviteUserByEmail, removeMember } from "../api";
 import { InviteByEmail } from "../api/Invites/Validators";
 import { workspaceOwnerTransferSchema } from "../api/Workspaces/WorkspaceValidators";
 import { UsersIcon, PlusIcon, UserPlusIcon, StarIcon } from "../assets/img/icons";
-import { ConfirmationAlert, FormAlert, ToastAlerts } from "../utils/Alerts";
+import { confirmationAlert, formAlert, toastAlerts } from "../utils/Alerts";
+
+const toastError = (message) => toastAlerts({
+    title: "Error!",
+    text: message,
+    icon: "error"
+})
 
 const MembersTab = (props) => {
 
@@ -40,7 +46,7 @@ const MembersTab = (props) => {
                         onChange={e => setSearchText(e.target.value)}
                     />
                     <Button className="text-nowrap d-flex align-items-center justify-content-center"
-                        onClick={() => FormAlert({
+                        onClick={() => formAlert({
                             title: "Invite",
                             text: "Who do you want to invite?",
                             validator: InviteByEmail,
@@ -57,7 +63,7 @@ const MembersTab = (props) => {
                         }).then((result) => {
                             if (result.confirmed) {
                                 inviteUserByEmail(dispatch, props.workspaceId, result.values.email)
-                                    .catch(err => ToastAlerts({
+                                    .catch(err => toastAlerts({
                                         title: "Error!",
                                         icon: "error",
                                         text: err.message,
@@ -85,7 +91,7 @@ const MembersTab = (props) => {
                             <div>{_user.email}</div>
                         </div>
                         {(_user.id != props.ownerId || _user.id == user.id) && <Button variant="danger"
-                            onClick={() => ConfirmationAlert(_user.id == user.id ? {
+                            onClick={() => confirmationAlert(_user.id == user.id ? {
                                 title: "Leave workspace",
                                 text: `Are you sure you want to leave this workspace?${props.members.length === 1 && " This will also delete the workspace, its boards and its notes"}`,
                                 acceptButtonText: "Leave workspace",
@@ -98,7 +104,7 @@ const MembersTab = (props) => {
                             }).then(result => {
                                 if (result) {
                                     if (_user.id === props.ownerId && props.members.length > 1) {
-                                        FormAlert({
+                                        formAlert({
                                             title: "Transfer ownership",
                                             text: "Who do you want to assign as the new owner",
                                             validator: workspaceOwnerTransferSchema,
@@ -107,9 +113,9 @@ const MembersTab = (props) => {
                                                     name: "candidate",
                                                     type: "select",
                                                     value: "",
-                                                    children: props.members.map((member, index) => (
-                                                        <Fragment key={`${index} ${member.id}`}>
-                                                            {index === 0 && <option>
+                                                    children: props.members.map((member, memberIndex) => (
+                                                        <Fragment key={`${memberIndex} ${member.id}`}>
+                                                            {memberIndex === 0 && <option>
                                                                 None
                                                             </option>}
                                                             {_user.id !== member.id && <option value={member.id}>
@@ -120,20 +126,14 @@ const MembersTab = (props) => {
                                             ],
                                             acceptButtonText: "Transfer",
                                             cancelButtonText: "Cancel",
-                                        }).then(result => {
-                                            if (result.confirmed) {
+                                        }).then(candidateResult => {
+                                            if (candidateResult.confirmed) {
                                                 removeMember(
                                                     dispatch,
                                                     props.workspaceId,
                                                     _user.id,
-                                                    parseInt(result.values.candidate)
-                                                ).catch(err => {
-                                                    ToastAlerts({
-                                                        title: "Error!",
-                                                        text: err.message,
-                                                        icon: "error"
-                                                    })
-                                                });
+                                                    parseInt(candidateResult.values.candidate)
+                                                ).catch(err => toastError(err.message));
                                             }
                                         })
 
@@ -142,13 +142,7 @@ const MembersTab = (props) => {
                                             dispatch,
                                             props.workspaceId,
                                             _user.id
-                                        ).catch(err => {
-                                            ToastAlerts({
-                                                title: "Error!",
-                                                text: err.message,
-                                                icon: "error"
-                                            })
-                                        });
+                                        ).catch((err) => toastError(err.message));
                                     }
                                 }
                             })}
@@ -177,7 +171,7 @@ const MembersTab = (props) => {
                         </div>
                         <Button
                             variant="danger"
-                            onClick={() => ConfirmationAlert({
+                            onClick={() => confirmationAlert({
                                 title: "Cancel invite",
                                 text: `Are you sure you want to cancel the invitation of ${invite.user.username}`,
                                 acceptButtonText: "Cancel invitation",
@@ -185,7 +179,7 @@ const MembersTab = (props) => {
                             }).then(result => {
                                 if (result) {
                                     cancelInvite(dispatch, props.workspaceId, invite.id)
-                                        .catch(err => ToastAlerts({
+                                        .catch(err => toastAlerts({
                                             title: "Error!",
                                             text: err.message,
                                             icon: "error"
