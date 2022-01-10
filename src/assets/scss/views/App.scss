@@ -1,4 +1,10 @@
-﻿@import "~bootstrap/scss/bootstrap";
+﻿$primary:       #6A4EF5 !default;
+$secondary:     #847DFF !default;
+$info:          #efe5fb !default;
+$light:         #9B92FF !default;
+$dark:          #3F22BF !default;
+
+@import "~bootstrap/scss/bootstrap";
 
 body,
 html {
