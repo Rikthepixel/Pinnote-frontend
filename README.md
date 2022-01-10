@@ -1,3 +1,6 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/91d2788536e648aa92e4a882093d95b9)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Rikthepixel/Pinnote-frontend&amp;utm_campaign=Badge_Grade)
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
