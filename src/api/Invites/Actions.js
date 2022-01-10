@@ -25,7 +25,7 @@ export const fetchInvites = (dispatch) => {
                     });
                     resolve(response.body);
                 }, reject);
-        })
+        }).catch(reject);
     })
 };
 
@@ -41,7 +41,7 @@ export const acceptInvite = (dispatch, id) => {
                     });
                     resolve();
                 }, reject);
-        })
+        }).catch(reject)
     })
 };
 
@@ -57,6 +57,6 @@ export const rejectInvite = (dispatch, id) => {
                     });
                     resolve();
                 }, reject);
-        })
+        }).catch(reject)
     })
 }

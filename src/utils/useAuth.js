@@ -8,6 +8,7 @@ const AuthProvider = (props) => {
     const [loaded, setLoaded] = useState(false);
     onAuthStateChanged(FirebaseAuth,
         newUser => {
+            console.log(newUser);
             setUser(newUser);
             if (!loaded) {
                 setLoaded(true);

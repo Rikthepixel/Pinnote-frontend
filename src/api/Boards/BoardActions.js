@@ -193,7 +193,7 @@ export const getBoardsByWorkspaceId = (dispatch, id) => {
                     });
                     resolve(response.body);
                 }, reject);
-        });
+        }).catch(reject)
     })
 }
 

@@ -45,7 +45,7 @@ export const revokeBoardPermissionToUser = (dispatch, workspaceId, boardId, user
     return new Promise((resolve, reject) => {
         getToken(token => {
             
-        })
+        }).catch(reject)
     })
 }
 

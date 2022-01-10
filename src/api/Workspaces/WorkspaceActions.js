@@ -96,7 +96,7 @@ export const createWorkspace = (dispatch, name) => {
                     });
                     resolve();
                 }, reject);
-        })
+        }).catch(reject)
     })
 };
 
@@ -120,7 +120,7 @@ export const deleteWorkspace = (dispatch, workspaceId) => {
                     });
                     resolve();
                 }, reject);
-        })
+        }).catch(reject)
     })
 };
 
@@ -229,7 +229,7 @@ export const setWorkspaceName = (dispatch, workspaceId, newName) => {
 
                     resolve(response);
                 }, reject)
-        })
+        }).catch(reject)
     })
 };
 
@@ -256,7 +256,7 @@ export const inviteUserByEmail = (dispatch, workspaceId, email) => {
                     });
                     resolve();
                 }, reject);
-        })
+        }).catch(reject)
     })
 };
 
@@ -275,7 +275,7 @@ export const cancelInvite = (dispatch, workspaceId, inviteId) => {
                     });
                     resolve();
                 }, reject);
-        })
+        }).catch(reject)
     })
 };
 
@@ -305,7 +305,7 @@ export const removeMember = (dispatch, workspaceId, userId, candidate) => {
                     });
                     resolve();
                 }, reject);
-        })
+        }).catch(reject)
     })
 };
 
@@ -334,6 +334,6 @@ export const transferOwnership = (dispatch, workspaceId, candidate) => {
                     });
                     resolve();
                 }, reject);
-        })
+        }).catch(reject)
     })
 }

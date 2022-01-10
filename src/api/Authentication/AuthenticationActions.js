@@ -92,7 +92,6 @@ export const setUserName = (newUsername) => {
             .catch(reject);
     });
 };
-
 export const getToken = (onTokenRecieved) => {
     return new Promise((resolve, reject) => {
         if (state.user) {
