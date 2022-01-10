@@ -282,7 +282,7 @@ export const cancelInvite = (dispatch, workspaceId, inviteId) => {
 export const removeMember = (dispatch, workspaceId, userId, candidate) => {
     return new Promise((resolve, reject) => {
         getToken(token => {
-            superagent.delete(`${url}/api/workspaces/${workspaceId}/users/${userId}`)
+            superagent.delete(`${url}/api/workspaces/${workspaceId}/members/${userId}`)
                 .set("Authentication", token)
                 .query(candidate ? {
                     candidate: candidate
