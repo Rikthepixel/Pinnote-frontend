@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import { Field, Formik, Form as FormikForm } from "formik";
 import ErrorBlock from "../../components/ErrorBlock";
@@ -8,14 +8,15 @@ import { UserIcon } from "../../assets/img/icons";
 import { registerSchema } from "../../api/Authentication/AuthenticationValidators";
 import { useAuth } from "../../utils/useAuth";
 import { register } from "../../api";
+import { toastAlerts } from "../../utils/Alerts";
 
 const Register = (props) => {
 
-    const [user] = useAuth();
+    const [redirect, setRedirect] = useState("");
 
-    useEffect(() => {
-        console.log(user);
-    }, [user])
+    if (redirect) {
+        return <Redirect to={redirect} />
+    }
 
     return (
         <div className="w-100 h-100 d-flex flex-row justify-content-center px-4 pt-4">
@@ -35,10 +36,14 @@ const Register = (props) => {
                         validationSchema={registerSchema}
                         onSubmit={values => register(values.username, values.email, values.password)
                             .then(() => {
-                                //Redirect
+                                setRedirect("/Workspaces")
                             }) 
                             .catch(err => {
-                                //Display error
+                                toastAlerts({
+                                    title: "Error!",
+                                    text: err.message,
+                                    icon: "error"
+                                })
                             })
                         }
                     >

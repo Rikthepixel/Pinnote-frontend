@@ -16,18 +16,17 @@ import { useAuth } from "../utils/useAuth";
 const Workspace = (props) => {
     const { workspaceId } = useParams();
     const dispatch = useDispatch();
-    const workspace = useSelector(
-        (root) => root.workspaces.workspace || {
-                boards: [],
-                users: [],
-                invitations: []
-            });
-            
+    const workspace = useSelector((root) => root.workspaces.workspace || {
+        boards: [],
+        users: [],
+        invitations: []
+    });
+
     const stateRef = useRef(workspace);
     stateRef.current = workspace;
 
     const [redirect, setRedirect] = useState("");
-    const [_, isAuthLoaded] = useAuth();
+    const [, isAuthLoaded] = useAuth();
 
     useEffect(() => {
         if (!isAuthLoaded) { return }

@@ -2,14 +2,12 @@ import React, { useRef, useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { CheckIcon, CheckIconGreen, CloseIconRed, CogIcon, EditIcon, EnvelopeIcon } from "../assets/img/icons";
 import { useAuth } from "../utils/useAuth";
-import { FormAlert, ToastAlerts } from "../utils/Alerts";
+import { confirmationAlert, formAlert, toastAlerts} from "../utils/Alerts";
 
 import "../assets/scss/views/MyProfile.scss";
 import { Button } from "react-bootstrap";
-import { setUserName, verifyEmail, updateEmail, updatePassword, fetchInvites, acceptInvite, rejectInvite, retrieveSelf } from "../api";
+import { setUserName, verifyEmail, updateEmail, updatePassword, fetchInvites, acceptInvite, rejectInvite } from "../api";
 import { EmailSchema, PasswordUpdateSchema, UsernameSchema } from "../api/Authentication/AuthenticationValidators";
-import Swal from "sweetalert2";
-import { ConfirmationAlert } from "../utils/Alerts";
 
 
 const MyProfile = () => {
@@ -46,7 +44,7 @@ const MyProfile = () => {
                         </div>
                         <div className="actions">
                             <Button
-                                onClick={() => FormAlert({
+                                onClick={() => formAlert({
                                     title: "Change username",
                                     validator: UsernameSchema,
                                     inputs: [
@@ -67,29 +65,22 @@ const MyProfile = () => {
                                     if (result.confirmed) {
                                         setUserName(result.values.username)
                                             .then(() => {
-                                                Swal.fire({
+                                                toastAlerts({
                                                     title: 'Success!',
                                                     text: `Your username has been changed to ${result.values.username}`,
                                                     icon: 'success',
-                                                    position: "top",
-                                                    toast: true,
-                                                    showConfirmButton: false,
                                                     timer: 5000
-                                                })
-                                                forceUpdate({})
+                                                });
+                                                forceUpdate({});
                                             })
                                             .catch(err => {
-                                                Swal.fire({
+                                                toastAlerts({
                                                     title: 'Error!',
                                                     text: err.message,
                                                     icon: 'error',
-                                                    position: "top",
-                                                    toast: true,
-                                                    showConfirmButton: false,
                                                     timer: 4000
-                                                })
+                                                });
                                             });
-                                        return;
                                     }
                                 })}
                             >
@@ -116,15 +107,15 @@ const MyProfile = () => {
                         </div>
                         <div className="actions">
                             {!userRef.current.emailVerified && <Button variant="success" onClick={() => verifyEmail()
-                                .then(resp => {
+                                .then((resp) => {
                                     if (resp.result) {
-                                        ToastAlerts({
+                                        toastAlerts({
                                             title: 'Success!',
                                             text: `Verification email has been successfully sent to ${userRef.current.email}`,
                                             icon: 'success',
                                         })
                                     } else {
-                                        ToastAlerts({
+                                        toastAlerts({
                                             title: 'Error!',
                                             text: resp.message,
                                             icon: 'error',
@@ -137,7 +128,7 @@ const MyProfile = () => {
                             </Button>}
 
                             <Button
-                                onClick={() => FormAlert({
+                                onClick={() => formAlert({
                                     title: "Change email address",
                                     validator: EmailSchema,
                                     inputs: [
@@ -157,15 +148,15 @@ const MyProfile = () => {
                                 }).then((result) => {
                                     if (result.confirmed) {
                                         updateEmail(result.values.email)
-                                            .then(resp => {
+                                            .then((resp) => {
                                                 if (resp.result) {
-                                                    ToastAlerts({
+                                                    toastAlerts({
                                                         title: 'Success!',
                                                         text: `An email has been sent ${result.values.username}`,
                                                         icon: 'success',
                                                     })
                                                 } else {
-                                                    ToastAlerts({
+                                                    toastAlerts({
                                                         title: 'Error!',
                                                         text: resp.message,
                                                         icon: 'error',
@@ -188,7 +179,7 @@ const MyProfile = () => {
                         </div>
                         <div className="actions">
                             <Button
-                                onClick={() => FormAlert({
+                                onClick={() => formAlert({
                                     title: "Change password",
                                     validator: PasswordUpdateSchema,
                                     inputs: [
@@ -214,15 +205,15 @@ const MyProfile = () => {
                                 }).then((result) => {
                                     if (result.confirmed) {
                                         updatePassword(result.values.password)
-                                            .then(resp => {
+                                            .then((resp) => {
                                                 if (resp.result) {
-                                                    ToastAlerts({
+                                                    toastAlerts({
                                                         title: 'Success!',
                                                         text: "Password has successfully been changes",
                                                         icon: 'success',
                                                     })
                                                 } else {
-                                                    ToastAlerts({
+                                                    toastAlerts({
                                                         title: 'Error!',
                                                         text: resp.message,
                                                         icon: 'error',
@@ -252,7 +243,7 @@ const MyProfile = () => {
                             </div>
                             <div className="d-flex gap-2">
                                 <Button variant="success"
-                                    onClick={() => ConfirmationAlert({
+                                    onClick={() => confirmationAlert({
                                         title: "Accept invite",
                                         text: `Are you sure you want to join '${invite.workspace.name}'?`,
                                         acceptButtonText: "Accept invite",
@@ -266,7 +257,7 @@ const MyProfile = () => {
                                     Accept
                                 </Button>
                                 <Button variant="danger"
-                                    onClick={() => ConfirmationAlert({
+                                    onClick={() => confirmationAlert({
                                         title: "Reject invite",
                                         text: `Are you sure you want to reject the invite from '${invite.workspace.name}'?`,
                                         acceptButtonText: "Reject invite",

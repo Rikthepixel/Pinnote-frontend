@@ -13,8 +13,6 @@ const Login = (props) => {
     const [user] = useAuth();
     const [redirect, setRedirect] = useState("");
 
-    console.log(user);
-
     if (redirect) {
         return <Redirect to={redirect} />;
     }
@@ -39,7 +37,7 @@ const Login = (props) => {
                         validationSchema={loginSchema}
                         onSubmit={(values) =>
                             login(values.email, values.password).then(() => {
-                                setRedirect("/Workspaces")
+                                setRedirect("/Workspaces");
                             })
                         }
                     >

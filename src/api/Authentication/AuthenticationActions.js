@@ -40,22 +40,22 @@ export const retrieveSelf = (dispatch) => {
     return new Promise((resolve, reject) => {
         getToken(token => {
             superagent.get(`${url}/api/users/self`)
-            .set("Authentication", token)
-            .then((response) => {
+                .set("Authentication", token)
+                .then((response) => {
 
-                if (response.body.error) {
-                    reject({
-                        message: response.body.error
-                    })
-                    return;
-                }
+                    if (response.body.error) {
+                        reject({
+                            message: response.body.error
+                        })
+                        return;
+                    }
 
-                dispatch({
-                    type: "SELF_USER_FETCHED",
-                    payload: response.body.data
-                });
-                resolve(response.body);
-            }, reject)
+                    dispatch({
+                        type: "SELF_USER_FETCHED",
+                        payload: response.body.data
+                    });
+                    resolve(response.body);
+                }, reject)
         }).catch(reject);
     })
 }
@@ -125,74 +125,48 @@ export const logout = (dispatch) => {
     });
 };
 
+const resolveTrue = (resolve) => {
+    resolve({
+        result: true,
+        message: ""
+    })
+}
+
+const resolveFalse = (resolve, error) => {
+    resolve({
+        result: false,
+        message: error.message
+    })
+}
+
 export const sendResetPasswordEmail = (email) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         firebaseSendPasswordResetEmail(auth, email)
-            .then(response => {
-                resolve({
-                    result: true,
-                    message: ""
-                })
-            })
-            .catch(error => {
-                resolve({
-                    result: false,
-                    message: error.message
-                })
-            });
+            .then(() => resolveTrue(resolve))
+            .catch(error => resolveFalse(resolve, error));
     });
 }
 
 export const updateEmail = (email) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         firebaseUpdateEmail(state.user, email)
-            .then(() => {
-                resolve({
-                    result: true,
-                    message: ""
-                })
-            })
-            .catch(err => {
-                resolve({
-                    result: false,
-                    message: err.message
-                })
-            })
+            .then(() => resolveTrue(resolve))
+            .catch(error => resolveFalse(resolve, error));
     })
 }
 
 export const updatePassword = (pass) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         firebaseUpdatePassword(state.user, pass)
-            .then(() => {
-                resolve({
-                    result: true,
-                    message: ""
-                })
-            })
-            .catch(err => {
-                resolve({
-                    result: false,
-                    message: err.message
-                })
-            })
+            .then(() => resolveTrue(resolve))
+            .catch(error => resolveFalse(resolve, error));
     })
 }
 
 export const verifyEmail = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         firebaseSendEmailVerification(state.user)
-            .then(() => {
-                resolve({
-                    result: true,
-                    message: ""
-                })
-            })
-            .catch(err => {
-                resolve({
-                    result: false,
-                    message: err.message
-                })
-            })
+            .then(() => resolveTrue(resolve))
+            .catch(error => resolveFalse(resolve, error));
     })
 }

@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../utils/useAuth";
 import { useInterval } from "../utils/useInterval";
 import { logout, fetchInvites } from "../api";
-import { ToastAlerts } from "../utils/Alerts";
+import { toastAlerts } from "../utils/Alerts";
 
 //Images
 import logo from "../assets/img/branding/PinnoteLogo.png";
@@ -25,12 +25,12 @@ const Navbar = () => {
 
     const onInterval = () => {
         if (!authRef.current.isAuthLoaded || !authRef.current.user) return;
-        fetchInvites(dispatch).catch(err => ToastAlerts({
+        fetchInvites(dispatch).catch(err => toastAlerts({
             title: "Error!",
             text: err.message,
             icon: "error"
         }));
-    }
+    };
 
     useInterval(onInterval, 60000, true);
     useEffect(onInterval, [isAuthLoaded]);

@@ -29,18 +29,20 @@ export const fetchInvites = (dispatch) => {
     })
 };
 
+const removeInviteDispatch = (dispatch, id, resolve) => {
+    dispatch({
+        type: "REMOVE_INVITE",
+        payload: id
+    });
+    resolve();
+}
+
 export const acceptInvite = (dispatch, id) => {
     return new Promise((resolve, reject) => {
         getToken(token => {
             superagent.post(`${url}/api/users/self/invites/${id}`)
                 .set("Authentication", token)
-                .then(response => {
-                    dispatch({
-                        type: "REMOVE_INVITE",
-                        payload: id
-                    });
-                    resolve();
-                }, reject);
+                .then(() => removeInviteDispatch(dispatch, id, resolve), reject);
         }).catch(reject)
     })
 };
@@ -50,13 +52,7 @@ export const rejectInvite = (dispatch, id) => {
         getToken(token => {
             superagent.delete(`${url}/api/users/self/invite/${id}`)
                 .set("Authentication", token)
-                .then(response => {
-                    dispatch({
-                        type: "REMOVE_INVITE",
-                        payload: id
-                    });
-                    resolve();
-                }, reject);
+                .then(() => removeInviteDispatch(dispatch, id, resolve), reject);
         }).catch(reject)
     })
 }

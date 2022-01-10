@@ -17,7 +17,7 @@ const defaults = {
     heightAuto: false,
 }
 
-export const ToastAlerts = (config) => {
+export const toastAlerts = (config) => {
     return new Promise((resolve) => {
         Swal.fire({
             title: config.title,
@@ -31,7 +31,7 @@ export const ToastAlerts = (config) => {
     })
 }
 
-export const ConfirmationAlert = (config) => {
+export const confirmationAlert = (config) => {
     return new Promise((resolve) => {
         Swal.fire({
             ...defaults,
@@ -150,7 +150,7 @@ const multiFormCustom = {
     },
 }
 
-export const FormAlert = (config) => {
+export const formAlert = (config) => {
 
     if (typeof (config.inputs) != "object") {
         return;

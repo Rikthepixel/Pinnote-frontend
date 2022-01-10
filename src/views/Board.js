@@ -14,7 +14,7 @@ import {
   setBoardColor,
   setBoardNoteColor,
 } from "../api";
-import { ConfirmationAlert, FormAlert } from "../utils/Alerts";
+import { confirmationAlert, formAlert, toastAlerts } from "../utils/Alerts";
 import { boardSchema } from "../api/Boards/BoardValidators";
 import * as yup from "yup";
 
@@ -43,12 +43,10 @@ const Board = (props) => {
 
   const [redirect, setRedirect] = useState("");
   const [draftBackgroundColor, setDraftBackgroundColor] = useState();
-  const [user, isAuthLoaded] = useAuth();
+  const [, isAuthLoaded] = useAuth();
 
   const dispatch = useDispatch();
-  const state = useSelector((state) => {
-    return state.boards.board || {};
-  });
+  const state = useSelector((root) => root.boards.board || {});
   stateRef.current = state;
 
   const redirectToWorkspace = () => {
@@ -118,13 +116,12 @@ const Board = (props) => {
 
   const toggleMenu = () => {
     menuDiv.current.setAttribute(
-      "menu-extended",
-      !(menuDiv.current.getAttribute("menu-extended") === "true")
+      "menu-extended", menuDiv.current.getAttribute("menu-extended") !== "true"
     );
   };
 
   const onDeleteClick = () => {
-    ConfirmationAlert({
+    confirmationAlert({
       title: "Delete this board?",
       text: "You won't be able to revert this!",
       timer: 10000,
@@ -143,19 +140,25 @@ const Board = (props) => {
         deleteBoard(dispatch, parseInt(boardId))
           .then((response) => {
             if (response.error) {
-              return;
+              toastAlerts({
+                title: "Error!",
+                text: response.error,
+                icon: "error"
+              })
             }
             redirectToWorkspace();
           })
-          .catch((err) => {
-            console.error(err);
-          });
+          .catch((err) => toastAlerts({
+            title: "Error!",
+            text: err.message,
+            icon: "error"
+          }));
       }
     });
   };
 
   const onTitleChangeClick = () => {
-    FormAlert({
+    formAlert({
       title: "Change board title",
       text: "What do you want to change the board title to?",
       validator: yup.object().shape({
@@ -174,7 +177,6 @@ const Board = (props) => {
     }).then((result) => {
       if (result.confirmed) {
         setBoardTitle(result.values.title);
-        return;
       }
     });
   };

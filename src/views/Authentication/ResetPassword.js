@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import Swal from "sweetalert2";
 import { Form, Button } from "react-bootstrap";
 import { Formik, Form as FormikForm, Field } from "formik";
 import ErrorBlock from "../../components/ErrorBlock";
@@ -8,6 +7,7 @@ import Countdown from "react-countdown";
 
 import { UserIcon } from "../../assets/img/icons";
 import { PasswordResetSchema } from "../../api/Authentication/AuthenticationValidators";
+import { toastAlerts } from "../../utils/Alerts";
 
 const ResetPassword = () => {
     const lastEmailReciever = useRef("");
@@ -31,25 +31,18 @@ const ResetPassword = () => {
                             .then(response => {
                                 lastEmailReciever.current = values.email;
                                 if (response.result === false) {
-                                    Swal.fire({
-                                        title: 'Error!',
+                                    toastAlerts({
+                                        title: "Error!",
                                         text: response.message,
-                                        icon: 'error',
-                                        position: "top",
-                                        toast: true,
-                                        showConfirmButton: false,
-                                        timer: 5000
-                                    })
+                                        icon: "error"
+                                    });
                                 } else {
-                                    Swal.fire({
-                                        title: 'Success!',
+                                    toastAlerts({
+                                        title: "Success!",
                                         text: `An email has been successfully sent to ${values.email}`,
-                                        icon: 'success',
-                                        position: "top",
-                                        toast: true,
-                                        showConfirmButton: false,
+                                        icon: "success",
                                         timer: 10000
-                                    })
+                                    });
                                 }
                                 setSendText("Resend email")
                                 setCountdown(Date.now() + 30000);
@@ -87,14 +80,13 @@ const ResetPassword = () => {
                                         type="submit"
                                         className="w-100"
                                         disabled={
-                                            Object.keys(formProps.errors || {}).length > 0 ? true :
-                                                countdown > 0 ? true : null
+                                            Object.keys(formProps.errors || {}).length > 0 ? true : (countdown > 0 ? true : null)
                                         }
                                     >
                                         {countdown > 0 ?
                                             <Countdown
                                                 date={countdown}
-                                                onComplete={() => setCountdown(0)} 
+                                                onComplete={() => setCountdown(0)}
                                                 renderer={props => {
                                                     return <span>Retry in: {props.seconds}</span>
                                                 }}
@@ -102,7 +94,7 @@ const ResetPassword = () => {
                                         }
                                     </Button>
                                     <div className="fw-light text-center mt-4">
-                                        You will recieve an email from the following address: 
+                                        You will recieve an email from the following address:
                                         <div><u>noreply@pinnote-aa89a.firebaseapp.com</u></div>
                                     </div>
                                 </FormikForm>

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { ToastAlerts, FormAlert } from "../utils/Alerts";
+import { toastAlerts, formAlert } from "../utils/Alerts";
 
 import { useAuth } from "../utils/useAuth";
 
@@ -24,9 +24,7 @@ const Workspaces = (props) => {
     document.title = "Pinnote - Workspaces";
 
     const workspaces = useSelector(root => root.workspaces.workspaces || []);
-    const [user, isAuthLoaded, getToken] = useAuth(() => {
-
-    });
+    const [, isAuthLoaded] = useAuth();
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -47,7 +45,7 @@ const Workspaces = (props) => {
                     </h2>
                     <Button
                         className="pe-2 mb-2"
-                        onClick={() => FormAlert({
+                        onClick={() => formAlert({
                             title: "Create a workspace",
                             validator: workspacePatchNameSchema,
                             inputs: [
@@ -68,7 +66,7 @@ const Workspaces = (props) => {
                             if (result.confirmed) {
                                 createWorkspace(dispatch, result.values.name)
                                     .catch(err => {
-                                        ToastAlerts({
+                                        toastAlerts({
                                             title: "Error!",
                                             text: err.message,
                                             icon: "error"
