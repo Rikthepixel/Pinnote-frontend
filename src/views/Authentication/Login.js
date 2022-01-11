@@ -10,15 +10,10 @@ import { useAuth } from "../../utils/useAuth";
 import { login } from "../../api";
 
 const Login = (props) => {
-    const [user] = useAuth();
     const [redirect, setRedirect] = useState("");
 
     if (redirect) {
         return <Redirect to={redirect} />;
-    }
-
-    if (user) {
-        setRedirect("/Workspaces");
     }
 
     return (
@@ -35,11 +30,9 @@ const Login = (props) => {
                             password: "",
                         }}
                         validationSchema={loginSchema}
-                        onSubmit={(values) =>
-                            login(values.email, values.password).then(() => {
+                        onSubmit={(values) => login(values.email, values.password).then(() => {
                                 setRedirect("/Workspaces");
-                            })
-                        }
+                            })}
                     >
                         {(formProps) => {
                             return (
