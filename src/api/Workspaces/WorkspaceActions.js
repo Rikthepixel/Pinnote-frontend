@@ -178,9 +178,6 @@ export const createBoardInWorkspacePopup = (dispatch, workspaceId) => {
                 className: "mb-4"
             },
             {
-                type: "page"
-            },
-            {
                 type: "title",
                 title: "Colors"
             },
