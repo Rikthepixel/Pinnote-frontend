@@ -33,8 +33,7 @@ const Workspace = (props) => {
         if (parseInt(workspaceId)) {
             retrieveSelf(dispatch);
             fetchWorkspace(dispatch, parseInt(workspaceId))
-                .catch(err => {
-                    console.log(err);
+                .catch(() => {
                     setRedirect("/Workspaces")
                 });
         } else {

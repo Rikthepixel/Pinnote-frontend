@@ -1,8 +1,9 @@
 import { workspaceDTOtoWorkspace, boardDTOtoBoard } from "../DtoHelpers";
-import { formAlert } from "../../utils/Alerts";
+import { formAlert, toastAlerts } from "../../utils/Alerts";
 import { createBoardSchema } from "../Boards/BoardValidators";
 import superagent from "superagent";
 import { getToken } from "../Authentication/AuthenticationActions";
+import ErrorHandler from "../ErrorHandler";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 const prefabBackgroundColors = [
@@ -46,7 +47,7 @@ export const fetchMyWorkspaces = (dispatch) => {
                 resolve(workspaces);
             }, reject);
         }).catch(reject);
-    })
+    }).catch(ErrorHandler)
 };
 
 
@@ -69,7 +70,7 @@ export const fetchWorkspace = (dispatch, id) => {
                 resolve(response.body);
             }, reject)
         }).catch(reject);
-    })
+    }).catch(ErrorHandler)
 };
 
 export const createWorkspace = (dispatch, name) => {
@@ -97,7 +98,7 @@ export const createWorkspace = (dispatch, name) => {
                     resolve();
                 }, reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 };
 
 export const deleteWorkspace = (dispatch, workspaceId) => {
@@ -121,7 +122,7 @@ export const deleteWorkspace = (dispatch, workspaceId) => {
                     resolve();
                 }, reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 };
 
 export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundColor, noteColor) => {
@@ -152,7 +153,7 @@ export const createBoardInWorkspace = (dispatch, workspaceId, title, backgroundC
                     resolve(board);
                 }, reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 };
 
 
@@ -227,7 +228,7 @@ export const setWorkspaceName = (dispatch, workspaceId, newName) => {
                     resolve(response);
                 }, reject)
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 };
 
 export const inviteUserByEmail = (dispatch, workspaceId, email) => {
@@ -254,7 +255,7 @@ export const inviteUserByEmail = (dispatch, workspaceId, email) => {
                     resolve();
                 }, reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 };
 
 export const cancelInvite = (dispatch, workspaceId, inviteId) => {
@@ -273,7 +274,7 @@ export const cancelInvite = (dispatch, workspaceId, inviteId) => {
                     resolve();
                 }, reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 };
 
 export const removeMember = (dispatch, workspaceId, userId, candidate) => {
@@ -303,7 +304,7 @@ export const removeMember = (dispatch, workspaceId, userId, candidate) => {
                     resolve();
                 }, reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 };
 
 export const transferOwnership = (dispatch, workspaceId, candidate) => {
@@ -332,5 +333,5 @@ export const transferOwnership = (dispatch, workspaceId, candidate) => {
                     resolve();
                 }, reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 }

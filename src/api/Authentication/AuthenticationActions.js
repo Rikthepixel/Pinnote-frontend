@@ -13,6 +13,7 @@ import {
 } from "firebase/auth";
 import { clearBoards, clearWorkspaces, clearInvites } from "..";
 import superagent from "superagent";
+import ErrorHandler from "../ErrorHandler";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -23,10 +24,8 @@ const state = {
 
 onAuthStateChanged(
     auth,
-    (newUser) => {
-        state.user = newUser;
-    },
-    (err) => console.log(err)
+    (newUser) => { state.user = newUser; },
+    ErrorHandler
 );
 
 const clearSelf = (dispatch) => {
@@ -57,7 +56,7 @@ export const retrieveSelf = (dispatch) => {
                     resolve(response.body);
                 }, reject)
         }).catch(reject);
-    })
+    }).catch(ErrorHandler);
 }
 
 export const login = (emailAdress, password) => {
@@ -80,7 +79,7 @@ export const register = (displayName, emailAdress, password) => {
                 resolve(credentials.user);
             })
             .catch(reject);
-    });
+    }).catch(ErrorHandler);
 };
 
 export const setUserName = (newUsername) => {
@@ -90,7 +89,7 @@ export const setUserName = (newUsername) => {
         })
             .then(resolve)
             .catch(reject);
-    });
+    }).catch(ErrorHandler);
 };
 export const getToken = (onTokenRecieved) => {
     return new Promise((resolve, reject) => {
@@ -108,7 +107,7 @@ export const getToken = (onTokenRecieved) => {
                 message: "User is not defined"
             })
         }
-    })
+    }).catch(ErrorHandler);
 }
 
 export const logout = (dispatch) => {
@@ -122,7 +121,7 @@ export const logout = (dispatch) => {
                 resolve();
             })
             .catch(reject);
-    });
+    }).catch(ErrorHandler);
 };
 
 const resolveTrue = (resolve) => {
@@ -132,41 +131,34 @@ const resolveTrue = (resolve) => {
     })
 }
 
-const resolveFalse = (resolve, error) => {
-    resolve({
-        result: false,
-        message: error.message
-    })
-}
-
 export const sendResetPasswordEmail = (email) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         firebaseSendPasswordResetEmail(auth, email)
             .then(() => resolveTrue(resolve))
-            .catch(error => resolveFalse(resolve, error));
-    });
+            .catch(reject);
+    }).catch(ErrorHandler);
 }
 
 export const updateEmail = (email) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         firebaseUpdateEmail(state.user, email)
             .then(() => resolveTrue(resolve))
-            .catch(error => resolveFalse(resolve, error));
-    })
+            .catch(reject);
+    }).catch(ErrorHandler);
 }
 
 export const updatePassword = (pass) => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         firebaseUpdatePassword(state.user, pass)
             .then(() => resolveTrue(resolve))
-            .catch(error => resolveFalse(resolve, error));
-    })
+            .catch(reject);
+    }).catch(ErrorHandler);
 }
 
 export const verifyEmail = () => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
         firebaseSendEmailVerification(state.user)
             .then(() => resolveTrue(resolve))
-            .catch(error => resolveFalse(resolve, error));
-    })
+            .catch(reject);
+    }).catch(ErrorHandler);
 }

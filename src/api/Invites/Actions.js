@@ -1,5 +1,6 @@
 import superagent from "superagent";
 import { getToken } from "..";
+import ErrorHandler from "../ErrorHandler";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -26,7 +27,7 @@ export const fetchInvites = (dispatch) => {
                     resolve(response.body);
                 }, reject);
         }).catch(reject);
-    })
+    }).catch(ErrorHandler);
 };
 
 const removeInviteDispatch = (dispatch, id, resolve) => {
@@ -44,7 +45,7 @@ export const acceptInvite = (dispatch, id) => {
                 .set("Authentication", token)
                 .then(() => removeInviteDispatch(dispatch, id, resolve), reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler);
 };
 
 export const rejectInvite = (dispatch, id) => {
@@ -54,5 +55,5 @@ export const rejectInvite = (dispatch, id) => {
                 .set("Authentication", token)
                 .then(() => removeInviteDispatch(dispatch, id, resolve), reject);
         }).catch(reject)
-    })
+    }).catch(ErrorHandler);
 }

@@ -50,7 +50,6 @@ const Board = (props) => {
   stateRef.current = state;
 
   const redirectToWorkspace = () => {
-    console.log("Set redirect");
     if (workspaceIdRef.current) {
       setRedirect(`/workspaces/${workspaceIdRef.current}`)
     } else {
@@ -59,18 +58,13 @@ const Board = (props) => {
   }
 
   useEffect(() => {
-    console.log('A');
     if (!isAuthLoaded) { return }
     if (parseInt(boardId)) {
-      console.log("boardId");
       loadBoard(dispatch, parseInt(boardId))
         .catch((err) => {
-          console.log("Catch");
-          console.log(err);
           redirectToWorkspace();
         });
     } else {
-      console.log("No board Id");
       redirectToWorkspace();
     }
 

@@ -1,12 +1,13 @@
 import { getToken } from ".."
 import superagent from "superagent";
+import ErrorHandler from "../ErrorHandler";
 
 export const getPermissions = (dispatch) => {
     return new Promise((resolve, reject) => {
         getToken(token => {
             
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 }
 
 export const getMyWorkspaceBoardPermissions = (dispatch, workspaceId) => {
@@ -14,7 +15,7 @@ export const getMyWorkspaceBoardPermissions = (dispatch, workspaceId) => {
         getToken(token => {
             
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 }
 
 export const grantWorkspacePermissionToUser = (dispatch, workspaceId, userId, permissionId) => {
@@ -22,7 +23,7 @@ export const grantWorkspacePermissionToUser = (dispatch, workspaceId, userId, pe
         getToken(token => {
             
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 }
 
 export const revokeWorkspacePermissionToUser = (dispatch, workspaceId, userId, permissionId) => {
@@ -30,7 +31,7 @@ export const revokeWorkspacePermissionToUser = (dispatch, workspaceId, userId, p
         getToken(token => {
             
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 }
 
 export const grantBoardPermissionToUser = (dispatch, workspaceId, boardId, userId, permissionId) => {
@@ -38,7 +39,7 @@ export const grantBoardPermissionToUser = (dispatch, workspaceId, boardId, userI
         getToken(token => {
             
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 }
 
 export const revokeBoardPermissionToUser = (dispatch, workspaceId, boardId, userId, permissionId) => {
@@ -46,6 +47,6 @@ export const revokeBoardPermissionToUser = (dispatch, workspaceId, boardId, user
         getToken(token => {
             
         }).catch(reject)
-    })
+    }).catch(ErrorHandler)
 }
 

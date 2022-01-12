@@ -3,6 +3,7 @@ import { HubConnectionBuilder } from "@microsoft/signalr";
 import { noteDTOtoNote, boardDTOtoBoard } from "../DtoHelpers";
 import superagent from "superagent";
 import { getToken } from "..";
+import ErrorHandler from "../ErrorHandler";
 
 const url = process.env.REACT_APP_BACKEND_URL;
 
@@ -92,13 +93,15 @@ export const loadBoard = (dispatch, id) => {
             .then(() => {
                 Promise.all([
                     connections.boardHub.invoke("Subscribe", id),
-                    connections.noteHub.invoke("Subscribe", id) //TODO: remove once user authentication is added
+                    connections.noteHub.invoke("Subscribe", id)
                 ])
-                    .then((response) => {
-                        if (response.error) {
-                            //console.log(response.error);
-                            reject(response.error);
-                            return;
+                    .then((subscriptioResponses) => {
+
+                        for (const response of subscriptioResponses) {
+                            if (response.error) {
+                                reject(response.error);
+                                return;
+                            }
                         }
 
                         connections.boardHub.off();
@@ -152,7 +155,7 @@ export const loadBoard = (dispatch, id) => {
                             });
                         });
 
-                        let parsedBoard = boardDTOtoBoard(response[1].data);
+                        let parsedBoard = boardDTOtoBoard(subscriptioResponses[1].data);
                         dispatch({
                             type: "SUBSCRIBED_TO_BOARD",
                             payload: {
@@ -164,7 +167,7 @@ export const loadBoard = (dispatch, id) => {
                     .catch((err) => reject(err));
             })
             .catch(reject);
-    });
+    }).catch(ErrorHandler);
 };
 
 export const unloadBoard = (dispatch) => {
@@ -267,9 +270,7 @@ export const setBoardNoteColor = (colorR, colorG, colorB) => {
         .then(response => {
             //console.log(response);
         })
-        .catch(err => {
-            console.error(err);
-        });
+        .catch(ErrorHandler);
 
     return {};
 }
@@ -297,9 +298,7 @@ export const setBoardColor = (colorR, colorG, colorB) => {
         .then(response => {
             //console.log(response);
         })
-        .catch(err => {
-            console.error(err);
-        });
+        .catch(ErrorHandler);
 
     return {};
 }
@@ -319,9 +318,7 @@ export const createPinNote = (positionX, positionY) => {
         .then(response => {
             //console.log(response);
         })
-        .catch(err => {
-            console.error(err);
-        });
+        .catch(ErrorHandler);
 };
 
 export const deletePinNote = (noteId) => {
@@ -336,9 +333,7 @@ export const deletePinNote = (noteId) => {
         .then(response => {
             //console.log(response);
         })
-        .catch(err => {
-            console.error(err);
-        });
+        .catch(ErrorHandler);
 };
 
 export const setNotePosition = (dispatch, noteId, positionX, positionY) => {
@@ -376,9 +371,7 @@ export const setNotePosition = (dispatch, noteId, positionX, positionY) => {
         .then(response => {
             //console.log(response);
         })
-        .catch(err => {
-            console.error(err);
-        });
+        .catch(ErrorHandler);
 
     return {};
 };
@@ -407,9 +400,7 @@ export const setNoteColor = (noteId, colorR, colorG, colorB) => {
         .then((response) => {
             //console.log(response);
         })
-        .catch((err) => {
-            console.error(err);
-        });
+        .catch(ErrorHandler);
 
     return {};
 };
@@ -433,9 +424,7 @@ export const setNoteText = (noteId, text) => {
             id: noteId,
             text: text,
         })
-        .catch((err) => {
-            console.error(err);
-        });
+        .catch(ErrorHandler);
 
     return {};
 };
@@ -459,9 +448,7 @@ export const setNoteTitle = (noteId, title) => {
             id: noteId,
             title: title,
         })
-        .catch((err) => {
-            console.error(err);
-        });
+        .catch(ErrorHandler);
 
     return {};
 };

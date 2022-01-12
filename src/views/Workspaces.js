@@ -30,9 +30,6 @@ const Workspaces = (props) => {
     useEffect(() => {
         if (!isAuthLoaded) { return }
         fetchMyWorkspaces(dispatch)
-            .catch((err) => {
-                console.log(err);
-            });
     }, [dispatch, isAuthLoaded]);
 
     return (
