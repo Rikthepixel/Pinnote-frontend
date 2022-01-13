@@ -102,15 +102,15 @@ a {
     $size: $i * 5;
     $percentage: percentage(calc($size / 100));
     .w-#{$size} {
-        width: $percentage
+        width: $percentage !important
     }
 
     .max-w-#{$size} {
-        max-width: $percentage
+        max-width: $percentage !important
     }
     
     .min-w-#{$size} {
-        min-width: $percentage
+        min-width: $percentage !important
     }
 
     .h-#{$size} {

@@ -9,12 +9,13 @@ import MakeWriteable from "../MakeWriteable";
 import { deletePinNote, setNoteColor, setNotePosition, setNoteText, setNoteTitle } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
-import { MoreIcon, BrushIcon, TrashIcon, EditIcon } from "../../assets/img/icons";
+import { MoreIcon, BrushIcon, TrashIcon, EditIcon, PaperclipIcon, UploadIcon } from "../../assets/img/icons";
 import { noteSchema, validateNote } from "../../api/Boards/BoardValidators";
 import * as yup from "yup";
 import { formAlert } from "../../utils/Alerts";
 //Styling
 import "../../assets/scss/components/BoardElements/PinNote.scss";
+import { imagesSchema } from "../../api/Attachments/Validators";
 
 function disableSelect(e) {
   e.preventDefault();
@@ -196,6 +197,53 @@ const PinNote = (props) => {
           {state.title}
         </div>
 
+        <OverlayTrigger
+          trigger="click"
+          placement="right-start"
+          rootClose
+          onToggle={(shown) => {
+            if (!shown && typeof (setColorSelectorDisplay.current) == "function") {
+              setColorSelectorDisplay.current(state.backgroundColor);
+              setDraftBackgroundColor(null);
+            }
+          }}
+          overlay={
+            <MovingPopover
+              className="p-2 d-flex align-items-center justify-content-center flex-column gap-2"
+            >
+              <Button
+                className="d-flex text-nowrap gap-2 mx-4"
+                onClick={() => formAlert({
+                  title: "Upload an image",
+                  validator: imagesSchema,
+                  inputs: [{
+                      uploadIcon: UploadIcon,
+                      type: "upload",
+                      name: "files",
+                      accept: "images/*",
+                      containerClassName: "w-100",
+                      multiple: true
+                    }]
+                })}
+              >
+                <img
+                  className="w-1-0em"
+                  src={UploadIcon} alt=""
+                  style={{ filter: "invert(100%)" }}
+                />
+                Upload
+              </Button>
+            </MovingPopover>
+          }
+        >
+          <button className="pinNote-Header-Action">
+            <img
+              className="h-70"
+              src={PaperclipIcon} alt="Attachments"
+              style={{ filter: contrastColor === "#fff" && "invert(100%)" }}
+            />
+          </button>
+        </OverlayTrigger>
         <OverlayTrigger
           trigger="click"
           placement="right-start"

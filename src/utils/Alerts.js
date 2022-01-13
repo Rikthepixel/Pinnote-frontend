@@ -8,6 +8,7 @@ import ColorSelector from '../components/ColorSelector';
 import ColorSelectorButton from '../components/ColorSelectorButton';
 
 import "./Alerts.css";
+import FileInputField from '../components/FileInputField';
 
 
 const Swal = withReactContent(sweetalert2);
@@ -71,14 +72,15 @@ export const confirmationAlert = (config) => {
 }
 
 const ErrorBlock = (props) => {
-    return (
-        <ErrorMessage name={props.name} render={(msg) => {
-            return (
-                <div className="text-danger">
-                    {msg}
-                </div>
-            )
-        }}></ErrorMessage>
+    return (!props.error ?
+        <ErrorMessage name={props.name} render={(msg) =>
+            <div className="text-danger">
+                {msg}
+            </div>}
+        /> :
+        <div div className="text-danger" >
+            {props.error}
+        </div >
     )
 }
 
@@ -127,6 +129,14 @@ const multiFormCustomFields = {
                 className="form-select"
                 name={input.name}
                 children={input.children}
+            />
+        )
+    },
+
+    upload: (input) => {
+        return (
+            <FileInputField
+                {...input}
             />
         )
     }
@@ -218,7 +228,6 @@ export const formAlert = (config) => {
                                     )
                                 }
                                 let customFieldConstructor = multiFormCustomFields[input.type];
-
                                 return (
                                     <div className={`d-flex flex-column ${input.className} gap-1`} key={index}>
                                         <div className="d-flex align-items-center justify-content-center gap-1">
@@ -235,7 +244,7 @@ export const formAlert = (config) => {
                                                 : customFieldConstructor(input)
                                             }
                                         </div>
-                                        <ErrorBlock name={input.name}></ErrorBlock>
+                                        <ErrorBlock name={input.name} error={errors[input.name]}></ErrorBlock>
                                     </div>
 
                                 )

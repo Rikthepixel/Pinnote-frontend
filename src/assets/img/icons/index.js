@@ -18,6 +18,8 @@ import CloseIconRed from "./CloseIconRed.svg";
 import EnvelopeIcon from "./EnvelopeIcon.svg";
 import UserPlusIcon from "./UserPlusIcon.svg";
 import StarIcon from "./StarIcon.svg";
+import PaperclipIcon from "./PaperclipIcon.svg";
+import UploadIcon from "./UploadIcon.svg";
 
 export {
     CloseIconRed,
@@ -39,5 +41,7 @@ export {
     UserTieIcon,
     EnvelopeIcon,
     UserPlusIcon,
-    StarIcon
+    StarIcon,
+    PaperclipIcon,
+    UploadIcon
 };
