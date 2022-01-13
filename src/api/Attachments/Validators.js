@@ -3,7 +3,7 @@ import * as yup from "yup";
 export const imagesSchema = yup.object().shape({
     files: yup.array().of(
         yup.mixed()
-            .test('fileType', "Unsupported File Format", file => {
+            .test('fileType', "One or more images is in an unsupported Format", file => {
                 if (typeof(file.type) !== "string") {
                     return false;
                 }
