@@ -54,12 +54,16 @@ const BoardReducer = (state = initialState, action) => {
                 })
             }
 
-            if (parseInt(state.board.id) === parseInt(payload.boardId)) {
-                state.board = {
-                    state: "removed"
-                };
-                state = Object.assign({}, state)
+            if (state.board != null){
+                if (parseInt(state.board.id) === parseInt(payload.boardId)) {
+                    state.board = {
+                        state: "removed"
+                    };
+                    state = Object.assign({}, state)
+                }
             }
+
+
 
             return state;
 
