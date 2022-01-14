@@ -16,6 +16,7 @@ import { formAlert } from "../../utils/Alerts";
 //Styling
 import "../../assets/scss/components/BoardElements/PinNote.scss";
 import { imagesSchema } from "../../api/Attachments/Validators";
+import { Link } from "react-router-dom";
 
 function disableSelect(e) {
   e.preventDefault();
@@ -211,10 +212,12 @@ const PinNote = (props) => {
             <MovingPopover
               className="p-2 d-flex align-items-center justify-content-center flex-column gap-2"
             >
-              {state.attachments.length > 0 && <div className="d-flex flex-column gap-2 w-100 px-1">
-                {state.attachments.map((file, index) =>
+              {(state.attachments || []).length > 0 && <div className="d-flex flex-column gap-2 w-100 px-1">
+                {state.attachments.map((file, index) => 
                   <div key={`${file.id}-${index}`} className="d-flex justify-content-between align-items-center w-100">
-                    <div>{file.displayName}</div>
+                    <a target="_blank" href={file.link}>
+                      {file.displayName}
+                    </a>
                     <img
                       onClick={() => removeNoteAttachment(props.noteId, file.id)}
                       src={CloseIconRed}
