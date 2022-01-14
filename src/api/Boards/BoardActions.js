@@ -6,6 +6,7 @@ import { getToken } from "..";
 import ErrorHandler from "../ErrorHandler";
 
 const url = process.env.REACT_APP_BACKEND_URL;
+const moveInterval = process.env.REACT_APP_NOTE_MOVE_INTERVAL;
 
 const connections = {
     boardHub: new HubConnectionBuilder()
@@ -82,6 +83,11 @@ const connections = {
     }
 }
 
+const lerp = (start, end, percentage) => {
+    return start + (end - start) * percentage
+}
+const noteMoveIntervals = {};
+
 export const loadBoard = (dispatch, id) => {
     return new Promise((resolve, reject) => {
         id = parseInt(id);
@@ -144,6 +150,59 @@ export const loadBoard = (dispatch, id) => {
                                 type: "UPDATE_BOARD_NOTE",
                                 payload: noteDTOtoNote(response.data),
                             });
+                        });
+
+                        connections.noteHub.on("NoteMoved", response => {
+                            const { noteId, endX, endY} = response.data;
+                            let { startX, startY } = response.data;
+                            const moveTimes = 50;
+                            const percentagePerInterval = 100 / moveTimes / 100;
+                            const invertvalTime = moveInterval / moveTimes;
+
+                            const existingTween = noteMoveIntervals[noteId];
+                            if (existingTween) {
+                                clearInterval(existingTween.interval);
+                                startX = existingTween.posX;
+                                startY = existingTween.posY;
+                            }
+
+                            let invervalNumber = 1;
+                            noteMoveIntervals[noteId] = {
+                                posX: startX,
+                                posY: startY,
+                                interval: setInterval(() => {
+                                    const alpha = invervalNumber * percentagePerInterval;
+                                    const posX = lerp(startX, endX, alpha);
+                                    const posY = lerp(startY, endY, alpha);
+
+                                    noteMoveIntervals[noteId].posX = posX;
+                                    noteMoveIntervals[noteId].posY = posY;
+
+                                    dispatch({
+                                        type: "UPDATE_BOARD_NOTE_POSITION",
+                                        payload: {
+                                            noteId: noteId,
+                                            positionX: posX,
+                                            positionY: posY
+                                        }
+                                    });
+                                    
+                                    invervalNumber += 1;
+    
+                                    if (invervalNumber >= moveTimes) {
+                                        clearInterval(noteMoveIntervals[noteId].interval);
+                                        delete noteMoveIntervals[noteId];
+                                        dispatch({
+                                            type: "UPDATE_BOARD_NOTE_POSITION",
+                                            payload: {
+                                                noteId: noteId,
+                                                positionX: endX,
+                                                positionY: endY
+                                            }
+                                        });
+                                    }
+                                }, invertvalTime)
+                            };
                         });
 
                         connections.noteHub.on("NoteRemoved", response => {
@@ -324,6 +383,32 @@ export const deletePinNote = (noteId) => {
         .catch(ErrorHandler);
 };
 
+export const saveNotePosition = (noteId, positionX, positionY) => {
+    let errors = validateNote({
+        position: {
+            x: positionX,
+            y: positionY,
+        },
+    });
+    if (Object.keys(errors).length > 0) {
+        return errors;
+    }
+
+    if (!connections.IsConnected()) {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
+    connections.noteHub
+        .invoke("SetNotePosition", {
+            id: noteId,
+            positionX: positionX,
+            positionY: positionY,
+        })
+        .catch(ErrorHandler);
+}
+
 export const setNotePosition = (dispatch, noteId, positionX, positionY) => {
     let errors = validateNote({
         position: {
@@ -343,21 +428,6 @@ export const setNotePosition = (dispatch, noteId, positionX, positionY) => {
             positionY: positionY,
         },
     });
-
-    if (!connections.IsConnected()) {
-        return {
-            connection: "You are not connected"
-        }
-    }
-
-    connections.noteHub
-        .invoke("SetNotePosition", {
-            id: noteId,
-            positionX: positionX,
-            positionY: positionY,
-        })
-        .catch(ErrorHandler);
-
     return {};
 };
 

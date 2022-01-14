@@ -6,7 +6,7 @@ import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
 
 import MakeWriteable from "../MakeWriteable";
 
-import { addNoteAttachment, deletePinNote, removeNoteAttachment, setNoteColor, setNotePosition, setNoteText, setNoteTitle, uploadFiles } from "../../api";
+import { addNoteAttachment, deletePinNote, removeNoteAttachment, setNoteColor, setNotePosition, setNoteText, setNoteTitle, uploadFiles, saveNotePosition } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
 import { MoreIcon, BrushIcon, TrashIcon, EditIcon, PaperclipIcon, UploadIcon, CloseIconRed } from "../../assets/img/icons";
@@ -16,11 +16,12 @@ import { formAlert } from "../../utils/Alerts";
 //Styling
 import "../../assets/scss/components/BoardElements/PinNote.scss";
 import { imagesSchema } from "../../api/Attachments/Validators";
-import { Link } from "react-router-dom";
 
 function disableSelect(e) {
   e.preventDefault();
 }
+
+const moveInterval = process.env.REACT_APP_NOTE_MOVE_INTERVAL;
 
 const MovingPopover = React.forwardRef(
   ({ popper, children, show: _, ...props }, ref) => {
@@ -43,6 +44,7 @@ const PinNote = (props) => {
   const setColorSelectorDisplay = useRef();
   const stateRef = useRef();
   const setTitleText = useRef();
+  const posUpdateRef = useRef();
 
   const [draftBackgroundColor, setDraftBackgroundColor] = useState();
   const state = useSelector(root => {
@@ -106,6 +108,19 @@ const PinNote = (props) => {
 
   const enableDrag = () => {
     HeaderRef.current.onmousedown = function (e) {
+      posUpdateRef.current = setInterval(() => {
+        saveNotePosition(
+          props.noteId,
+          stateRef.current.positionX,
+          stateRef.current.positionY
+        )
+      }, moveInterval);
+      saveNotePosition(
+        props.noteId,
+        stateRef.current.positionX,
+        stateRef.current.positionY
+      )
+
       const rect = NoteDiv.current.getBoundingClientRect();
       let handleX = e.clientX - rect.x
       let handleY = e.clientY - rect.y
@@ -147,6 +162,13 @@ const PinNote = (props) => {
       document.onmouseup = function () {
         document.onmouseup = null;
         document.onmousemove = null;
+        clearInterval(posUpdateRef.current);
+        console.log(stateRef.current.positionX, stateRef.current.positionY);
+        saveNotePosition(
+          props.noteId,
+          stateRef.current.positionX,
+          stateRef.current.positionY
+        );
         window.removeEventListener("selectstart", disableSelect);
       };
     };
@@ -234,7 +256,7 @@ const PinNote = (props) => {
                     uploadIcon: UploadIcon,
                     type: "upload",
                     name: "files",
-                    accept: "images/*",
+                    accept: "",
                     containerClassName: "w-100",
                     multiple: true
                   }]

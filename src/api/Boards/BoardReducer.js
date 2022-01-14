@@ -137,6 +137,7 @@ const BoardReducer = (state = initialState, action) => {
                     notes: [...board.notes]
                 }
             }
+            
 
         default:
             return state;

@@ -21,6 +21,7 @@ const Workspace = (props) => {
         users: [],
         invitations: []
     });
+    const user = useSelector(root => root.auth.user || {})
 
     const stateRef = useRef(workspace);
     stateRef.current = workspace;
@@ -91,7 +92,7 @@ const Workspace = (props) => {
                         invitees={workspace.invitations}
                     />
                 </Tab>
-                <Tab
+                {user.id === workspace.ownerId && <Tab
                     eventKey="settings"
                     title={(
                         <div className="d-flex flex-row justify-content-center align-items-center">
@@ -104,7 +105,7 @@ const Workspace = (props) => {
                         ownerId={workspace.ownerId}
                         workspace={workspace}
                     />
-                </Tab>
+                </Tab>}
             </Tabs>
         </div>
     );
