@@ -78,7 +78,7 @@ const ErrorBlock = (props) => {
                 {msg}
             </div>}
         /> :
-        <div div className="text-danger" >
+        <div className="text-danger" >
             {props.error}
         </div >
     )

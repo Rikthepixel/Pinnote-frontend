@@ -267,9 +267,6 @@ export const setBoardNoteColor = (colorR, colorG, colorB) => {
             DefaultBackgroundColorG: colorG,
             DefaultBackgroundColorB: colorB,
         })
-        .then(response => {
-            //console.log(response);
-        })
         .catch(ErrorHandler);
 
     return {};
@@ -295,9 +292,6 @@ export const setBoardColor = (colorR, colorG, colorB) => {
             backgroundColorG: colorG,
             backgroundColorB: colorB,
         })
-        .then(response => {
-            //console.log(response);
-        })
         .catch(ErrorHandler);
 
     return {};
@@ -315,9 +309,6 @@ export const createPinNote = (positionX, positionY) => {
             positionX: positionX,
             positionY: positionY,
         })
-        .then(response => {
-            //console.log(response);
-        })
         .catch(ErrorHandler);
 };
 
@@ -330,9 +321,6 @@ export const deletePinNote = (noteId) => {
 
     connections.noteHub
         .invoke("DeleteNote", noteId)
-        .then(response => {
-            //console.log(response);
-        })
         .catch(ErrorHandler);
 };
 
@@ -368,9 +356,6 @@ export const setNotePosition = (dispatch, noteId, positionX, positionY) => {
             positionX: positionX,
             positionY: positionY,
         })
-        .then(response => {
-            //console.log(response);
-        })
         .catch(ErrorHandler);
 
     return {};
@@ -396,9 +381,6 @@ export const setNoteColor = (noteId, colorR, colorG, colorB) => {
             backgroundColorR: colorR,
             backgroundColorG: colorG,
             backgroundColorB: colorB,
-        })
-        .then((response) => {
-            //console.log(response);
         })
         .catch(ErrorHandler);
 
@@ -429,13 +411,43 @@ export const setNoteText = (noteId, text) => {
     return {};
 };
 
+export const addNoteAttachment = (noteId, attachment) => {
+    if (!connections.IsConnected()) {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
+    connections.noteHub
+        .invoke("AddNoteAttachment", {
+            noteId: noteId,
+            file: attachment,
+        })
+        .catch(ErrorHandler);
+}
+
+export const removeNoteAttachment = (noteId, attachmentId) => {
+    if (!connections.IsConnected()) {
+        return {
+            connection: "You are not connected"
+        }
+    }
+
+    connections.noteHub
+        .invoke("RemoveNoteAttachment", {
+            noteId: noteId,
+            attachmentId: attachmentId,
+        })
+        .catch(ErrorHandler);
+}
+
 export const setNoteTitle = (noteId, title) => {
     let errors = validateNote({
         title: title,
     });
     if (Object.keys(errors).length > 0) {
         return errors;
-    };
+    }
 
     if (!connections.IsConnected()) {
         return {

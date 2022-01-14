@@ -18,5 +18,6 @@ export * from "./Workspaces/WorkspaceActions";
 export * from "./Authentication/AuthenticationActions";
 export * from "./Invites/Actions";
 export * from "./Permission/Actions";
+export * from "./Attachments/Actions";
 
 export default rootReducer;

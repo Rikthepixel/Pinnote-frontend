@@ -6,10 +6,10 @@ import { getContrastingColor, rgbaToHsva } from '@uiw/color-convert'
 
 import MakeWriteable from "../MakeWriteable";
 
-import { deletePinNote, setNoteColor, setNotePosition, setNoteText, setNoteTitle } from "../../api";
+import { addNoteAttachment, deletePinNote, removeNoteAttachment, setNoteColor, setNotePosition, setNoteText, setNoteTitle, uploadFiles } from "../../api";
 import ColorSelectorButton from "../ColorSelectorButton";
 
-import { MoreIcon, BrushIcon, TrashIcon, EditIcon, PaperclipIcon, UploadIcon } from "../../assets/img/icons";
+import { MoreIcon, BrushIcon, TrashIcon, EditIcon, PaperclipIcon, UploadIcon, CloseIconRed } from "../../assets/img/icons";
 import { noteSchema, validateNote } from "../../api/Boards/BoardValidators";
 import * as yup from "yup";
 import { formAlert } from "../../utils/Alerts";
@@ -211,19 +211,39 @@ const PinNote = (props) => {
             <MovingPopover
               className="p-2 d-flex align-items-center justify-content-center flex-column gap-2"
             >
+              {state.attachments.length > 0 && <div className="d-flex flex-column gap-2 w-100 px-1">
+                {state.attachments.map((file, index) =>
+                  <div key={`${file.id}-${index}`} className="d-flex justify-content-between align-items-center w-100">
+                    <div>{file.displayName}</div>
+                    <img
+                      onClick={() => removeNoteAttachment(props.noteId, file.id)}
+                      src={CloseIconRed}
+                      className="w-1-0em"
+                    />
+                  </div>)}
+              </div>}
               <Button
                 className="d-flex text-nowrap gap-2 mx-4"
                 onClick={() => formAlert({
                   title: "Upload an image",
                   validator: imagesSchema,
                   inputs: [{
-                      uploadIcon: UploadIcon,
-                      type: "upload",
-                      name: "files",
-                      accept: "images/*",
-                      containerClassName: "w-100",
-                      multiple: true
-                    }]
+                    uploadIcon: UploadIcon,
+                    type: "upload",
+                    name: "files",
+                    accept: "images/*",
+                    containerClassName: "w-100",
+                    multiple: true
+                  }]
+                }).then(result => {
+                  if (result.confirmed) {
+                    uploadFiles(result.values.files)
+                      .then((response) => {
+                        response.forEach(attachment => {
+                          addNoteAttachment(props.noteId, attachment)
+                        });
+                      });
+                  }
                 })}
               >
                 <img
@@ -238,7 +258,7 @@ const PinNote = (props) => {
         >
           <button className="pinNote-Header-Action">
             <img
-              className="h-70"
+              className="h-60"
               src={PaperclipIcon} alt="Attachments"
               style={{ filter: contrastColor === "#fff" && "invert(100%)" }}
             />
@@ -317,7 +337,7 @@ const PinNote = (props) => {
             />
           </button>
         </OverlayTrigger>
-      </div>
+      </div >
       <div className="pinNote-Content">
         <textarea
           className="pinNote-TextContent"
@@ -326,7 +346,7 @@ const PinNote = (props) => {
           onChange={(e) => setNoteText(props.noteId, e.target.value)}
         ></textarea>
       </div>
-    </div>
+    </div >
   );
 }
 
