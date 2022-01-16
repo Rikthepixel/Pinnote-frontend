@@ -153,7 +153,7 @@ export const loadBoard = (dispatch, id) => {
                         });
 
                         connections.noteHub.on("NoteMoved", response => {
-                            const { noteId, endX, endY} = response.data;
+                            const { noteId, endX, endY } = response.data;
                             let { startX, startY } = response.data;
                             const moveTimes = 50;
                             const percentagePerInterval = 100 / moveTimes / 100;
@@ -186,9 +186,9 @@ export const loadBoard = (dispatch, id) => {
                                             positionY: posY
                                         }
                                     });
-                                    
+
                                     invervalNumber += 1;
-    
+
                                     if (invervalNumber >= moveTimes) {
                                         clearInterval(noteMoveIntervals[noteId].interval);
                                         delete noteMoveIntervals[noteId];
@@ -457,7 +457,7 @@ export const setNoteColor = (noteId, colorR, colorG, colorB) => {
     return {};
 };
 
-export const setNoteText = (noteId, text) => {
+export const setNoteText = (noteId, text, dispatch) => {
     let errors = validateNote({
         text: text,
     });
@@ -477,6 +477,14 @@ export const setNoteText = (noteId, text) => {
             text: text,
         })
         .catch(ErrorHandler);
+
+    dispatch({
+        type: "UPDATE_BOARD_NOTE",
+        payload: {
+            noteId: noteId,
+            text: text
+        },
+    });
 
     return {};
 };
