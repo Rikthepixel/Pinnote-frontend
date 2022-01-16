@@ -163,7 +163,6 @@ const PinNote = (props) => {
         document.onmouseup = null;
         document.onmousemove = null;
         clearInterval(posUpdateRef.current);
-        console.log(stateRef.current.positionX, stateRef.current.positionY);
         saveNotePosition(
           props.noteId,
           stateRef.current.positionX,
@@ -368,7 +367,7 @@ const PinNote = (props) => {
           className="pinNote-TextContent"
           value={state.text || ""}
           style={{ color: contrastColor }}
-          onChange={(e) => setNoteText(props.noteId, e.target.value)}
+          onChange={(e) => setNoteText(props.noteId, e.target.value, dispatch)}
         ></textarea>
       </div>
     </div >
