@@ -41,6 +41,7 @@ const Workspaces = (props) => {
                         Your workspaces
                     </h2>
                     <Button
+                        id="createWorkspaceButton"
                         className="pe-2 mb-2"
                         onClick={() => formAlert({
                             title: "Create a workspace",
@@ -76,7 +77,7 @@ const Workspaces = (props) => {
                         Workspace
                     </Button>
                 </div>
-                <div className="px-4">
+                <div id="workspacesContainer" className="px-4">
                     {workspaces.map((workspace, wIndex) => {
                         return (
                             <NavLink

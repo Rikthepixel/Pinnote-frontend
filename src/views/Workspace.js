@@ -8,7 +8,7 @@ import MembersTab from "../components/MembersTab";
 import SettingsTab from "../components/SettingsTab";
 
 import { BoardIcon, CogIcon, UsersIcon } from "../assets/img/icons";
-import { fetchWorkspace, retrieveSelf } from "../api";
+import { clearWorkspace, fetchWorkspace, retrieveSelf } from "../api";
 
 import "../assets/scss/views/Workspace.scss";
 import { useAuth } from "../utils/useAuth";
@@ -44,7 +44,8 @@ const Workspace = (props) => {
 
     useEffect(() => {
         if (workspace.removed_state) {
-            setRedirect("/Workspaces")
+            setRedirect("/Workspaces");
+            clearWorkspace(dispatch);
         }
     }, [workspace.removed_state])
 
@@ -94,6 +95,7 @@ const Workspace = (props) => {
                 </Tab>
                 {user.id === workspace.ownerId && <Tab
                     eventKey="settings"
+                    id="settings"
                     title={(
                         <div className="d-flex flex-row justify-content-center align-items-center">
                             <img className="me-1 h-1-1em" alt="" src={CogIcon} />

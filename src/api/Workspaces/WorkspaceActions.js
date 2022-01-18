@@ -33,6 +33,13 @@ export const clearWorkspaces = (dispatch) => {
     });
 }
 
+export const clearWorkspace = (dispatch) => {
+    dispatch({
+        type: "WORKSPACE_FETCHED",
+        payload: {}
+    })
+}
+
 export const fetchMyWorkspaces = (dispatch) => {
     return new Promise((resolve, reject) => {
         getToken(token => {

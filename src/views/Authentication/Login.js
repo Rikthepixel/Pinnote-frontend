@@ -8,6 +8,7 @@ import { UserIcon } from "../../assets/img/icons";
 import { loginSchema } from "../../api/Authentication/AuthenticationValidators";
 import { useAuth } from "../../utils/useAuth";
 import { login } from "../../api";
+import { toastAlerts } from "../../utils/Alerts";
 
 const Login = (props) => {
     const [redirect, setRedirect] = useState("");
@@ -32,7 +33,11 @@ const Login = (props) => {
                         validationSchema={loginSchema}
                         onSubmit={(values) => login(values.email, values.password).then(() => {
                                 setRedirect("/Workspaces");
-                            })}
+                            }).catch((err) => toastAlerts({
+                                icon: "error",
+                                title: "Error!",
+                                message: err.message
+                            }))}
                     >
                         {(formProps) => {
                             return (

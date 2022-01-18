@@ -49,7 +49,7 @@ const Navbar = () => {
 
             <div className="NavMenu justify-content-end">
                 {!user ? (
-                    <NavLink className="NavLink" to="/Login">
+                    <NavLink id="loginButton" className="NavLink" to="/Login">
                         Login
                     </NavLink>
                 ) : (
@@ -62,7 +62,7 @@ const Navbar = () => {
                                 {invites.length}
                             </Badge>}
                         </NavLink>
-                        <NavLink className="NavLink" to="#" onClick={() => logout(dispatch)}>
+                        <NavLink id="logoutButton" className="NavLink" to="#" onClick={() => logout(dispatch)}>
                             Logout
                         </NavLink>
                     </Fragment>

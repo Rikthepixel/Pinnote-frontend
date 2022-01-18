@@ -23,11 +23,17 @@ const MembersTab = (props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        if (!props.members) {
+            return;
+        }
         setDisplayMembers(props.members.filter(_user => {
             return _user.username.toLowerCase().includes(searchText.toLowerCase());
         }));
     }, [props.members, searchText])
     useEffect(() => {
+        if (!props.invitees) {
+            return;
+        }
         setDisplayInvitees(props.invitees.filter(_invitee => {
             return _invitee.user.username.toLowerCase().includes(searchText.toLowerCase())
         }))
@@ -76,7 +82,7 @@ const MembersTab = (props) => {
                     </Button>
                 </div>
             </header>
-            <article className="d-flex flex-column gap-2 mt-4">
+            <article id="membersList" className="d-flex flex-column gap-2 mt-4">
                 {displayMembers.map((_user, index) => (
                     <div
                         key={index}
@@ -91,6 +97,7 @@ const MembersTab = (props) => {
                             <div>{_user.email}</div>
                         </div>
                         {(_user.id != props.ownerId || _user.id == user.id) && <Button variant="danger"
+                            id={_user.id == user.id && "leaveWorkspaceButton"}
                             onClick={() => confirmationAlert(_user.id == user.id ? {
                                 title: "Leave workspace",
                                 text: `Are you sure you want to leave this workspace?${props.members.length === 1 && " This will also delete the workspace, its boards and its notes"}`,

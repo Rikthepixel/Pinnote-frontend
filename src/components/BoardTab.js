@@ -12,6 +12,9 @@ const BoardTab = (props) => {
     const [displayBoards, setDisplayBoards] = useState([]);
 
     useEffect(() => {
+        if (!props.boards) {
+            return;
+        }
         setDisplayBoards(props.boards.filter(board => {
             return board.title.toLowerCase().includes(searchText.toLowerCase());
         }));
@@ -30,6 +33,7 @@ const BoardTab = (props) => {
                         onChange={e => setSearchText(e.target.value)}
                     />
                     <Button
+                        id="addBoardButton"
                         className="text-nowrap d-flex align-items-center justify-content-center"
                         onClick={() => createBoardInWorkspacePopup(dispatch, props.workspaceId)}
                     >
@@ -38,7 +42,7 @@ const BoardTab = (props) => {
                     </Button>
                 </div>
             </header>
-            <article className="w-100 d-flex flex-wrap gap-3">
+            <article id="boardsContainer" className="w-100 d-flex flex-wrap gap-3">
                 {displayBoards.map((board, bIndex) => (
                     <PinBoardItem key={`${board.id}-${bIndex}`} board={board} />
                 ))}

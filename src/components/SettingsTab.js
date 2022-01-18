@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Button } from "react-bootstrap";
 import { CogIcon } from "../assets/img/icons";
 
-import { deleteWorkspace, setWorkspaceName, transferOwnership } from "../api";
+import { deleteWorkspace, setWorkspaceName, transferOwnership, clearWorkspace } from "../api";
 import { workspacePatchNameSchema, workspaceOwnerTransferSchema } from "../api/Workspaces/WorkspaceValidators";
 import { confirmationAlert, formAlert, toastAlerts } from "../utils/Alerts";
 
@@ -32,7 +32,6 @@ const SettingsTab = (props) => {
         }).then((result) => {
             if (result.confirmed) {
                 setWorkspaceName(dispatch, parseInt(props.workspaceId), result.values.name);
-                return;
             }
         });
     };
@@ -81,7 +80,8 @@ const SettingsTab = (props) => {
             if (result) {
                 deleteWorkspace(
                     dispatch, props.workspaceId
-                ).catch(err => toastAlerts({
+                )
+                .catch(err => toastAlerts({
                     title: "Error!",
                     icon: "error",
                     text: err.message
@@ -112,6 +112,7 @@ const SettingsTab = (props) => {
                     Transfer ownership
                 </Button>}
                 {props.ownerId === user.id && <Button
+                    id="workspaceDeleteButton"
                     variant="danger"
                     className="w-50"
                     onClick={onDeleteWorkspaceClicked}
