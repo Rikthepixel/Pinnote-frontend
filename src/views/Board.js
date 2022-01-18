@@ -262,7 +262,7 @@ const Board = (props) => {
             />
           )}
 
-          <Button variant="danger" className="w-100" onClick={onDeleteClick}>
+          <Button variant="danger" id="deleteBoardButton" className="w-100" onClick={onDeleteClick}>
             <div className="d-flex align-items-center justify-content-center">
               <img
                 className="me-1"
@@ -289,7 +289,7 @@ const Board = (props) => {
             <img className="BoardButtonImage me-1 img-invert" alt="+" src={PlusIcon} />
             Note
           </Button>
-          <Button onClick={toggleMenu}>
+          <Button id="menuButton" onClick={toggleMenu}>
             <img src={MoreIcon} alt="..." className="me-1 img-invert" />
             Menu
           </Button>

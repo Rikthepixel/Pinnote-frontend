@@ -19,7 +19,7 @@ describe("Open workspace page", () => {
 
     it("Creates a workspace", () => {
         cy.get("#createWorkspaceButton").click({ force: true} )
-        cy.wait(1000);
+        cy.wait(100);
         cy.get("input[name=name]").type("workspacename");
         cy.get("button[type=submit]").click({ force: true});
         cy.wait(1000);
@@ -40,7 +40,7 @@ describe("Open workspace page", () => {
 
     it("Creates a workspace", () => {
         cy.get("#createWorkspaceButton").click({ force: true} )
-        cy.wait(1000);
+        cy.wait(100);
         cy.get("input[name=name]").type("workspacename");
         cy.get("button[type=submit]").click({ force: true});
         cy.wait(1000);
